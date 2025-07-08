@@ -319,6 +319,7 @@ button {
   justify-content: center;
   align-items: center;
   pointer-events: none;
+  top: 18%;  /* Yukarıdan %18 aşağıda olacak */
 }
 
 /* Responsive */
