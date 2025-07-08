@@ -493,14 +493,14 @@ button {
 }
 
 .capture-area.animate-progress .progress-top {
-    animation: progress-top 0.75s ease-in-out forwards;
+    animation: progress-top 0.4s ease-in-out forwards;
 }
 .capture-area.animate-progress .progress-right {
-    animation: progress-right 0.75s ease-in-out forwards 0.75s;
+    animation: progress-right 0.4s ease-in-out forwards 0.4s;
 }
 .capture-area.animate-progress .progress-bottom {
-    animation: progress-bottom 0.75s ease-in-out forwards 1.5s;
+    animation: progress-bottom 0.4s ease-in-out forwards 0.8s;
 }
 .capture-area.animate-progress .progress-left {
-    animation: progress-left 0.75s ease-in-out forwards 2.25s;
+    animation: progress-left 0.4s ease-in-out forwards 1.2s;
 }

@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // State değişkenleri
     let arOpen = false;
     let animationStarted = false;
     let animationTimeout = null;
@@ -14,38 +13,33 @@ document.addEventListener('DOMContentLoaded', function () {
     const infoSection = document.querySelector('.info-section');
     const container = document.querySelector('.container');
 
-    // AR sahnesini aç
+   
     function openAR() {
         if (arOpen) return;
         arOpen = true;
-        // a-scene sahnesini oluştur
+       
         const aScene = document.createElement('a-scene');
         aScene.setAttribute('vr-mode-ui', 'enabled: false');
         aScene.style.position = 'absolute';
         aScene.style.top = '0';
         aScene.style.left = '0';
         aScene.style.width = '100%';
-        aScene.style.height = '60vh'; // Sadece üstteki boş alanı kapla
+        aScene.style.height = '60vh'; 
         aScene.style.zIndex = '1';
         aScene.setAttribute('embedded', '');
         aScene.id = 'ar-scene';
         document.body.appendChild(aScene);
-        // Haritayı daralt
         bottomContainer.style.height = '40%';
-        // AR için capture-area'yı öne çıkar
         if (container) container.style.zIndex = '100';
     }
 
-    // AR sahnesini kapat
     function closeAR() {
         if (!arOpen) return;
         arOpen = false;
         const aScene = document.getElementById('ar-scene');
         if (aScene) aScene.remove();
-        // Haritayı eski haline getir
         bottomContainer.style.height = '100%';
         if (container) container.style.zIndex = '';
-        // Animasyon ve fotoğraf state sıfırla
         if (captureArea) captureArea.classList.remove('animate-progress');
         animationStarted = false;
         photoTaken = false;
@@ -53,59 +47,47 @@ document.addEventListener('DOMContentLoaded', function () {
         if (animationTimeout) clearTimeout(animationTimeout);
     }
 
-    // Animasyonu başlat
     function startAnimation() {
         if (animationStarted || photoTaken) return;
         animationStarted = true;
         if (captureArea) captureArea.classList.add('animate-progress');
-        // Animasyon süresi kadar sonra fotoğraf çek
         animationTimeout = setTimeout(() => {
             takePhoto();
-        }, 3000); // 3 saniye animasyon örnek
+        }, 1600);
     }
 
-    // Fotoğraf çek (crop ve popup)
     function takePhoto() {
         if (photoTaken) return;
         photoTaken = true;
-        // AR.js sahnesindeki video elementini bul
         const video = document.querySelector('video');
         if (!video || video.readyState < 2) {
             alert('Kamera görüntüsü alınamıyor!');
             return;
         }
-        // capture-area'nın ekrandaki konumunu ve boyutunu al
         const cap = captureArea.getBoundingClientRect();
         const vid = video.getBoundingClientRect();
-        // capture-area'nın video üzerindeki karşılığını hesapla
-        // (video genellikle ekranı kaplar, oranlar üzerinden hesaplanır)
         const scaleX = video.videoWidth / vid.width;
         const scaleY = video.videoHeight / vid.height;
         const sx = (cap.left - vid.left) * scaleX;
         const sy = (cap.top - vid.top) * scaleY;
         const sw = cap.width * scaleX;
         const sh = cap.height * scaleY;
-        // canvas ile crop
         const canvas = document.createElement('canvas');
         canvas.width = sw;
         canvas.height = sh;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
-        // popup'ta göster
         const popup = document.getElementById('photo-popup');
         const img = document.getElementById('cropped-photo');
         img.src = canvas.toDataURL('image/png');
         popup.style.display = 'flex';
-        // Animasyon class'ı kaldır
+
         if (captureArea) captureArea.classList.remove('animate-progress');
     }
 
-    // Cihazın sabit olup olmadığını kontrol et
+
     function isDeviceStable(event) {
-        // event.beta, event.gamma, event.alpha değişimi çok küçükse sabit kabul et
-        // Alternatif: devicemotion ile hızlanma değişimi çok küçükse
-        // Şimdilik orientation ile örnek
-        const threshold = 1.5; // derece
+        const threshold = 1.5; 
         const diffBeta = Math.abs(event.beta - lastOrientation.beta);
         const diffGamma = Math.abs(event.gamma - lastOrientation.gamma);
         const diffAlpha = Math.abs(event.alpha - lastOrientation.alpha);
@@ -113,27 +95,23 @@ document.addEventListener('DOMContentLoaded', function () {
         return (diffBeta < threshold && diffGamma < threshold && diffAlpha < threshold);
     }
 
-    // Pitch açısını hesapla (telefonun yere göre eğimi)
+
     function getPitch(event) {
-        // iOS ve Android farklılıkları olabilir, burada beta kullanıyoruz
-        return Math.abs(event.beta); // 0: yere paralel, 90: yere dik
+        return Math.abs(event.beta); 
     }
 
-    // Orientation event dinleyici
+
     window.addEventListener('deviceorientation', function (event) {
         const pitch = getPitch(event);
         if (pitch >= 50) {
             openAR();
-            // Kamera açıkken sabitlik kontrolü
             if (isDeviceStable(event)) {
                 if (!stableStartTime) stableStartTime = Date.now();
-                // 1 saniye sabit tutarsa animasyon başlasın
-                if (Date.now() - stableStartTime > 1000) {
+                if (Date.now() - stableStartTime > 500) {
                     startAnimation();
                 }
             } else {
                 stableStartTime = null;
-                // Sabitlik bozulursa animasyon baştan başlasın
                 if (captureArea) captureArea.classList.remove('animate-progress');
                 animationStarted = false;
                 if (animationTimeout) clearTimeout(animationTimeout);
