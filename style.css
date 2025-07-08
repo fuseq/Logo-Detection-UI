@@ -306,7 +306,7 @@ button {
 }
 
 .capture-area {
-  position: relative;
+  position: absolute;
   width: 70vw;
   max-width: 320px;
   height: 35vw;
