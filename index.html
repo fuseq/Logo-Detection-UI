@@ -80,3 +80,11 @@
             </div>
         </div>
     </div>
+
+    <!-- Fotoğraf sonucu popup -->
+    <div id="photo-popup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
+      <div style="background:#fff; border-radius:12px; padding:24px; box-shadow:0 4px 32px #0008; display:flex; flex-direction:column; align-items:center; max-width:90vw; max-height:90vh;">
+        <img id="cropped-photo" src="" alt="Yakalanan Fotoğraf" style="max-width:80vw; max-height:60vh; border-radius:8px; margin-bottom:16px;" />
+        <button onclick="document.getElementById('photo-popup').style.display='none'" style="padding:10px 24px; border-radius:8px; background:#7daef1; color:#fff; border:none; font-size:16px; cursor:pointer;">Kapat</button>
+      </div>
+    </div>

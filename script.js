@@ -64,12 +64,38 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 3000); // 3 saniye animasyon örnek
     }
 
-    // Fotoğraf çek (placeholder)
+    // Fotoğraf çek (crop ve popup)
     function takePhoto() {
         if (photoTaken) return;
         photoTaken = true;
-        // Burada gerçek fotoğraf çekme kodu olacak (AR.js veya WebRTC ile)
-        alert('Fotoğraf çekildi!');
+        // AR.js sahnesindeki video elementini bul
+        const video = document.querySelector('video');
+        if (!video || video.readyState < 2) {
+            alert('Kamera görüntüsü alınamıyor!');
+            return;
+        }
+        // capture-area'nın ekrandaki konumunu ve boyutunu al
+        const cap = captureArea.getBoundingClientRect();
+        const vid = video.getBoundingClientRect();
+        // capture-area'nın video üzerindeki karşılığını hesapla
+        // (video genellikle ekranı kaplar, oranlar üzerinden hesaplanır)
+        const scaleX = video.videoWidth / vid.width;
+        const scaleY = video.videoHeight / vid.height;
+        const sx = (cap.left - vid.left) * scaleX;
+        const sy = (cap.top - vid.top) * scaleY;
+        const sw = cap.width * scaleX;
+        const sh = cap.height * scaleY;
+        // canvas ile crop
+        const canvas = document.createElement('canvas');
+        canvas.width = sw;
+        canvas.height = sh;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
+        // popup'ta göster
+        const popup = document.getElementById('photo-popup');
+        const img = document.getElementById('cropped-photo');
+        img.src = canvas.toDataURL('image/png');
+        popup.style.display = 'flex';
         // Animasyon class'ı kaldır
         if (captureArea) captureArea.classList.remove('animate-progress');
     }

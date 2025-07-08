@@ -307,9 +307,9 @@ button {
 
 .capture-area {
     position: absolute;
-    top: 50%;
+    top: 30vh;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     width: 70vw;
     max-width: 320px;
     height: 35vw;
@@ -335,9 +335,9 @@ button {
     max-height: 30vh;
     min-width: 90px;
     min-height: 50px;
-    top: 50%;
+    top: 30vh;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
   }
 }
 
