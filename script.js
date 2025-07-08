@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
         aScene.style.top = '0';
         aScene.style.left = '0';
         aScene.style.width = '100%';
-        aScene.style.height = '100%';
+        aScene.style.height = '60vh'; // Sadece üstteki boş alanı kapla
         aScene.style.zIndex = '1';
         aScene.setAttribute('embedded', '');
         aScene.id = 'ar-scene';
