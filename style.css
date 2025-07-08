@@ -335,7 +335,7 @@ button {
     max-height: 30vh;
     min-width: 90px;
     min-height: 50px;
-    top: 20vh;
+    top: 18vh;
     left: 50%;
     transform: translateX(-50%);
   }
