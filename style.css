@@ -1,0 +1,480 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.input-group {
+    margin: 10px 0;
+}
+
+label {
+    margin-right: 10px;
+}
+
+.button-container {
+    margin-top: 20px;
+}
+
+
+button {
+    position: absolute;
+    bottom: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+/* style.css */
+.bottom-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    /* Şeffaflık derecesini 0.9 yaparak arka planı neredeyse opak yapabilirsiniz */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: background-color 0.5s ease;
+    /* Arka plan rengini geçişli hale getir */
+    z-index: 10;
+}
+
+.map-section {
+    height: 90%;
+    /* info-section'ın yüksekliği kadar çıkarın */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    /* Relative yaparak info-section ile aynı düzlemde olmasını sağlar */
+    z-index: 10;
+}
+
+.map-iframe {
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+.bottom-container,
+.map-section,
+.info-section {
+    transition: height 0.5s ease;
+}
+
+.button-section {
+    height: 10%;
+    width: 100%;
+    position: fixed;
+    bottom: 12%;
+    z-index: 10;
+
+}
+
+.center-button {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #7daef1;
+    border: 1px solid #e0e0e0;
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+    overflow: hidden;
+    /* Shine efektinin dışa taşmasını engeller */
+    z-index: 10;
+
+}
+
+.center-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: skewX(-45deg);
+    animation: shine 2s infinite;
+    /* 2 saniyelik sürekli animasyon */
+}
+
+@keyframes shine {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 105%;
+    }
+}
+
+.center-button img {
+    margin-right: 8px;
+    /* Resim ile yazı arasında boşluk */
+    width: 20px;
+    /* Resmin genişliği */
+    height: 20px;
+    /* Resmin yüksekliği */
+}
+
+.center-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.right-button {
+    margin-left: auto;
+    /* Sağa yaslar */
+    padding: 5px 10px;
+    right: 20px;
+    background-color: #ee8793;
+    color: white;
+    border-radius: 25px;
+    /* Köşeleri yuvarla */
+    display: none;
+    border: 1px solid #e0e0e0;
+    cursor: pointer;
+    z-index: 10;
+
+}
+
+
+
+.info-section {
+    width: 100%;
+    height: 60px;
+    /* Yükseklik aynı kalır */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Yatayda ortala */
+    padding: 10px;
+    background-color: rgba(248, 248, 248, 0.8);
+    /* %60 transparan arka plan rengi */
+    border-radius: 10px;
+    position: relative;
+    /* Relative yaparak map-section ile aynı düzlemde olmasını sağlar */
+    /* Alttan biraz yükselt */
+    left: 50%;
+    transform: translateX(-50%);
+    /* Sol kenardan %50 kaydır */
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* Gölge efekti */
+    z-index: 10;
+}
+
+
+
+.icon-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.destination {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.destination {
+    display: flex;
+    align-items: center;
+    /* Dikeyde ortala */
+    gap: 5px;
+    /* Resim ve yazı arasına boşluk ekle */
+}
+
+.time-info {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #333;
+    /* Koyu gri renk */
+}
+
+.image-button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    /* Genişlik */
+    height: 40px;
+    /* Yükseklik */
+    border-radius: 10px;
+    /* Köşeleri yuvarlatır */
+    overflow: hidden;
+    /* İçerik sınırlarını keser */
+    border: 0.5px solid #333;
+    border-color: #c4bfbf;
+    /* Kenarlık rengi ve kalınlığı */
+    background-color: #f8f8f8;
+    /* Arka plan rengi */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    /* Hover efektleri için geçiş */
+    text-decoration: none;
+    /* Link alt çizgisi kaldırır */
+    z-index: 10;
+}
+
+.icon-buttons-container {
+    display: flex;
+    /* Butonları yatayda hizalar */
+    gap: 10px;
+    /* Butonlar arasına boşluk ekler */
+    z-index: 10;
+}
+
+.circular-icon-button {
+    margin-right: 10px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    /* Butonun genişliği */
+    height: 40px;
+    /* Butonun yüksekliği */
+    border-radius: 50%;
+    /* Yuvarlak yapar */
+    border: 1px solid #333;
+    /* Kenarlık rengi ve kalınlığı */
+    background-color: #f8f8f8;
+    border-color: #c4bfbf;
+    /* Arka plan rengi */
+    text-decoration: none;
+    /* Alt çizgi kaldırır */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    /* Hover efektleri için geçiş */
+    color: black;
+    /* İkon rengi */
+    z-index: 10;
+}
+
+.circular-icon-button i {
+    font-size: 20px;
+    /* İkon boyutunu küçültür */
+}
+
+.circular-icon-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    /* Hover arka plan rengi */
+    border-color: #666;
+    /* Hover kenarlık rengi */
+}
+
+.image-button img {
+    width: 100%;
+    /* Resmin genişliğini kapsayıcıya göre ayarlar */
+    height: 100%;
+    /* Resmin yüksekliğini kapsayıcıya göre ayarlar */
+    object-fit: cover;
+    /* Resmin kapsayıcıyı doldurmasını sağlar */
+}
+
+
+
+.time-info i {
+    margin-right: 5px;
+}
+
+.container {
+    position: fixed;
+    /* Sabit konumlandırma ile ekranın ortasında kalmasını sağlar */
+    top: 10%;
+    /* Ekranın ortasına hizalamak için */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: scale(0.5);
+    transition: transform 1s ease;
+}
+
+.capture-area {
+    position: relative;
+    width: 700px;
+    /* Önceki: 320px */
+    height: 400px;
+    /* Önceki: 192px */
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Köşe işaretleri */
+.corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid white;
+}
+
+.top-left {
+    top: 8px;
+    left: 8px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.top-right {
+    top: 8px;
+    right: 8px;
+    border-left: none;
+    border-bottom: none;
+}
+
+.bottom-left {
+    bottom: 8px;
+    left: 8px;
+    border-right: none;
+    border-top: none;
+}
+
+.bottom-right {
+    bottom: 8px;
+    right: 8px;
+    border-left: none;
+    border-top: none;
+}
+
+/* Ortadaki kılavuz çizgiler */
+.guide-horizontal,
+.guide-vertical {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.guide-horizontal {
+    width: 60px;
+    height: 2px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.guide-vertical {
+    height: 60px;
+    width: 2px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Animasyonlu kenar çizgileri */
+.progress-top,
+.progress-right,
+.progress-bottom,
+.progress-left {
+    position: absolute;
+    background-color: white;
+}
+
+.progress-top {
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    animation: none;
+}
+
+.progress-right {
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 0%;
+    animation: none;
+}
+
+.progress-bottom {
+    bottom: 0;
+    right: 0;
+    height: 2px;
+    width: 0%;
+    animation: none;
+}
+
+.progress-left {
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    height: 0%;
+    animation: none;
+}
+
+/* Animasyonlar */
+@keyframes progress-top {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes progress-right {
+    from {
+        height: 0%;
+    }
+
+    to {
+        height: 100%;
+    }
+}
+
+@keyframes progress-bottom {
+    from {
+        width: 0%;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+@keyframes progress-left {
+    from {
+        height: 0%;
+    }
+
+    to {
+        height: 100%;
+    }
+}
+
+.capture-area .progress-top,
+.capture-area .progress-right,
+.capture-area .progress-bottom,
+.capture-area .progress-left {
+    animation: none;
+}
+
+.capture-area.animate-progress .progress-top {
+    animation: progress-top 0.75s ease-in-out forwards;
+}
+.capture-area.animate-progress .progress-right {
+    animation: progress-right 0.75s ease-in-out forwards 0.75s;
+}
+.capture-area.animate-progress .progress-bottom {
+    animation: progress-bottom 0.75s ease-in-out forwards 1.5s;
+}
+.capture-area.animate-progress .progress-left {
+    animation: progress-left 0.75s ease-in-out forwards 2.25s;
+}

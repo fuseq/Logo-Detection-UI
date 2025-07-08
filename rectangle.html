@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dikdörtgen Capture Alanı</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: black;
+      overflow: hidden;
+      font-family: sans-serif;
+    }
+
+    .container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Arka plan simülasyonu (kamera yerine) */
+    .background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://images.unsplash.com/photo-1602524208191-bfb14e9b5163?auto=format&fit=crop&w=1950&q=80');
+      background-size: cover;
+      background-position: center;
+      filter: brightness(0.7);
+      z-index: 0;
+    }
+
+.capture-area {
+  position: relative;
+  width: 400px;           /* Önceki: 320px */
+  height: 250px;          /* Önceki: 192px */
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+    /* Köşe işaretleri */
+    .corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 2px solid white;
+    }
+    .top-left { top: 8px; left: 8px; border-right: none; border-bottom: none; }
+    .top-right { top: 8px; right: 8px; border-left: none; border-bottom: none; }
+    .bottom-left { bottom: 8px; left: 8px; border-right: none; border-top: none; }
+    .bottom-right { bottom: 8px; right: 8px; border-left: none; border-top: none; }
+
+    /* Ortadaki kılavuz çizgiler */
+    .guide-horizontal, .guide-vertical {
+      position: absolute;
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+    .guide-horizontal {
+      width: 60px;
+      height: 2px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .guide-vertical {
+      height: 60px;
+      width: 2px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Animasyonlu kenar çizgileri */
+    .progress-top, .progress-right, .progress-bottom, .progress-left {
+      position: absolute;
+      background-color: white;
+    }
+
+    .progress-top {
+      top: 0;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      animation: progress-top 0.75s ease-in-out forwards;
+    }
+
+    .progress-right {
+      top: 0;
+      right: 0;
+      width: 2px;
+      height: 0%;
+      animation: progress-right 0.75s ease-in-out forwards 0.75s;
+    }
+
+    .progress-bottom {
+      bottom: 0;
+      right: 0;
+      height: 2px;
+      width: 0%;
+      animation: progress-bottom 0.75s ease-in-out forwards 1.5s;
+    }
+
+    .progress-left {
+      bottom: 0;
+      left: 0;
+      width: 2px;
+      height: 0%;
+      animation: progress-left 0.75s ease-in-out forwards 2.25s;
+    }
+
+    /* Animasyonlar */
+    @keyframes progress-top {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+
+    @keyframes progress-right {
+      from { height: 0%; }
+      to { height: 100%; }
+    }
+
+    @keyframes progress-bottom {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+
+    @keyframes progress-left {
+      from { height: 0%; }
+      to { height: 100%; }
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="background"></div>
+
+    <div class="capture-area">
+      <!-- Kenar animasyonları -->
+      <div class="progress-top"></div>
+      <div class="progress-right"></div>
+      <div class="progress-bottom"></div>
+      <div class="progress-left"></div>
+
+      <!-- Köşe işaretleri -->
+      <div class="corner top-left"></div>
+      <div class="corner top-right"></div>
+      <div class="corner bottom-left"></div>
+      <div class="corner bottom-right"></div>
+
+      <!-- Merkez kılavuz çizgiler -->
+      <div class="guide-horizontal"></div>
+      <div class="guide-vertical"></div>
+    </div>
+
+
+  </div>
+</body>
+</html>
