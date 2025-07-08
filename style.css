@@ -294,39 +294,34 @@ button {
 }
 
 .container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
 
 .capture-area {
-    position: absolute;
-    top: 30vh;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70vw;
-    max-width: 320px;
-    height: 35vw;
-    max-height: 40vh;
-    min-width: 120px;
-    min-height: 70px;
-    border: 4px solid rgba(255, 255, 255, 0.3);
-    overflow: hidden;
-    z-index: 10;
-    background: rgba(0,0,0,0.05);
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    pointer-events: none;
+  position: relative;
+  width: 70vw;
+  max-width: 320px;
+  height: 35vw;
+  max-height: 40vh;
+  min-width: 120px;
+  min-height: 70px;
+  background: rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
 }
 
+/* Responsive */
 @media (max-width: 600px) {
   .capture-area {
     width: 90vw;
@@ -335,150 +330,61 @@ button {
     max-height: 30vh;
     min-width: 90px;
     min-height: 50px;
-    top: 18vh;
-    left: 50%;
-    transform: translateX(-50%);
   }
 }
 
 /* Köşe işaretleri */
 .corner {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border: 2px solid white;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid white;
 }
 
 .top-left {
-    top: 8px;
-    left: 8px;
-    border-right: none;
-    border-bottom: none;
+  top: 8px;
+  left: 8px;
+  border-right: none;
+  border-bottom: none;
 }
 
 .top-right {
-    top: 8px;
-    right: 8px;
-    border-left: none;
-    border-bottom: none;
+  top: 8px;
+  right: 8px;
+  border-left: none;
+  border-bottom: none;
 }
 
 .bottom-left {
-    bottom: 8px;
-    left: 8px;
-    border-right: none;
-    border-top: none;
+  bottom: 8px;
+  left: 8px;
+  border-right: none;
+  border-top: none;
 }
 
-.bottom-right {
-    bottom: 8px;
-    right: 8px;
-    border-left: none;
-    border-top: none;
+.bottom-right { 
+  bottom: 8px;
+  right: 8px;
+  border-left: none;
+  border-top: none;
 }
 
-
-/* Animasyonlu kenar çizgileri */
-.progress-top,
-.progress-right,
-.progress-bottom,
-.progress-left {
-    position: absolute;
-    background-color: #fff;
-    box-shadow: 0 0 8px 2px #fff, 0 0 16px 4px #00aaff55;
-    transition: background-color 0.2s, box-shadow 0.2s;
-    border-radius: 0;
+/* Başlangıç: soluk çerçeve */
+.capture-area::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 1;
+  pointer-events: none;
+  transition: border-color 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
 }
 
-.progress-top {
-    top: 0;
-    left: 0;
-    height: 5px;
-    width: 0%;
-    border-radius: 0;
+/* Animasyon başladığında: beyaz kenar ve glow efekti */
+.capture-area.animate-border::before {
+  border-color: white;
+  box-shadow: 0 0 4px 1px white,
+              0 0 8px 2px #00aaff99;
 }
-
-.progress-right {
-    top: 0;
-    right: 0;
-    width: 5px;
-    height: 0%;
-    border-radius: 0;
-}
-
-.progress-bottom {
-    bottom: 0;
-    right: 0;
-    height: 5px;
-    width: 0%;
-    border-radius: 0;
-}
-
-.progress-left {
-    bottom: 0;
-    left: 0;
-    width: 5px;
-    height: 0%;
-    border-radius: 0;
-}
-
-/* Animasyonlar */
-@keyframes progress-top {
-    from {
-        width: 0%;
-    }
-
-    to {
-        width: 100%;
-    }
-}
-
-@keyframes progress-right {
-    from {
-        height: 0%;
-    }
-
-    to {
-        height: 100%;
-    }
-}
-
-@keyframes progress-bottom {
-    from {
-        width: 0%;
-    }
-
-    to {
-        width: 100%;
-    }
-}
-
-@keyframes progress-left {
-    from {
-        height: 0%;
-    }
-
-    to {
-        height: 100%;
-    }
-}
-
-.capture-area .progress-top,
-.capture-area .progress-right,
-.capture-area .progress-bottom,
-.capture-area .progress-left {
-    animation: none;
-}
-
-.capture-area.animate-progress .progress-top {
-    animation: progress-top 0.4s ease-in-out forwards;
-}
-.capture-area.animate-progress .progress-right {
-    animation: progress-right 0.4s ease-in-out forwards 0.4s;
-}
-.capture-area.animate-progress .progress-bottom {
-    animation: progress-bottom 0.4s ease-in-out forwards 0.8s;
-}
-.capture-area.animate-progress .progress-left {
-    animation: progress-left 0.4s ease-in-out forwards 1.2s;
-}
+  

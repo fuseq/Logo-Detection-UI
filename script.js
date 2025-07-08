@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (aScene) aScene.remove();
         bottomContainer.style.height = '100%';
         if (container) container.style.zIndex = '';
-        if (captureArea) captureArea.classList.remove('animate-progress');
+        if (captureArea) captureArea.classList.remove('animate-border');
         animationStarted = false;
         photoTaken = false;
         stableStartTime = null;
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function startAnimation() {
         if (animationStarted || photoTaken) return;
         animationStarted = true;
-        if (captureArea) captureArea.classList.add('animate-progress');
+        if (captureArea) captureArea.classList.add('animate-border');
         animationTimeout = setTimeout(() => {
             takePhoto();
         }, 1600);
