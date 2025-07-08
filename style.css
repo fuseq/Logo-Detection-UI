@@ -377,28 +377,6 @@ button {
     border-top: none;
 }
 
-/* Ortadaki kılavuz çizgiler */
-.guide-horizontal,
-.guide-vertical {
-    position: absolute;
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
-.guide-horizontal {
-    width: 60px;
-    height: 2px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.guide-vertical {
-    height: 60px;
-    width: 2px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
 
 /* Animasyonlu kenar çizgileri */
 .progress-top,
