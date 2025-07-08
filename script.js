@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function isDeviceStable(event) {
-        const threshold = 1.5; 
+        const threshold = 1; 
         const diffBeta = Math.abs(event.beta - lastOrientation.beta);
         const diffGamma = Math.abs(event.gamma - lastOrientation.gamma);
         const diffAlpha = Math.abs(event.alpha - lastOrientation.alpha);
