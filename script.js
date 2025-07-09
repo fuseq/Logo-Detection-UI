@@ -86,11 +86,15 @@ document.addEventListener('DOMContentLoaded', function () {
         captureMode = 'auto';
         autoCaptureBtn.classList.add('selected');
         manualCaptureBtn.classList.remove('selected');
+        onboardingPopup.style.display = 'none'; // Seçim sonrası popup'ı kapat
+        onboardingActive = false;
     };
     manualCaptureBtn.onclick = function() {
         captureMode = 'manual';
         manualCaptureBtn.classList.add('selected');
         autoCaptureBtn.classList.remove('selected');
+        onboardingPopup.style.display = 'none'; // Seçim sonrası popup'ı kapat
+        onboardingActive = false;
     };
 
     // Telefon yukarı kaldırıldığında onboarding başlat
@@ -282,6 +286,7 @@ document.addEventListener('DOMContentLoaded', function () {
             captureMessage.classList.remove('active');
         }
     });
+    // manualCaptureBtnUI artık harita üstünde değil, kamera alanının hemen altında ve ortada olacak şekilde konumlandırıldı. (CSS ile destekleniyor)
     manualCaptureBtnUI.onclick = function() {
         if (!photoTaken && captureMode === 'manual') {
             takePhoto();

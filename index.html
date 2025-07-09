@@ -38,11 +38,10 @@
             <div class="onboarding-controls">
                 <button id="onboarding-prev" style="display:none;">Back</button>
                 <button id="onboarding-next">Next</button>
-                <button id="onboarding-close" style="display:none;">Close</button>
-                <!-- Akış seçimi, sadece son adımda gösterilecek -->
-                <div id="capture-mode-select" style="display:none; margin-top: 16px;">
-                    <button id="auto-capture-btn" type="button">Otomatik Capture</button>
-                    <button id="manual-capture-btn" type="button">Buton ile Capture</button>
+                <!-- <button id="onboarding-close" style="display:none;">Close</button> -->
+                <div id="capture-mode-select" style="display:none; margin-top: 16px; justify-content:center; gap:16px; flex-direction:row;">
+                    <button id="auto-capture-btn" type="button" class="capture-mode-btn">Otomatik Capture</button>
+                    <button id="manual-capture-btn" type="button" class="capture-mode-btn">Buton ile Capture</button>
                 </div>
             </div>
         </div>
@@ -68,6 +67,7 @@
             </svg>
             <div id="capture-message" class="capture-message">Hold steady, capturing...</div>
         </div>
+        <button id="manual-capture-btn-ui"><i class="fa-solid fa-camera"></i></button>
     </div>
 
     <div class="bottom-container">

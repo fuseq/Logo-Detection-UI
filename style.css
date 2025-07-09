@@ -455,25 +455,58 @@ button {
     opacity: 1;
 }
 
-/* Capture butonu alt-orta */
-#manual-capture-btn-ui {
-    position: fixed;
-    left: 50%;
-    bottom: 8%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    padding: 16px 36px;
+/* Onboarding capture mode seçim butonları */
+.capture-mode-btn {
+    padding: 10px 20px;
+    border-radius: 24px;
+    border: 2px solid #7daef1;
+    background: #fff;
+    color: #7daef1;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 8px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.capture-mode-btn.selected, .capture-mode-btn:hover {
     background: #7daef1;
     color: #fff;
-    border: none;
-    border-radius: 32px;
-    font-size: 20px;
-    font-weight: bold;
-    box-shadow: 0 4px 16px #0003;
-    cursor: pointer;
+    border: 2px solid #7daef1;
+}
+
+/* Kamera icon button */
+#manual-capture-btn-ui {
+    position: absolute;
+    left: 50%;
+    top: calc(60vh + 16px); /* Kamera alanının hemen altı */
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    background: rgba(255,255,255,0.2);
+    border: 2px solid #7daef1;
+    border-radius: 50%;
     display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px #0002;
+    cursor: pointer;
+    transition: background 0.2s, border 0.2s;
 }
 #manual-capture-btn-ui.active {
-    display: block;
+    display: flex;
+}
+#manual-capture-btn-ui:hover {
+    background: #7daef1;
+    border: 2px solid #0056b3;
+}
+#manual-capture-btn-ui i {
+    font-size: 28px;
+    color: #7daef1;
+    transition: color 0.2s;
+}
+#manual-capture-btn-ui:hover i {
+    color: #fff;
 }
   
