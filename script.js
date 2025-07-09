@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
         manualCaptureBtn.classList.remove('selected');
         onboardingPopup.style.display = 'none'; // Seçim sonrası popup'ı kapat
         onboardingActive = false;
+        enableCaptureFlow();
     };
     manualCaptureBtn.onclick = function() {
         captureMode = 'manual';
@@ -95,8 +96,16 @@ document.addEventListener('DOMContentLoaded', function () {
         autoCaptureBtn.classList.remove('selected');
         onboardingPopup.style.display = 'none'; // Seçim sonrası popup'ı kapat
         onboardingActive = false;
+        enableCaptureFlow();
     };
 
+    function enableCaptureFlow() {
+        window.addEventListener('deviceorientation', captureFlowHandler);
+    }
+
+    function captureFlowHandler(event) {
+        if (onboardingActive) return; // Onboarding açıksa scan işlemi yapılmasın
+        const pitch = getPitch(event);
     // Telefon yukarı kaldırıldığında onboarding başlat
     let onboardingShown = false;
     let onboardingActive = false;
