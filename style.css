@@ -327,7 +327,7 @@ button {
     stroke-width: 2;
     fill: none;
     filter: drop-shadow(0 0 4px rgba(128, 128, 128, 0.4));
-    opacity: 0.4;
+    opacity: 0.6;
     stroke-linecap: round;
     stroke-linejoin: round;
     transition: stroke 0.3s ease-in-out, filter 0.3s ease-in-out, opacity 0.3s ease-in-out;

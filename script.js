@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (captureArea) captureArea.classList.add('glow-active');
         animationTimeout = setTimeout(() => {
             takePhoto();
-        }, 1000);
+        }, 1500);
     }
 
     function takePhoto() {
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function isDeviceStable(event) {
-        const threshold = 1.5; 
+        const threshold = 1.3; 
         const diffBeta = Math.abs(event.beta - lastOrientation.beta);
         const diffGamma = Math.abs(event.gamma - lastOrientation.gamma);
         const diffAlpha = Math.abs(event.alpha - lastOrientation.alpha);
