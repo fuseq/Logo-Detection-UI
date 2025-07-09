@@ -72,13 +72,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Telefon yukarı kaldırıldığında onboarding başlat
     let onboardingShown = false;
+    let onboardingActive = false;
     window.addEventListener('deviceorientation', function (event) {
         const pitch = getPitch(event);
         if (pitch >= 50 && !onboardingShown) {
             openOnboarding();
             onboardingShown = true;
+            onboardingActive = true;
         }
     });
+
+    // Onboarding popup kapandığında scan işlemlerine izin ver
+    function closeOnboarding() {
+        onboardingPopup.style.display = 'none';
+        onboardingActive = false;
+    }
+    onboardingClose.onclick = closeOnboarding;
 
     const bottomContainer = document.querySelector('.bottom-container');
     const captureArea = document.querySelector('.scan-area');
@@ -174,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     window.addEventListener('deviceorientation', function (event) {
+        if (onboardingActive) return; // Onboarding açıksa scan işlemi yapılmasın
         const pitch = getPitch(event);
         if (pitch >= 50) {
             openAR();

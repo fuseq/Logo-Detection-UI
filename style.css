@@ -355,17 +355,18 @@ button {
 .notification-bar {
     position: fixed;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
     background: #222;
     color: #fff;
     padding: 10px 32px;
-    border-radius: 0 0 12px 12px;
+    border-radius: 0;
     font-size: 16px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.12);
     z-index: 9999;
     opacity: 0.95;
     animation: notif-fadein 0.7s;
+    text-align: center;
 }
 @keyframes notif-fadein {
     from { opacity: 0; top: -40px; }
