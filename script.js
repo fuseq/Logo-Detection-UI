@@ -113,6 +113,12 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.appendChild(aScene);
         bottomContainer.style.height = '40%';
         if (container) container.style.zIndex = '100';
+        // AR açıldığında onboarding popup devreye girsin
+        if (!onboardingShown) {
+            openOnboarding();
+            onboardingShown = true;
+            onboardingActive = true;
+        }
     }
 
     function closeAR() {
