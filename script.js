@@ -86,26 +86,13 @@ document.addEventListener('DOMContentLoaded', function () {
         captureMode = 'auto';
         autoCaptureBtn.classList.add('selected');
         manualCaptureBtn.classList.remove('selected');
-        onboardingPopup.style.display = 'none'; // Seçim sonrası popup'ı kapat
-        onboardingActive = false;
-        enableCaptureFlow();
     };
     manualCaptureBtn.onclick = function() {
         captureMode = 'manual';
         manualCaptureBtn.classList.add('selected');
         autoCaptureBtn.classList.remove('selected');
-        onboardingPopup.style.display = 'none'; // Seçim sonrası popup'ı kapat
-        onboardingActive = false;
-        enableCaptureFlow();
     };
 
-    function enableCaptureFlow() {
-        window.addEventListener('deviceorientation', captureFlowHandler);
-    }
-
-    function captureFlowHandler(event) {
-        if (onboardingActive) return; // Onboarding açıksa scan işlemi yapılmasın
-        const pitch = getPitch(event);
     // Telefon yukarı kaldırıldığında onboarding başlat
     let onboardingShown = false;
     let onboardingActive = false;
@@ -295,7 +282,6 @@ document.addEventListener('DOMContentLoaded', function () {
             captureMessage.classList.remove('active');
         }
     });
-    // manualCaptureBtnUI artık harita üstünde değil, kamera alanının hemen altında ve ortada olacak şekilde konumlandırıldı. (CSS ile destekleniyor)
     manualCaptureBtnUI.onclick = function() {
         if (!photoTaken && captureMode === 'manual') {
             takePhoto();
