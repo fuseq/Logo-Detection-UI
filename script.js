@@ -73,51 +73,31 @@ document.addEventListener('DOMContentLoaded', function () {
     // Telefon yukarı kaldırıldığında onboarding başlat
     let onboardingShown = false;
     let onboardingActive = false;
-    window.addEventListener('deviceorientation', function (event) {
-        const pitch = getPitch(event);
-        if (pitch >= 50 && !onboardingShown) {
-            openOnboarding();
-            onboardingShown = true;
-            onboardingActive = true;
-        }
-    });
+    // window.addEventListener('deviceorientation', ...) içinden popup tetikleyiciyi kaldırıyorum
 
-    // Onboarding popup kapandığında scan işlemlerine izin ver
-    function closeOnboarding() {
-        onboardingPopup.style.display = 'none';
-        onboardingActive = false;
-    }
-    onboardingClose.onclick = closeOnboarding;
-
-    const bottomContainer = document.querySelector('.bottom-container');
-    const captureArea = document.querySelector('.scan-area');
-    const mapSection = document.querySelector('.map-section');
-    const infoSection = document.querySelector('.info-section');
-    const container = document.querySelector('.container');
-
-   
     function openAR() {
         if (arOpen) return;
         arOpen = true;
-       
         const aScene = document.createElement('a-scene');
         aScene.setAttribute('vr-mode-ui', 'enabled: false');
         aScene.style.position = 'absolute';
         aScene.style.top = '0';
         aScene.style.left = '0';
         aScene.style.width = '100%';
-        aScene.style.height = '60vh'; 
+        aScene.style.height = '60vh';
         aScene.style.zIndex = '1';
         aScene.setAttribute('embedded', '');
         aScene.id = 'ar-scene';
         document.body.appendChild(aScene);
         bottomContainer.style.height = '40%';
         if (container) container.style.zIndex = '100';
-        // AR açıldığında onboarding popup devreye girsin
+        // AR açıldıktan hemen sonra popup devreye girsin
         if (!onboardingShown) {
-            openOnboarding();
-            onboardingShown = true;
-            onboardingActive = true;
+            setTimeout(() => {
+                openOnboarding();
+                onboardingShown = true;
+                onboardingActive = true;
+            }, 100); // Kamera açıldıktan hemen sonra popup gelsin
         }
     }
 
@@ -174,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function isDeviceStable(event) {
-        const threshold = 1.3; 
+        const threshold = 1.3;
         const diffBeta = Math.abs(event.beta - lastOrientation.beta);
         const diffGamma = Math.abs(event.gamma - lastOrientation.gamma);
         const diffAlpha = Math.abs(event.alpha - lastOrientation.alpha);
@@ -184,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     function getPitch(event) {
-        return Math.abs(event.beta); 
+        return Math.abs(event.beta);
     }
 
 
