@@ -55,6 +55,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     function closeOnboarding() {
         onboardingPopup.style.display = 'none';
+        onboardingActive = false;
+        onboardingShown = true;
+        openAR(); // Popup kapatılınca AR ve scan başlasın
     }
     onboardingPrev.onclick = function() {
         if (onboardingStep > 0) {
@@ -70,10 +73,14 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     onboardingClose.onclick = closeOnboarding;
 
-    // Telefon yukarı kaldırıldığında onboarding başlat
-    let onboardingShown = false;
-    let onboardingActive = false;
-    // window.addEventListener('deviceorientation', ...) içinden popup tetikleyiciyi kaldırıyorum
+    // Telefon yukarı kaldırıldığında önce popup açılır, popup kapatılınca AR açılır ve scan başlar
+    window.addEventListener('deviceorientation', function (event) {
+        const pitch = getPitch(event);
+        if (pitch >= 50 && !onboardingShown && !onboardingActive) {
+            openOnboarding();
+            onboardingActive = true;
+        }
+    });
 
     function openAR() {
         if (arOpen) return;
@@ -91,14 +98,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.appendChild(aScene);
         bottomContainer.style.height = '40%';
         if (container) container.style.zIndex = '100';
-        // AR açıldıktan hemen sonra popup devreye girsin
-        if (!onboardingShown) {
-            setTimeout(() => {
-                openOnboarding();
-                onboardingShown = true;
-                onboardingActive = true;
-            }, 100); // Kamera açıldıktan hemen sonra popup gelsin
-        }
     }
 
     function closeAR() {
@@ -113,6 +112,8 @@ document.addEventListener('DOMContentLoaded', function () {
         photoTaken = false;
         stableStartTime = null;
         if (animationTimeout) clearTimeout(animationTimeout);
+        onboardingShown = false;
+        onboardingActive = false;
     }
 
     function startAnimation() {
@@ -172,20 +173,23 @@ document.addEventListener('DOMContentLoaded', function () {
         if (onboardingActive) return; // Onboarding açıksa scan işlemi yapılmasın
         const pitch = getPitch(event);
         if (pitch >= 50) {
-            openAR();
-            if (isDeviceStable(event)) {
-                if (!stableStartTime) stableStartTime = Date.now();
-                if (Date.now() - stableStartTime > 500) {
-                    startAnimation();
+            if (onboardingShown) {
+                openAR();
+                if (isDeviceStable(event)) {
+                    if (!stableStartTime) stableStartTime = Date.now();
+                    if (Date.now() - stableStartTime > 500) {
+                        startAnimation();
+                    }
+                } else {
+                    stableStartTime = null;
+                    if (captureArea) captureArea.classList.remove('glow-active');
+                    animationStarted = false;
+                    if (animationTimeout) clearTimeout(animationTimeout);
                 }
-            } else {
-                stableStartTime = null;
-                if (captureArea) captureArea.classList.remove('glow-active');
-                animationStarted = false;
-                if (animationTimeout) clearTimeout(animationTimeout);
             }
         } else {
             closeAR();
+            onboardingShown = false;
         }
     });
 });
