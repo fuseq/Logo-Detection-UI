@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let lastMotion = { x: 0, y: 0, z: 0 };
 
     const bottomContainer = document.querySelector('.bottom-container');
-    const captureArea = document.querySelector('.capture-area');
+    const captureArea = document.querySelector('.scan-area');
     const mapSection = document.querySelector('.map-section');
     const infoSection = document.querySelector('.info-section');
     const container = document.querySelector('.container');
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (aScene) aScene.remove();
         bottomContainer.style.height = '100%';
         if (container) container.style.zIndex = '';
-        if (captureArea) captureArea.classList.remove('animate-border');
+        if (captureArea) captureArea.classList.remove('glow-active');
         animationStarted = false;
         photoTaken = false;
         stableStartTime = null;
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function startAnimation() {
         if (animationStarted || photoTaken) return;
         animationStarted = true;
-        if (captureArea) captureArea.classList.add('animate-border');
+        if (captureArea) captureArea.classList.add('glow-active');
         animationTimeout = setTimeout(() => {
             takePhoto();
         }, 1600);
@@ -81,8 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const img = document.getElementById('cropped-photo');
         img.src = canvas.toDataURL('image/png');
         popup.style.display = 'flex';
-
-        if (captureArea) captureArea.classList.remove('animate-progress');
+        if (captureArea) captureArea.classList.remove('glow-active');
     }
 
 
@@ -112,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } else {
                 stableStartTime = null;
-                if (captureArea) captureArea.classList.remove('animate-progress');
+                if (captureArea) captureArea.classList.remove('glow-active');
                 animationStarted = false;
                 if (animationTimeout) clearTimeout(animationTimeout);
             }

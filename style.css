@@ -305,87 +305,48 @@ button {
   z-index: 10;
 }
 
-.capture-area {
-  position: absolute;
-  width: 70vw;
-  max-width: 320px;
-  height: 35vw;
-  max-height: 40vh;
-  min-width: 120px;
-  min-height: 70px;
-  background: rgba(0, 0, 0, 0.05);
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-  top: 18%;  /* Yukarıdan %18 aşağıda olacak */
+/* Tarama alanı stilini tanımla */
+.scan-area {
+    width: 300px;
+    height: 200px;
+    border: none;
+    position: relative;
+    border-radius: 8px;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .capture-area {
-    width: 90vw;
-    height: 45vw;
-    max-width: 96vw;
-    max-height: 30vh;
-    min-width: 90px;
-    min-height: 50px;
-  }
+/* Ortak SVG köşe stili */
+.scan-area svg {
+    position: absolute;
+    overflow: visible;
 }
 
-/* Köşe işaretleri */
-.corner {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  border: 1.5px solid white;
+/* SVG yolları (path) için varsayılan stil */
+.scan-area path {
+    stroke: rgba(128, 128, 128, 0.4);
+    stroke-width: 2;
+    fill: none;
+    filter: drop-shadow(0 0 4px rgba(128, 128, 128, 0.4));
+    opacity: 0.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.3s ease-in-out, filter 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
-.top-left {
-  top: 8px;
-  left: 8px;
-  border-right: none;
-  border-bottom: none;
+/* glow-active sınıfı eklendiğinde path stili */
+.scan-area.glow-active path {
+    stroke: white;
+    filter: drop-shadow(0 0 8px white);
+    opacity: 0.8;
 }
 
-.top-right {
-  top: 8px;
-  right: 8px;
-  border-left: none;
-  border-bottom: none;
-}
+/* Köşe SVG'lerinin konumları */
+.corner-top-left { top: -10px; left: -10px; }
+.corner-top-right { top: -10px; right: -10px; }
+.corner-bottom-left { bottom: -10px; left: -10px; }
+.corner-bottom-right { bottom: -10px; right: -10px; }
 
-.bottom-left {
-  bottom: 8px;
-  left: 8px;
-  border-right: none;
-  border-top: none;
-}
-
-.bottom-right { 
-  bottom: 8px;
-  right: 8px;
-  border-left: none;
-  border-top: none;
-}
-
-/* Başlangıç: soluk çerçeve */
-.capture-area::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  box-sizing: border-box;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  z-index: 1;
-  pointer-events: none;
-  transition: border-color 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
-}
-
-/* Animasyon başladığında: beyaz kenar ve glow efekti */
-.capture-area.animate-border::before {
-  border-color: white;
-  box-shadow: 0 0 4px 1px white,
-              0 0 8px 2px #00aaff99;
+.glow-button:hover {
+    background-color: #0056b3;
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.6);
 }
   
