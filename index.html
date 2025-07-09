@@ -39,6 +39,11 @@
                 <button id="onboarding-prev" style="display:none;">Back</button>
                 <button id="onboarding-next">Next</button>
                 <button id="onboarding-close" style="display:none;">Close</button>
+                <!-- Akış seçimi, sadece son adımda gösterilecek -->
+                <div id="capture-mode-select" style="display:none; margin-top: 16px;">
+                    <button id="auto-capture-btn" type="button">Otomatik Capture</button>
+                    <button id="manual-capture-btn" type="button">Buton ile Capture</button>
+                </div>
             </div>
         </div>
     </div>
@@ -61,6 +66,7 @@
             <svg class="corner-bottom-right" width="30" height="30">
                 <path d="M 30 0 L 30 20 L 10 20"></path>
             </svg>
+            <div id="capture-message" class="capture-message">Hold steady, capturing...</div>
         </div>
     </div>
 
@@ -71,7 +77,7 @@
                 class="map-iframe"></iframe>
         </div>
         <div class="button-section">
-
+            <button id="manual-capture-btn-ui">Capture</button>
         </div>
 
         <div class="info-section">
@@ -99,11 +105,22 @@
 
     <div id="photo-popup"
         style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
-        <div
-            style="background:#fff; border-radius:12px; padding:24px; box-shadow:0 4px 32px #0008; display:flex; flex-direction:column; align-items:center; max-width:90vw; max-height:90vh;">
+        <div id="photo-popup-content"
+            style="background:#fff; border-radius:12px; padding:24px; box-shadow:0 4px 32px #0008; display:flex; flex-direction:column; align-items:center; max-width:90vw; max-height:90vh; min-width:320px;">
+            <!-- Büyük logo -->
+            <div id="main-logo-container" style="margin-bottom:16px;">
+                <img id="main-logo" src="https://upload.wikimedia.org/wikipedia/commons/4/44/Google-flutter-logo.svg" alt="Main Logo" style="width:96px; height:96px; object-fit:contain;" />
+            </div>
+            <!-- Küçük logo listesi -->
+            <div id="logo-list" style="display:flex; flex-direction:row; gap:16px; margin-bottom:16px;">
+                <!-- Küçük logolar buraya JS ile eklenecek -->
+            </div>
+            <!-- Eşleşme oranı -->
+            <div id="match-score" style="font-size:18px; color:#7daef1; margin-bottom:16px;"></div>
+            <!-- Capturelanan fotoğraf -->
             <img id="cropped-photo" src="" alt="Yakalanan Fotoğraf"
-                style="max-width:80vw; max-height:60vh; border-radius:8px; margin-bottom:16px;" />
-            <button onclick="document.getElementById('photo-popup').style.display='none'"
-                style="padding:10px 24px; border-radius:8px; background:#7daef1; color:#fff; border:none; font-size:16px; cursor:pointer;">Kapat</button>
+                style="max-width:80vw; max-height:30vh; border-radius:8px; margin-bottom:16px;" />
+            <!-- Onayla butonu -->
+            <button id="confirm-logo-btn" style="padding:10px 24px; border-radius:8px; background:#7daef1; color:#fff; border:none; font-size:16px; cursor:pointer;">Onayla</button>
         </div>
     </div>
