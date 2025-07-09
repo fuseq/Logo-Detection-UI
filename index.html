@@ -24,6 +24,24 @@
 
 <body style='margin: 0; overflow: hidden;'>
 
+    <!-- Notification Bar -->
+    <div id="notification-bar" class="notification-bar" style="display: none;">
+        <span>Raise your phone to scan</span>
+    </div>
+
+    <!-- Onboarding Popup -->
+    <div id="onboarding-popup" class="onboarding-popup" style="display: none;">
+        <div class="onboarding-content">
+            <div class="onboarding-logo" id="onboarding-logo"></div>
+            <div class="onboarding-title" id="onboarding-title"></div>
+            <div class="onboarding-desc" id="onboarding-desc"></div>
+            <div class="onboarding-controls">
+                <button id="onboarding-prev" style="display:none;">Back</button>
+                <button id="onboarding-next">Next</button>
+                <button id="onboarding-close" style="display:none;">Close</button>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <div id="scanArea" class="scan-area">

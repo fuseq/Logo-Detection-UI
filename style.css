@@ -350,4 +350,86 @@ button {
     background-color: #0056b3;
     box-shadow: 0 6px 15px rgba(0, 123, 255, 0.6);
 }
+
+/* Notification Bar */
+.notification-bar {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222;
+    color: #fff;
+    padding: 10px 32px;
+    border-radius: 0 0 12px 12px;
+    font-size: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    z-index: 9999;
+    opacity: 0.95;
+    animation: notif-fadein 0.7s;
+}
+@keyframes notif-fadein {
+    from { opacity: 0; top: -40px; }
+    to { opacity: 0.95; top: 0; }
+}
+
+/* Onboarding Popup */
+.onboarding-popup {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+.onboarding-content {
+    background: #fff;
+    border-radius: 18px;
+    padding: 32px 24px 24px 24px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    min-width: 320px;
+    max-width: 90vw;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.onboarding-logo {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Animasyon için alan */
+}
+.onboarding-title {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.onboarding-desc {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 24px;
+}
+.onboarding-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+.onboarding-controls button {
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: none;
+    background: #7daef1;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.onboarding-controls button:hover {
+    background: #0056b3;
+}
   
