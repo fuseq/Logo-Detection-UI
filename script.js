@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const onboardingDesc = document.getElementById('onboarding-desc');
     const onboardingPrev = document.getElementById('onboarding-prev');
     const onboardingNext = document.getElementById('onboarding-next');
-
+    const onboardingClose = document.getElementById('onboarding-close');
     const captureModeSelect = document.getElementById('capture-mode-select');
     const autoCaptureBtn = document.getElementById('auto-capture-btn');
     const manualCaptureBtn = document.getElementById('manual-capture-btn');
@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
         onboardingDesc.textContent = onboardingSteps[step].desc;
         onboardingPrev.style.display = step === 0 ? 'none' : 'inline-block';
         onboardingNext.style.display = step === onboardingSteps.length - 1 ? 'none' : 'inline-block';
+        onboardingClose.style.display = step === onboardingSteps.length - 1 ? 'inline-block' : 'none';
         // Son adımda capture mode seçimini göster
         if (step === onboardingSteps.length - 1) {
             captureModeSelect.style.display = 'flex';
@@ -64,7 +65,9 @@ document.addEventListener('DOMContentLoaded', function () {
         onboardingPopup.style.display = 'flex';
         showOnboardingStep(onboardingStep);
     }
-    
+    function closeOnboarding() {
+        onboardingPopup.style.display = 'none';
+    }
     onboardingPrev.onclick = function() {
         if (onboardingStep > 0) {
             onboardingStep--;
@@ -77,21 +80,17 @@ document.addEventListener('DOMContentLoaded', function () {
             showOnboardingStep(onboardingStep);
         }
     };
-
+    onboardingClose.onclick = closeOnboarding;
 
     autoCaptureBtn.onclick = function() {
         captureMode = 'auto';
         autoCaptureBtn.classList.add('selected');
         manualCaptureBtn.classList.remove('selected');
-        onboardingPopup.style.display = 'none'; // Seçim sonrası popup'ı kapat
-        onboardingActive = false;
     };
     manualCaptureBtn.onclick = function() {
         captureMode = 'manual';
         manualCaptureBtn.classList.add('selected');
         autoCaptureBtn.classList.remove('selected');
-        onboardingPopup.style.display = 'none'; // Seçim sonrası popup'ı kapat
-        onboardingActive = false;
     };
 
     // Telefon yukarı kaldırıldığında onboarding başlat
@@ -111,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
         onboardingPopup.style.display = 'none';
         onboardingActive = false;
     }
-
+    onboardingClose.onclick = closeOnboarding;
 
     const bottomContainer = document.querySelector('.bottom-container');
     const captureArea = document.querySelector('.scan-area');
