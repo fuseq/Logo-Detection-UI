@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let lastOrientation = { beta: 0, gamma: 0, alpha: 0 };
     let lastMotion = { x: 0, y: 0, z: 0 };
     let onboardingStep = 0;
-    let captureMode = 'auto'; // 'auto' veya 'manual'
     const onboardingSteps = [
         {
             logo: '<svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#7daef1"><animate attributeName="r" values="20;24;20" dur="1.2s" repeatCount="indefinite"/></circle></svg>',
@@ -33,11 +32,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const onboardingPrev = document.getElementById('onboarding-prev');
     const onboardingNext = document.getElementById('onboarding-next');
     const onboardingClose = document.getElementById('onboarding-close');
-    const captureModeSelect = document.getElementById('capture-mode-select');
-    const autoCaptureBtn = document.getElementById('auto-capture-btn');
-    const manualCaptureBtn = document.getElementById('manual-capture-btn');
-    const captureMessage = document.getElementById('capture-message');
-    const manualCaptureBtnUI = document.getElementById('manual-capture-btn-ui');
 
     // Bildirim barını göster
     notificationBar.style.display = 'block';
@@ -52,12 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
         onboardingPrev.style.display = step === 0 ? 'none' : 'inline-block';
         onboardingNext.style.display = step === onboardingSteps.length - 1 ? 'none' : 'inline-block';
         onboardingClose.style.display = step === onboardingSteps.length - 1 ? 'inline-block' : 'none';
-        // Son adımda capture mode seçimini göster
-        if (step === onboardingSteps.length - 1) {
-            captureModeSelect.style.display = 'flex';
-        } else {
-            captureModeSelect.style.display = 'none';
-        }
     }
 
     function openOnboarding() {
@@ -81,17 +69,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
     onboardingClose.onclick = closeOnboarding;
-
-    autoCaptureBtn.onclick = function() {
-        captureMode = 'auto';
-        autoCaptureBtn.classList.add('selected');
-        manualCaptureBtn.classList.remove('selected');
-    };
-    manualCaptureBtn.onclick = function() {
-        captureMode = 'manual';
-        manualCaptureBtn.classList.add('selected');
-        autoCaptureBtn.classList.remove('selected');
-    };
 
     // Telefon yukarı kaldırıldığında onboarding başlat
     let onboardingShown = false;
@@ -156,19 +133,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (animationStarted || photoTaken) return;
         animationStarted = true;
         if (captureArea) captureArea.classList.add('glow-active');
-        if (captureMode === 'auto') {
-            captureMessage.classList.add('active');
-            animationTimeout = setTimeout(() => {
-                takePhoto();
-                captureMessage.classList.remove('active');
-            }, 2500); // Otomatik modda süre uzatıldı
-        }
+        animationTimeout = setTimeout(() => {
+            takePhoto();
+        }, 1500);
     }
 
     function takePhoto() {
         if (photoTaken) return;
         photoTaken = true;
-        captureMessage.classList.remove('active');
         const video = document.querySelector('video');
         if (!video || video.readyState < 2) {
             alert('Kamera görüntüsü alınamıyor!');
@@ -187,55 +159,11 @@ document.addEventListener('DOMContentLoaded', function () {
         canvas.height = sh;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
-        // --- Yeni popup akışı ---
         const popup = document.getElementById('photo-popup');
         const img = document.getElementById('cropped-photo');
         img.src = canvas.toDataURL('image/png');
-        // Örnek logo ve eşleşme oranı verisi
-        const logoMatches = [
-            { src: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Google-flutter-logo.svg', name: 'Flutter', score: 0.92 },
-            { src: 'https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg', name: 'React', score: 0.85 },
-            { src: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png', name: 'JavaScript', score: 0.78 }
-        ];
-        let selectedLogoIdx = 0;
-        // Büyük logo ve skor
-        const mainLogo = document.getElementById('main-logo');
-        const matchScore = document.getElementById('match-score');
-        function updateMainLogo(idx) {
-            mainLogo.src = logoMatches[idx].src;
-            mainLogo.alt = logoMatches[idx].name;
-            matchScore.textContent = logoMatches[idx].name; // Sadece isim yaz
-            selectedLogoIdx = idx;
-        }
-        updateMainLogo(0);
-        // Küçük logo listesi
-        const logoList = document.getElementById('logo-list');
-        logoList.innerHTML = '';
-        logoMatches.forEach((logo, idx) => {
-            const btn = document.createElement('button');
-            btn.style.border = 'none';
-            btn.style.background = 'none';
-            btn.style.padding = '0';
-            btn.style.cursor = 'pointer';
-            btn.style.outline = 'none';
-            btn.innerHTML = `<img src="${logo.src}" alt="${logo.name}" style="width:48px; height:48px; border-radius:8px; border:2px solid ${idx===selectedLogoIdx?'#7daef1':'#ccc'}; margin:0;" />`;
-            btn.onclick = () => {
-                updateMainLogo(idx);
-                // Seçili olanı vurgula
-                Array.from(logoList.children).forEach((c, i) => {
-                    c.firstChild.style.border = '2px solid ' + (i===idx?'#7daef1':'#ccc');
-                });
-            };
-            logoList.appendChild(btn);
-        });
-        // Onayla butonu
-        const confirmBtn = document.getElementById('confirm-logo-btn');
-        confirmBtn.onclick = function() {
-            popup.style.display = 'none';
-            // Burada seçilen logo ile ilgili işlemler yapılabilir
-            alert('Onaylandı: ' + logoMatches[selectedLogoIdx].name);
-        };
         popup.style.display = 'flex';
+        if (captureArea) captureArea.classList.remove('glow-active');
     }
 
 
@@ -255,36 +183,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
     window.addEventListener('deviceorientation', function (event) {
-        if (onboardingActive) return;
+        if (onboardingActive) return; // Onboarding açıksa scan işlemi yapılmasın
         const pitch = getPitch(event);
         if (pitch >= 50) {
             openAR();
-            if (captureMode === 'auto') {
-                if (isDeviceStable(event)) {
-                    if (!stableStartTime) stableStartTime = Date.now();
-                    if (Date.now() - stableStartTime > 500) {
-                        startAnimation();
-                    }
-                } else {
-                    stableStartTime = null;
-                    if (captureArea) captureArea.classList.remove('glow-active');
-                    animationStarted = false;
-                    if (animationTimeout) clearTimeout(animationTimeout);
-                    captureMessage.classList.remove('active');
+            if (isDeviceStable(event)) {
+                if (!stableStartTime) stableStartTime = Date.now();
+                if (Date.now() - stableStartTime > 500) {
+                    startAnimation();
                 }
-            } else if (captureMode === 'manual') {
-                // Butonlu modda AR açık, capture alanı hazır, buton göster
-                manualCaptureBtnUI.classList.add('active');
+            } else {
+                stableStartTime = null;
+                if (captureArea) captureArea.classList.remove('glow-active');
+                animationStarted = false;
+                if (animationTimeout) clearTimeout(animationTimeout);
             }
         } else {
             closeAR();
-            manualCaptureBtnUI.classList.remove('active');
-            captureMessage.classList.remove('active');
         }
     });
-    manualCaptureBtnUI.onclick = function() {
-        if (!photoTaken && captureMode === 'manual') {
-            takePhoto();
-        }
-    };
 });

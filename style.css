@@ -433,47 +433,4 @@ button {
 .onboarding-controls button:hover {
     background: #0056b3;
 }
-
-/* Capture alanı ortasında yazı */
-.capture-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0,0,0,0.7);
-    color: #fff;
-    padding: 10px 24px;
-    border-radius: 8px;
-    font-size: 20px;
-    font-weight: 600;
-    z-index: 20;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-.capture-message.active {
-    opacity: 1;
-}
-
-/* Capture butonu alt-orta */
-#manual-capture-btn-ui {
-    position: fixed;
-    left: 50%;
-    bottom: 8%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    padding: 16px 36px;
-    background: #7daef1;
-    color: #fff;
-    border: none;
-    border-radius: 32px;
-    font-size: 20px;
-    font-weight: bold;
-    box-shadow: 0 4px 16px #0003;
-    cursor: pointer;
-    display: none;
-}
-#manual-capture-btn-ui.active {
-    display: block;
-}
   
