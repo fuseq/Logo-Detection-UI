@@ -86,11 +86,15 @@ document.addEventListener('DOMContentLoaded', function () {
         captureMode = 'auto';
         autoCaptureBtn.classList.add('selected');
         manualCaptureBtn.classList.remove('selected');
+        onboardingPopup.style.display = 'none'; // Seçim sonrası popup'ı kapat
+        onboardingActive = false;
     };
     manualCaptureBtn.onclick = function() {
         captureMode = 'manual';
         manualCaptureBtn.classList.add('selected');
         autoCaptureBtn.classList.remove('selected');
+        onboardingPopup.style.display = 'none'; // Seçim sonrası popup'ı kapat
+        onboardingActive = false;
     };
 
     // Telefon yukarı kaldırıldığında onboarding başlat
