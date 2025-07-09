@@ -310,8 +310,9 @@ button {
     width: 300px;
     height: 200px;
     border: none;
-    position: relative;
+    position: absolute;
     border-radius: 8px;
+    top: 18%;
 }
 
 /* Ortak SVG köşe stili */
