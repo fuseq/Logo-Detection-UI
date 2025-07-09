@@ -512,6 +512,14 @@ button {
     display: block;
 }
 
+#capture-mode-select {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 16px;
+}
+
 .capture-mode-btn {
     padding: 10px 20px;
     border-radius: 24px;
