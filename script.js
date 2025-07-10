@@ -319,11 +319,22 @@ document.addEventListener('DOMContentLoaded', function () {
         // Manuel çekim modu kontrolü
         if (manualCaptureMode) {
             manualCaptureButton.style.display = 'flex';
-            manualCaptureButton.onclick = takePhoto; // Click event'i ekle
+            manualCaptureButton.onclick = takePhoto;
             document.getElementById('capture-instruction').style.display = 'block';
             document.getElementById('capture-status').style.display = 'none';
+
+            // Manuel modda scan area'yı direkt aktif hale getir
+            const scanArea = document.getElementById('scanArea');
+            if (scanArea) {
+                scanArea.classList.add('glow-active');
+            }
         } else {
             manualCaptureButton.style.display = 'none';
+            // Otomatik modda başlangıçta glow-active class'ını kaldır
+            const scanArea = document.getElementById('scanArea');
+            if (scanArea) {
+                scanArea.classList.remove('glow-active');
+            }
         }
     }
 
@@ -347,7 +358,11 @@ document.addEventListener('DOMContentLoaded', function () {
         bottomContainer.style.height = '100%';
         bottomContainer.style.zIndex = '';
 
-        if (captureArea) captureArea.classList.remove('glow-active');
+        if (captureArea) {
+            if (!manualCaptureMode) {
+                captureArea.classList.remove('glow-active');
+            }
+        }
 
         // Capture ile ilgili değişkenleri sıfırla
         animationStarted = false;
