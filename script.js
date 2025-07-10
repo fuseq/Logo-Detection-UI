@@ -44,16 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const infoSection = document.querySelector('.info-section');
     const container = document.querySelector('.container');
     const manualCaptureButton = document.getElementById('manual-capture-button');
-    // ... diğer element tanımlamaları ...
-
-    if (manualCaptureButton) { // Null kontrolü ekleyelim
-        manualCaptureButton.addEventListener('click', function () {
-            alert('Butona basıldı!'); // Test için
-            takePhoto();
-        });
-    } else {
-        console.error('Manual Capture Button bulunamadı!');
-    }
     let onboardingShown = false;
 
     // Bildirim barını göster
@@ -79,6 +69,12 @@ document.addEventListener('DOMContentLoaded', function () {
             captureModeButtons.style.display = 'none';
         }
     }
+
+    document.getElementById("helpButton").addEventListener("click", function (event) {
+        event.preventDefault(); // <a> tıklamasında sayfa gitmesin
+        alert("Bu bir yardım mesajıdır!");
+        takePhoto();
+    });
 
     function openOnboarding() {
         onboardingStep = 0;
@@ -305,7 +301,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Manuel çekim butonu için event listener
     manualCaptureButton.addEventListener('click', function () {
-        alert('butona basıldı');
         takePhoto();
     });
 
