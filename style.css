@@ -97,7 +97,7 @@ button {
     bottom: calc(28vh);  /* Bottom container'ın üstünden 20px yukarıda */
     left: 50%;
     transform: translateX(-50%);
-    z-index: 1000;
+    z-index: 10;
 }
 
 .capture-button:hover {
@@ -417,7 +417,7 @@ button {
     border-radius: 0;
     font-size: 16px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-    z-index: 9999;
+    z-index: 10;
     opacity: 0.95;
     animation: notif-fadein 0.7s;
     text-align: center;
@@ -435,7 +435,7 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10000;
+    z-index: 11;
 }
 .onboarding-content {
     background: #fff;
@@ -515,7 +515,7 @@ button {
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.8);
-    z-index: 9999;
+    z-index: 11;
     display: flex;
     justify-content: center;
     align-items: center;
