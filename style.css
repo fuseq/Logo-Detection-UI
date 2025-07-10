@@ -94,7 +94,7 @@ button {
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
     position: absolute;
-    bottom: calc(38vh + 5px);  /* Bottom container'ın üstünden 20px yukarıda */
+    bottom: calc(30vh + 5px);  /* Bottom container'ın üstünden 20px yukarıda */
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
