@@ -242,7 +242,7 @@ function takePhoto() {
     arOpen = true;
     
     // Kamera container oluştur
-    const cameraContainer = document.createElement('div');
+const cameraContainer = document.createElement('div');
     cameraContainer.id = 'camera-container';
     cameraContainer.style.position = 'absolute';
     cameraContainer.style.top = '0';
@@ -251,6 +251,7 @@ function takePhoto() {
     cameraContainer.style.height = '60vh';
     cameraContainer.style.zIndex = '1';
     cameraContainer.style.overflow = 'hidden';
+    cameraContainer.style.pointerEvents = 'none';
     
     // Video elementini oluştur
     const videoElement = document.createElement('video');
@@ -258,6 +259,7 @@ function takePhoto() {
     videoElement.style.width = '100%';
     videoElement.style.height = '100%';
     videoElement.style.objectFit = 'cover';
+    videoElement.style.pointerEvents = 'none';
     videoElement.setAttribute('autoplay', '');
     videoElement.setAttribute('playsinline', ''); // iOS için gerekli
     
