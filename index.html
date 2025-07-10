@@ -17,7 +17,7 @@
     <script src="./script.js"></script>
     <link rel="stylesheet" type="text/css" href="./style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.css"
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.min.css"
         integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
 
 </head>
@@ -39,6 +39,10 @@
                 <button id="onboarding-prev" style="display:none;">Back</button>
                 <button id="onboarding-next">Next</button>
                 <button id="onboarding-close" style="display:none;">Close</button>
+                <div id="capture-mode-buttons" style="display:none;">
+                    <button id="automatic-capture-btn" class="capture-mode-btn">Automatic Capture</button>
+                    <button id="manual-capture-btn" class="capture-mode-btn">Manual Capture</button>
+                </div>
             </div>
         </div>
     </div>
@@ -61,9 +65,16 @@
             <svg class="corner-bottom-right" width="30" height="30">
                 <path d="M 30 0 L 30 20 L 10 20"></path>
             </svg>
+            <!-- Capture mesajları -->
+            <div id="capture-instruction" class="capture-instruction">Place the object in frame</div>
+            <div id="capture-status" class="capture-status" style="display: none;">Hold steady... capturing</div>
         </div>
     </div>
 
+    <!-- Manual capture button -->
+    <div id="manual-capture-button" class="manual-capture-button" style="display: none;">
+        <button><i class="fa-solid fa-camera"></i></button>
+    </div>
     <div class="bottom-container">
 
         <div class="map-section">
@@ -71,7 +82,10 @@
                 class="map-iframe"></iframe>
         </div>
         <div class="button-section">
-
+            <!-- Manuel capture için buton ekleniyor -->
+            <button id="manual-capture-button" class="capture-button" style="display: none;">
+                <i class="fa-solid fa-camera"></i>
+            </button>
         </div>
 
         <div class="info-section">
@@ -97,13 +111,37 @@
         </div>
     </div>
 
-    <div id="photo-popup"
-        style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
-        <div
-            style="background:#fff; border-radius:12px; padding:24px; box-shadow:0 4px 32px #0008; display:flex; flex-direction:column; align-items:center; max-width:90vw; max-height:90vh;">
-            <img id="cropped-photo" src="" alt="Yakalanan Fotoğraf"
-                style="max-width:80vw; max-height:60vh; border-radius:8px; margin-bottom:16px;" />
-            <button onclick="document.getElementById('photo-popup').style.display='none'"
-                style="padding:10px 24px; border-radius:8px; background:#7daef1; color:#fff; border:none; font-size:16px; cursor:pointer;">Kapat</button>
+    <!-- Capture Results Popup -->
+    <div id="capture-results-popup" style="display:none;" class="capture-results-popup">
+        <div class="results-container">
+            <div class="main-logo-container">
+                <img id="main-logo" src="" alt="Main Matched Logo" />
+            </div>
+            <div class="alternative-logos-container">
+                <!-- Alternatif logolar JavaScript ile eklenecek -->
+            </div>
+            <div class="captured-photo-container">
+                <img id="captured-photo" src="" alt="Captured Photo" />
+            </div>
+            <button id="confirm-logo-btn" class="confirm-logo-btn">Confirm</button>
         </div>
     </div>
+
+    <!-- Eski photo-popup'ı kaldıralım ve yerine yeni işlenmiş sonuçlar popup'ı ekleyelim -->
+    <div id="results-popup" class="results-popup" style="display:none;">
+        <div class="results-content">
+            <div class="main-logo-container">
+                <img id="main-logo" src="" alt="Main Logo" class="main-logo">
+            </div>
+            <div class="other-logos-container" id="other-logos-container">
+                <!-- Diğer logolar JavaScript ile eklenecek -->
+            </div>
+            <div class="captured-image-container">
+                <img id="captured-image" src="" alt="Captured Image" class="captured-image">
+            </div>
+            <button id="confirm-result-btn" class="confirm-result-btn">Confirm</button>
+        </div>
+    </div>
+</body>
+
+</html>

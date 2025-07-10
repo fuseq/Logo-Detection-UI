@@ -74,9 +74,35 @@ button {
     position: fixed;
     bottom: 12%;
     z-index: 10;
-
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+.capture-button {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #7daef1;
+    color: #7daef1;
+    font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    bottom: 5px;
+}
+
+.capture-button:hover {
+    background-color: #7daef1;
+    color: white;
+    transform: scale(1.05);
+}
+  
 .center-button {
     position: absolute;
     left: 50%;
@@ -313,6 +339,31 @@ button {
     position: absolute;
     border-radius: 8px;
     top: 18%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Capture mesaj stillemeleri */
+.capture-instruction {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    text-align: center;
+    font-weight: 500;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.capture-status {
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+    background-color: rgba(125, 174, 241, 0.4);
+    padding: 8px 15px;
+    border-radius: 20px;
+    margin-top: 10px;
 }
 
 /* Ortak SVG köşe stili */
@@ -419,6 +470,7 @@ button {
     display: flex;
     gap: 12px;
     justify-content: center;
+    flex-wrap: wrap;
 }
 .onboarding-controls button {
     padding: 8px 20px;
@@ -429,8 +481,126 @@ button {
     font-size: 15px;
     cursor: pointer;
     transition: background 0.2s;
+    position: relative;
 }
 .onboarding-controls button:hover {
     background: #0056b3;
 }
   
+#capture-mode-buttons {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.capture-mode-btn {
+    width: 100%;
+    padding: 12px 20px !important;
+    font-size: 16px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* İşlenmiş Sonuçlar Popup Stili */
+.results-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.results-content {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.main-logo-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.main-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 12px;
+    border: 2px solid #7daef1;
+    padding: 8px;
+    background-color: white;
+}
+
+.other-logos-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.other-logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.other-logo:hover {
+    border-color: #7daef1;
+    transform: scale(1.05);
+}
+
+.captured-image-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.captured-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+}
+
+.confirm-result-btn {
+    padding: 12px 30px;
+    background-color: #7daef1;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.confirm-result-btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
