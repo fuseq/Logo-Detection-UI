@@ -44,6 +44,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const infoSection = document.querySelector('.info-section');
     const container = document.querySelector('.container');
     const manualCaptureButton = document.getElementById('manual-capture-button');
+    // ... diğer element tanımlamaları ...
+
+    if (manualCaptureButton) { // Null kontrolü ekleyelim
+        manualCaptureButton.addEventListener('click', function () {
+            alert('Butona basıldı!'); // Test için
+            takePhoto();
+        });
+    } else {
+        console.error('Manual Capture Button bulunamadı!');
+    }
     let onboardingShown = false;
 
     // Bildirim barını göster
