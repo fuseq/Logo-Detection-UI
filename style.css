@@ -41,6 +41,7 @@ button {
     justify-content: center;
     transition: background-color 0.5s ease;
     /* Arka plan rengini geçişli hale getir */
+    z-index: 2;
     
 }
 
@@ -53,6 +54,7 @@ button {
     align-items: center;
     position: relative;
     /* Relative yaparak info-section ile aynı düzlemde olmasını sağlar */
+    
     
 }
 
@@ -97,6 +99,7 @@ button {
     bottom: calc(28vh);  /* Bottom container'ın üstünden 20px yukarıda */
     left: 50%;
     transform: translateX(-50%);
+    z-index: 2;
    
 }
 
