@@ -127,11 +127,10 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     function showProcessedResults(capturedImageURL) {
-        // Capture edilmiş görüntüyü ayarla
-        document.getElementById('captured-image').src = capturedImageURL;
-
-        // Ana logoyu ayarla (ilk logo varsayılan olarak seçilir)
-        document.getElementById('main-logo').src = sampleLogos[0].url;
+        // Ana logoyu ayarla
+        const mainLogo = document.getElementById('main-logo');
+        mainLogo.src = sampleLogos[0].url;
+        mainLogo.alt = sampleLogos[0].name; // Alt text'i de logo ismi olarak ayarlayalım
 
         // Diğer logoları ekle
         const otherLogosContainer = document.getElementById('other-logos-container');
@@ -149,7 +148,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Logo'ya tıklama olayı ekle
                 logoElement.addEventListener('click', function () {
                     // Tıklanan logoyu ana logo olarak ayarla
-                    document.getElementById('main-logo').src = this.src;
+                    mainLogo.src = this.src;
+                    mainLogo.alt = this.alt;
 
                     // Tıklanan logo vurgulanabilir (opsiyonel)
                     const allLogos = document.querySelectorAll('.other-logo');

@@ -577,11 +577,10 @@ button {
     padding: 24px;
     width: 90%;
     max-width: 500px;
-    max-height: 90vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-y: auto;
+    gap: 20px;
 }
 
 .main-logo-container {
@@ -650,7 +649,6 @@ button {
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
-    margin-top: 10px;
 }
 
 .confirm-result-btn:hover {
