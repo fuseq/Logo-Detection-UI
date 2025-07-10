@@ -197,71 +197,103 @@ function takePhoto() {
     if (photoTaken) return;
     photoTaken = true;
 
-    const video = document.querySelector('video');
-    if (!video || video.readyState < 2) {
+    const video = document.getElementById('camera-view');
+    if (!video || !video.srcObject) {
         alert('Kamera görüntüsü alınamıyor!');
         return;
     }
 
-    const captureArea = document.getElementById('scanArea'); // Get captureArea here
+    const captureArea = document.getElementById('scanArea');
     const capRect = captureArea.getBoundingClientRect();
     const videoRect = video.getBoundingClientRect();
 
-    // Calculate the scaling factors between the displayed video size and its intrinsic size
+    // Görüntü oranını hesapla
     const scaleX = video.videoWidth / videoRect.width;
     const scaleY = video.videoHeight / videoRect.height;
 
-    // Calculate the source x, y, width, and height for drawing from the video
-    // These need to be relative to the video's top-left corner in its intrinsic pixel space
+    // Kırpılacak alanı hesapla
     const sx = (capRect.left - videoRect.left) * scaleX;
     const sy = (capRect.top - videoRect.top) * scaleY;
     const sw = capRect.width * scaleX;
     const sh = capRect.height * scaleY;
 
-    // Create a temporary canvas to draw the cropped image
+    // Geçici canvas oluştur
     const canvas = document.createElement('canvas');
     canvas.width = sw;
     canvas.height = sh;
     const ctx = canvas.getContext('2d');
 
-    // Draw the specific portion of the video onto the canvas
+    // Videodan belirli bir bölümü canvas'a çiz
     ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
 
-    // Show the processed results with the captured image
+    // İşlenmiş sonuçları göster
     showProcessedResults(canvas.toDataURL('image/png'));
 
-    // Reset UI elements after capture
+    // UI elementlerini sıfırla
     if (captureArea) {
         captureArea.classList.remove('glow-active');
         document.getElementById('capture-status').style.display = 'none';
         document.getElementById('capture-instruction').style.display = 'block';
     }
-
-    // Reset photoTaken state if you want to allow multiple captures without page refresh
-    // For this demo, we'll keep it true until AR is closed.
-    // photoTaken = false;
 }
 
-  function openAR() {
+   function openAR() {
     if (arOpen) return;
     arOpen = true;
-
-    const aScene = document.createElement('a-scene');
-    aScene.setAttribute('vr-mode-ui', 'enabled: false');
-    aScene.style.position = 'absolute';
-    aScene.style.top = '0';
-    aScene.style.left = '0';
-    aScene.style.width = '100%';
-    aScene.style.height = '60vh';
-    aScene.style.zIndex = '1';
-    aScene.setAttribute('embedded', '');
-    aScene.id = 'ar-scene';
-    aScene.style.pointerEvents = 'none'; 
-
-    document.body.appendChild(aScene);
+    
+    // Kamera container oluştur
+    const cameraContainer = document.createElement('div');
+    cameraContainer.id = 'camera-container';
+    cameraContainer.style.position = 'absolute';
+    cameraContainer.style.top = '0';
+    cameraContainer.style.left = '0';
+    cameraContainer.style.width = '100%';
+    cameraContainer.style.height = '60vh';
+    cameraContainer.style.zIndex = '1';
+    cameraContainer.style.overflow = 'hidden';
+    
+    // Video elementini oluştur
+    const videoElement = document.createElement('video');
+    videoElement.id = 'camera-view';
+    videoElement.style.width = '100%';
+    videoElement.style.height = '100%';
+    videoElement.style.objectFit = 'cover';
+    videoElement.setAttribute('autoplay', '');
+    videoElement.setAttribute('playsinline', ''); // iOS için gerekli
+    
+    cameraContainer.appendChild(videoElement);
+    document.body.appendChild(cameraContainer);
+    
+    // Kamerayı başlat
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ 
+            video: { 
+                facingMode: { exact: "environment" } // Arka kamerayı kullan
+            } 
+        })
+        .then(function(stream) {
+            videoElement.srcObject = stream;
+            window.localStream = stream; // Daha sonra kapatabilmek için stream'i sakla
+        })
+        .catch(function(error) {
+            console.error("Kamera erişim hatası:", error);
+            // Ön kamerayı deneyebiliriz arka kamera yoksa
+            navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                videoElement.srcObject = stream;
+                window.localStream = stream;
+            })
+            .catch(function(err) {
+                console.error("Hiçbir kameraya erişilemiyor:", err);
+                closeAR(); // Kamera açılamazsa AR modunu kapat
+            });
+        });
+    }
+    
     bottomContainer.style.height = '40%';
-    if (container) container.style.zIndex = '100'; // Bu muhtemelen scanArea'yı öne alıyor
+    if (container) container.style.zIndex = '100';
 
+    // Manuel çekim modu ise butonu göster
     if (manualCaptureMode) {
         manualCaptureButton.style.display = 'flex';
         document.getElementById('capture-instruction').style.display = 'block';
@@ -271,33 +303,36 @@ function takePhoto() {
     }
 }
 
-    function closeAR() {
-        if (!arOpen) return;
-        arOpen = false;
-        const aScene = document.getElementById('ar-scene');
-        if (aScene) aScene.remove();
-        bottomContainer.style.height = '100%';
-        if (container) container.style.zIndex = '';
-        if (captureArea) captureArea.classList.remove('glow-active');
-
-        // Capture ile ilgili değişkenleri sıfırla
-        animationStarted = false;
-        photoTaken = false;
-        stableStartTime = null;
-        if (animationTimeout) clearTimeout(animationTimeout);
-
-        // Manuel çekim butonunu gizle
-        manualCaptureButton.style.display = 'none';
-
-        // Mesajları sıfırla
-        document.getElementById('capture-status').style.display = 'none';
-        document.getElementById('capture-instruction').style.display = 'block';
+  function closeAR() {
+    if (!arOpen) return;
+    arOpen = false;
+    
+    // Kamera stream'ini kapat
+    if (window.localStream) {
+        window.localStream.getTracks().forEach(track => track.stop());
     }
+    
+    // Kamera container'ını kaldır
+    const cameraContainer = document.getElementById('camera-container');
+    if (cameraContainer) cameraContainer.remove();
+    
+    bottomContainer.style.height = '100%';
+    if (container) container.style.zIndex = '';
+    if (captureArea) captureArea.classList.remove('glow-active');
 
-    // Manuel çekim butonu için event listener
-    manualCaptureButton.addEventListener('click', function() {
-        takePhoto();
-    });
+    // Capture ile ilgili değişkenleri sıfırla
+    animationStarted = false;
+    photoTaken = false;
+    stableStartTime = null;
+    if (animationTimeout) clearTimeout(animationTimeout);
+
+    // Manuel çekim butonunu gizle
+    manualCaptureButton.style.display = 'none';
+
+    // Mesajları sıfırla
+    document.getElementById('capture-status').style.display = 'none';
+    document.getElementById('capture-instruction').style.display = 'block';
+}
 
     function isDeviceStable(event) {
         const threshold = 1.3; 
