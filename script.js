@@ -295,6 +295,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Manuel çekim butonu için event listener
     manualCaptureButton.addEventListener('click', function () {
+        alert('butona basıldı');
         takePhoto();
     });
 
