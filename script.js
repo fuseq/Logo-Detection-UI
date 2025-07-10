@@ -120,10 +120,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Örnek logo verileri - gerçek uygulamada bu API'den veya başka bir kaynaktan gelecektir
     const sampleLogos = [
-        { id: 1, url: 'https://picsum.photos/200/300', name: 'InMapper' },
-        { id: 2, url: 'https://picsum.photos/200/300', name: 'Logo 2' },
-        { id: 3, url: 'https://picsum.photos/200/300', name: 'Logo 3' },
-        { id: 4, url: 'https://picsum.photos/200/300', name: 'Logo 4' },
+        { id: 1, url: './assets/logo1.png', name: 'InMapper' },
+        { id: 2, url: './assets/logo2.png', name: 'Logo 2' },
+        { id: 3, url: './assets/logo3.png', name: 'Logo 3' },
+        { id: 4, url: './assets/logo4.png', name: 'Logo 4' },
     ];
 
     function showProcessedResults(capturedImageURL) {
@@ -133,20 +133,25 @@ document.addEventListener('DOMContentLoaded', function () {
         // Ana logoyu ayarla
         const mainLogo = document.getElementById('main-logo');
         if (mainLogo) {
-            mainLogo.src = sampleLogos[0].url;
-            mainLogo.alt = sampleLogos[0].name;
+            // Önce test amaçlı sabit bir resim URL'si deneyelim
+            mainLogo.src = './assets/inmapper-1.png'; // veya assets klasöründeki herhangi bir resim
 
-            // Resim yüklenme hatası için
-            mainLogo.onerror = function () {
-                alert("Main logo yüklenemedi. URL: " + this.src);
-            };
+            // Style özelliklerini JavaScript ile de ayarlayalım
+            mainLogo.style.display = 'block';
+            mainLogo.style.visibility = 'visible';
+            mainLogo.style.opacity = '1';
+            mainLogo.style.width = '120px';
+            mainLogo.style.height = '120px';
 
-            // Resim yüklendiğinde
             mainLogo.onload = function () {
-                alert("Main logo başarıyla yüklendi");
+                alert("Main logo yüklendi - Boyutlar: " +
+                    this.naturalWidth + "x" + this.naturalHeight +
+                    " - Görünür mü: " + this.offsetWidth);
             };
-        } else {
-            alert("Main logo elementi bulunamadı!");
+
+            mainLogo.onerror = function () {
+                alert("Main logo yüklenemedi: " + this.src);
+            };
         }
 
         // Diğer logoları ekle

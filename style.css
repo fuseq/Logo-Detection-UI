@@ -93,23 +93,28 @@ button {
     cursor: pointer;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
-    position: fixed; /* absolute yerine fixed kullanıyoruz */
+    position: fixed;
+    /* absolute yerine fixed kullanıyoruz */
     bottom: calc(28vh);
     left: 50%;
-    transform: translateX(-50%) !important; 
+    transform: translateX(-50%) !important;
     z-index: 30;
-    margin: 0; /* Margin'leri sıfırlayalım */
-    padding: 0; /* Padding'leri sıfırlayalım */
+    margin: 0;
+    /* Margin'leri sıfırlayalım */
+    padding: 0;
+    /* Padding'leri sıfırlayalım */
 }
 
 .capture-button:hover {
     background-color: #7daef1;
     color: white;
-    transform: translateX(-50%) !important; /* Hover durumunda da aynı transform'u koruyalım */
+    transform: translateX(-50%) !important;
+    /* Hover durumunda da aynı transform'u koruyalım */
 }
 
 .capture-button:active {
-    transform: translateX(-50%) !important; /* Tıklama durumunda da aynı transform'u koruyalım */
+    transform: translateX(-50%) !important;
+    /* Tıklama durumunda da aynı transform'u koruyalım */
     background-color: #6b9dd8;
 }
 
@@ -585,9 +590,14 @@ button {
 
 .main-logo-container {
     width: 100%;
+    min-height: 120px;
+    /* Minimum yükseklik tanımlayalım */
     display: flex;
     justify-content: center;
+    align-items: center;
     margin-bottom: 20px;
+    background: #fff;
+    /* Arka plan rengi ekleyelim */
 }
 
 .main-logo {
@@ -598,6 +608,12 @@ button {
     border: 2px solid #7daef1;
     padding: 8px;
     background-color: white;
+    display: block !important;
+    /* Görünürlüğü zorlayalım */
+    opacity: 1 !important;
+    /* Opaklığı zorlayalım */
+    visibility: visible !important;
+    /* Görünürlüğü zorlayalım */
 }
 
 .other-logos-container {
