@@ -101,32 +101,19 @@
         </div>
     </div>
 
-    <!-- Capture Results Popup -->
-    <div id="capture-results-popup" style="display:none;" class="capture-results-popup">
-        <div class="results-container">
-            <div class="main-logo-container">
-                <img id="main-logo" src="" alt="Main Matched Logo" />
-            </div>
-            <div class="alternative-logos-container">
-                <!-- Alternatif logolar JavaScript ile eklenecek -->
-            </div>
-            <div class="captured-photo-container">
-                <img id="captured-photo" src="" alt="Captured Photo" />
-            </div>
-            <button id="confirm-logo-btn" class="confirm-logo-btn">Confirm</button>
-        </div>
-    </div>
+
 
     <!-- Eski photo-popup'ı kaldıralım ve yerine yeni işlenmiş sonuçlar popup'ı ekleyelim -->
     <div id="results-popup" class="results-popup" style="display:none;">
         <div class="results-content">
             <div class="main-logo-container">
-                <!-- style attribute ekleyerek test edelim -->
-                <img id="main-logo" class="main-logo" src="" alt="Main Logo"
-                    style="width: 120px; height: 120px; display: block; visibility: visible;">
+                <img id="main-logo" src="" alt="Main Logo" class="main-logo">
             </div>
             <div class="other-logos-container" id="other-logos-container">
                 <!-- Diğer logolar JavaScript ile eklenecek -->
+            </div>
+            <div class="captured-image-container">
+                <img id="captured-image" src="" alt="Captured Image" class="captured-image">
             </div>
             <button id="confirm-result-btn" class="confirm-result-btn">Confirm</button>
         </div>

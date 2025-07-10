@@ -133,25 +133,20 @@ document.addEventListener('DOMContentLoaded', function () {
         // Ana logoyu ayarla
         const mainLogo = document.getElementById('main-logo');
         if (mainLogo) {
-            // Önce test amaçlı sabit bir resim URL'si deneyelim
-            mainLogo.src = './assets/inmapper-1.png'; // veya assets klasöründeki herhangi bir resim
+            mainLogo.src = sampleLogos[0].url;
+            mainLogo.alt = sampleLogos[0].name;
 
-            // Style özelliklerini JavaScript ile de ayarlayalım
-            mainLogo.style.display = 'block';
-            mainLogo.style.visibility = 'visible';
-            mainLogo.style.opacity = '1';
-            mainLogo.style.width = '120px';
-            mainLogo.style.height = '120px';
-
-            mainLogo.onload = function () {
-                alert("Main logo yüklendi - Boyutlar: " +
-                    this.naturalWidth + "x" + this.naturalHeight +
-                    " - Görünür mü: " + this.offsetWidth);
-            };
-
+            // Resim yüklenme hatası için
             mainLogo.onerror = function () {
-                alert("Main logo yüklenemedi: " + this.src);
+                alert("Main logo yüklenemedi. URL: " + this.src);
             };
+
+            // Resim yüklendiğinde
+            mainLogo.onload = function () {
+                alert("Main logo başarıyla yüklendi");
+            };
+        } else {
+            alert("Main logo elementi bulunamadı!");
         }
 
         // Diğer logoları ekle
