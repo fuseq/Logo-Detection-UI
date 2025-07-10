@@ -21,6 +21,13 @@ label {
 }
 
 
+button {
+    position: absolute;
+    bottom: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
 /* style.css */
 .bottom-container {
     position: absolute;
@@ -70,7 +77,6 @@ label {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10;
 }
 
 .capture-button {
@@ -81,27 +87,25 @@ label {
     border: 2px solid #7daef1;
     color: #7daef1;
     font-size: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
     cursor: pointer;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
     position: absolute;
-    bottom: calc(28vh);
-    /* Bottom container'ın üstünden 20px yukarıda */
+    bottom: calc(28vh);  /* Bottom container'ın üstünden 20px yukarıda */
     left: 50%;
     transform: translateX(-50%);
-    z-index: 10;
+    z-index: 1000;
 }
 
 .capture-button:hover {
     background-color: #7daef1;
     color: white;
     transform: scale(1.05);
-    z-index: 10;
 }
-
+  
 .center-button {
     position: absolute;
     left: 50%;
@@ -133,7 +137,6 @@ label {
     transform: skewX(-45deg);
     animation: shine 2s infinite;
     /* 2 saniyelik sürekli animasyon */
-     z-index: 10;
 }
 
 @keyframes shine {
@@ -153,12 +156,10 @@ label {
     /* Resmin genişliği */
     height: 20px;
     /* Resmin yüksekliği */
-     z-index: 10;
 }
 
 .center-button:hover {
     background-color: rgba(0, 0, 0, 0.1);
-     z-index: 10;
 }
 
 .right-button {
@@ -219,7 +220,6 @@ label {
     align-items: center;
     font-weight: 600;
     font-size: 16px;
-     z-index: 10;
 }
 
 .destination {
@@ -228,7 +228,6 @@ label {
     /* Dikeyde ortala */
     gap: 5px;
     /* Resim ve yazı arasına boşluk ekle */
-     z-index: 10;
 }
 
 .time-info {
@@ -237,7 +236,6 @@ label {
     font-size: 14px;
     color: #333;
     /* Koyu gri renk */
-     z-index: 10;
 }
 
 .image-button {
@@ -300,7 +298,6 @@ label {
 .circular-icon-button i {
     font-size: 20px;
     /* İkon boyutunu küçültür */
-     z-index: 10;
 }
 
 .circular-icon-button:hover {
@@ -308,7 +305,6 @@ label {
     /* Hover arka plan rengi */
     border-color: #666;
     /* Hover kenarlık rengi */
-     z-index: 10;
 }
 
 .image-button img {
@@ -318,26 +314,24 @@ label {
     /* Resmin yüksekliğini kapsayıcıya göre ayarlar */
     object-fit: cover;
     /* Resmin kapsayıcıyı doldurmasını sağlar */
-     z-index: 10;
 }
 
 
 
 .time-info i {
     margin-right: 5px;
-     z-index: 10;
 }
 
 .container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
 }
 
 /* Tarama alanı stilini tanımla */
@@ -352,7 +346,6 @@ label {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-     z-index: 10;
 }
 
 /* Capture mesaj stillemeleri */
@@ -362,7 +355,6 @@ label {
     text-align: center;
     font-weight: 500;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-     z-index: 10;
 }
 
 .capture-status {
@@ -375,14 +367,12 @@ label {
     padding: 8px 15px;
     border-radius: 20px;
     margin-top: 10px;
-     z-index: 10;
 }
 
 /* Ortak SVG köşe stili */
 .scan-area svg {
     position: absolute;
     overflow: visible;
-     z-index: 10;
 }
 
 /* SVG yolları (path) için varsayılan stil */
@@ -395,7 +385,6 @@ label {
     stroke-linecap: round;
     stroke-linejoin: round;
     transition: stroke 0.3s ease-in-out, filter 0.3s ease-in-out, opacity 0.3s ease-in-out;
-     z-index: 10;
 }
 
 /* glow-active sınıfı eklendiğinde path stili */
@@ -403,29 +392,13 @@ label {
     stroke: white;
     filter: drop-shadow(0 0 8px white);
     opacity: 0.8;
-     z-index: 10;
 }
 
 /* Köşe SVG'lerinin konumları */
-.corner-top-left {
-    top: -10px;
-    left: -10px;
-}
-
-.corner-top-right {
-    top: -10px;
-    right: -10px;
-}
-
-.corner-bottom-left {
-    bottom: -10px;
-    left: -10px;
-}
-
-.corner-bottom-right {
-    bottom: -10px;
-    right: -10px;
-}
+.corner-top-left { top: -10px; left: -10px; }
+.corner-top-right { top: -10px; right: -10px; }
+.corner-bottom-left { bottom: -10px; left: -10px; }
+.corner-bottom-right { bottom: -10px; right: -10px; }
 
 .glow-button:hover {
     background-color: #0056b3;
@@ -443,44 +416,32 @@ label {
     padding: 10px 32px;
     border-radius: 0;
     font-size: 16px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
-    z-index: 10;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+    z-index: 9999;
     opacity: 0.95;
     animation: notif-fadein 0.7s;
     text-align: center;
 }
-
 @keyframes notif-fadein {
-    from {
-        opacity: 0;
-        top: -40px;
-    }
-
-    to {
-        opacity: 0.95;
-        top: 0;
-    }
+    from { opacity: 0; top: -40px; }
+    to { opacity: 0.95; top: 0; }
 }
 
 /* Onboarding Popup */
 .onboarding-popup {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.55);
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.55);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 11;
+    z-index: 10000;
 }
-
 .onboarding-content {
     background: #fff;
     border-radius: 18px;
     padding: 32px 24px 24px 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
     min-width: 320px;
     max-width: 90vw;
     text-align: center;
@@ -489,7 +450,6 @@ label {
     flex-direction: column;
     align-items: center;
 }
-
 .onboarding-logo {
     width: 64px;
     height: 64px;
@@ -499,26 +459,22 @@ label {
     justify-content: center;
     /* Animasyon için alan */
 }
-
 .onboarding-title {
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 10px;
 }
-
 .onboarding-desc {
     font-size: 16px;
     color: #444;
     margin-bottom: 24px;
 }
-
 .onboarding-controls {
     display: flex;
     gap: 12px;
     justify-content: center;
     flex-wrap: wrap;
 }
-
 .onboarding-controls button {
     padding: 8px 20px;
     border-radius: 8px;
@@ -530,11 +486,10 @@ label {
     transition: background 0.2s;
     position: relative;
 }
-
 .onboarding-controls button:hover {
     background: #0056b3;
 }
-
+  
 #capture-mode-buttons {
     display: none;
     flex-direction: column;
@@ -560,7 +515,7 @@ label {
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.8);
-    z-index: 11;
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -577,7 +532,6 @@ label {
     flex-direction: column;
     align-items: center;
     overflow-y: auto;
-    z-index: 11;
 }
 
 .main-logo-container {
@@ -585,7 +539,6 @@ label {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
-    z-index: 11;
 }
 
 .main-logo {
@@ -596,7 +549,6 @@ label {
     border: 2px solid #7daef1;
     padding: 8px;
     background-color: white;
-    z-index: 11;
 }
 
 .other-logos-container {
@@ -606,7 +558,6 @@ label {
     gap: 10px;
     margin-bottom: 20px;
     width: 100%;
-    z-index: 11;
 }
 
 .other-logo {
@@ -618,13 +569,11 @@ label {
     padding: 5px;
     cursor: pointer;
     transition: all 0.2s ease;
-    z-index: 11;
 }
 
 .other-logo:hover {
     border-color: #7daef1;
     transform: scale(1.05);
-    z-index: 11;
 }
 
 .captured-image-container {
@@ -632,7 +581,6 @@ label {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
-    z-index: 11;
 }
 
 .captured-image {
@@ -640,7 +588,6 @@ label {
     max-height: 200px;
     border-radius: 12px;
     border: 1px solid #ddd;
-    z-index: 11;
 }
 
 .confirm-result-btn {
@@ -654,11 +601,10 @@ label {
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 10px;
-    z-index: 11;
 }
 
 .confirm-result-btn:hover {
     background-color: #0056b3;
     transform: scale(1.05);
-    z-index: 11;
 }
+
