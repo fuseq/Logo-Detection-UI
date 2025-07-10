@@ -120,24 +120,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Örnek logo verileri - gerçek uygulamada bu API'den veya başka bir kaynaktan gelecektir
     const sampleLogos = [
-        { id: 1, url: 'assets/logo1.png', name: 'Logo 1' },
-        { id: 2, url: 'assets/logo2.png', name: 'Logo 2' },
-        { id: 3, url: 'assets/logo3.png', name: 'Logo 3' },
-        { id: 4, url: 'assets/logo4.png', name: 'Logo 4' },
+        { id: 1, url: 'https://picsum.photos/200/300', name: 'InMapper' },
+        { id: 2, url: 'https://picsum.photos/200/300', name: 'Logo 2' },
+        { id: 3, url: 'https://picsum.photos/200/300', name: 'Logo 3' },
+        { id: 4, url: 'https://picsum.photos/200/300', name: 'Logo 4' },
     ];
 
     function showProcessedResults(capturedImageURL) {
+        // Debug için alert ekleyelim
+        alert("Main logo yükleniyor: " + sampleLogos[0].url);
+
         // Ana logoyu ayarla
         const mainLogo = document.getElementById('main-logo');
-        mainLogo.src = sampleLogos[0].url;
-        mainLogo.alt = sampleLogos[0].name; // Alt text'i de logo ismi olarak ayarlayalım
+        if (mainLogo) {
+            mainLogo.src = sampleLogos[0].url;
+            mainLogo.alt = sampleLogos[0].name;
+
+            // Resim yüklenme hatası için
+            mainLogo.onerror = function () {
+                alert("Main logo yüklenemedi. URL: " + this.src);
+            };
+
+            // Resim yüklendiğinde
+            mainLogo.onload = function () {
+                alert("Main logo başarıyla yüklendi");
+            };
+        } else {
+            alert("Main logo elementi bulunamadı!");
+        }
 
         // Diğer logoları ekle
         const otherLogosContainer = document.getElementById('other-logos-container');
+        if (!otherLogosContainer) {
+            alert("Other logos container bulunamadı!");
+            return;
+        }
         otherLogosContainer.innerHTML = '';
 
         sampleLogos.forEach((logo, index) => {
-            // Birincisi hariç diğer tüm logoları listele
             if (index > 0) {
                 const logoElement = document.createElement('img');
                 logoElement.src = logo.url;
@@ -147,11 +167,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Logo'ya tıklama olayı ekle
                 logoElement.addEventListener('click', function () {
-                    // Tıklanan logoyu ana logo olarak ayarla
                     mainLogo.src = this.src;
                     mainLogo.alt = this.alt;
+                    alert("Ana logo değiştirildi: " + this.src);
 
-                    // Tıklanan logo vurgulanabilir (opsiyonel)
                     const allLogos = document.querySelectorAll('.other-logo');
                     allLogos.forEach(l => l.style.borderColor = '#ddd');
                     this.style.borderColor = '#7daef1';
@@ -160,18 +179,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 otherLogosContainer.appendChild(logoElement);
             }
         });
-
-        // Onay butonu olayı
-        document.getElementById('confirm-result-btn').onclick = function () {
-            // Seçilen logoyla ilgili işlemler yapılabilir
-            // Örneğin: seçilen logoyu bir değişkende sakla, sunucuya gönder vb.
-
-            // Popup'ı kapat
-            document.getElementById('results-popup').style.display = 'none';
-
-            // AR modu kapat
-            closeAR();
-        };
 
         // Popup'ı göster
         document.getElementById('results-popup').style.display = 'flex';
