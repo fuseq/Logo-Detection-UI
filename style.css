@@ -438,7 +438,7 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+    z-index: 3;
     
 }
 .onboarding-content {
@@ -519,7 +519,7 @@ button {
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.8);
-
+    z-index: 3;
     display: flex;
     justify-content: center;
     align-items: center;
