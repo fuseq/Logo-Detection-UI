@@ -41,8 +41,7 @@ button {
     justify-content: center;
     transition: background-color 0.5s ease;
     /* Arka plan rengini geçişli hale getir */
-    z-index: 2;
-    
+    z-index: 10;
 }
 
 .map-section {
@@ -54,14 +53,13 @@ button {
     align-items: center;
     position: relative;
     /* Relative yaparak info-section ile aynı düzlemde olmasını sağlar */
-    
-    
+    z-index: 10;
 }
 
 .map-iframe {
     width: 100%;
     height: 100%;
-    
+    z-index: 10;
 }
 
 .bottom-container,
@@ -75,7 +73,7 @@ button {
     width: 100%;
     position: fixed;
     bottom: 12%;
-   
+    z-index: 10;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -99,8 +97,7 @@ button {
     bottom: calc(28vh);  /* Bottom container'ın üstünden 20px yukarıda */
     left: 50%;
     transform: translateX(-50%);
-    z-index: 2;
-   
+    z-index: 1000;
 }
 
 .capture-button:hover {
@@ -125,7 +122,7 @@ button {
     color: white;
     overflow: hidden;
     /* Shine efektinin dışa taşmasını engeller */
- 
+    z-index: 10;
 
 }
 
@@ -177,7 +174,7 @@ button {
     display: none;
     border: 1px solid #e0e0e0;
     cursor: pointer;
-
+    z-index: 10;
 
 }
 
@@ -204,7 +201,7 @@ button {
     background-color: #fff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     /* Gölge efekti */
-   
+    z-index: 10;
 }
 
 
@@ -214,7 +211,7 @@ button {
     border: none;
     font-size: 24px;
     cursor: pointer;
-    
+    z-index: 10;
 }
 
 .destination {
@@ -262,7 +259,7 @@ button {
     /* Hover efektleri için geçiş */
     text-decoration: none;
     /* Link alt çizgisi kaldırır */
-   
+    z-index: 10;
 }
 
 .icon-buttons-container {
@@ -270,7 +267,7 @@ button {
     /* Butonları yatayda hizalar */
     gap: 10px;
     /* Butonlar arasına boşluk ekler */
-   
+    z-index: 10;
 }
 
 .circular-icon-button {
@@ -295,7 +292,7 @@ button {
     /* Hover efektleri için geçiş */
     color: black;
     /* İkon rengi */
-   
+    z-index: 10;
 }
 
 .circular-icon-button i {
@@ -334,7 +331,7 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
- 
+  z-index: 10;
 }
 
 /* Tarama alanı stilini tanımla */
@@ -420,7 +417,7 @@ button {
     border-radius: 0;
     font-size: 16px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-   
+    z-index: 9999;
     opacity: 0.95;
     animation: notif-fadein 0.7s;
     text-align: center;
@@ -438,8 +435,7 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 3;
-    
+    z-index: 10000;
 }
 .onboarding-content {
     background: #fff;
@@ -519,7 +515,7 @@ button {
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.8);
-    z-index: 3;
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
