@@ -127,8 +127,6 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     function showProcessedResults(capturedImageURL) {
-        // Debug için alert ekleyelim
-
 
         // Ana logoyu ayarla
         const mainLogo = document.getElementById('main-logo');
@@ -165,7 +163,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 logoElement.className = 'other-logo';
                 logoElement.dataset.id = logo.id;
 
-                // Logo'ya tıklama olayı ekle
                 logoElement.addEventListener('click', function () {
                     mainLogo.src = this.src;
                     mainLogo.alt = this.alt;
@@ -180,23 +177,30 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Popup'ı göster
         document.getElementById('results-popup').style.display = 'flex';
-
-        // Onay butonu olayı
         document.getElementById('confirm-result-btn').onclick = function () {
-            // Seçilen logoyla ilgili işlemler yapılabilir
-            // Örneğin: seçilen logoyu bir değişkende sakla, sunucuya gönder vb.
-
-            // Popup'ı kapat
             document.getElementById('results-popup').style.display = 'none';
 
-            // AR modu kapat
-            closeAR();
+            animationStarted = false;
+            photoTaken = false;
+            stableStartTime = null;
+            if (animationTimeout) clearTimeout(animationTimeout);
+
+            const scanArea = document.getElementById('scanArea');
+            if (scanArea) {
+                if (manualCaptureMode) {
+                    scanArea.classList.add('glow-active');
+                } else {
+                    scanArea.classList.remove('glow-active');
+                }
+            }
+            
+            document.getElementById('capture-status').style.display = 'none';
+            document.getElementById('capture-instruction').style.display = 'block';
         };
     }
 
-    // Sonrasındaki fonksiyonları güncelleyelim
+
     function startAnimation() {
         if (animationStarted || photoTaken) return;
         animationStarted = true;
@@ -206,10 +210,9 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('capture-status').style.display = 'block';
         }
 
-        // Sabit tutma süresini 3 saniyeye uzattık (önceden 1.5 saniyeydi)
         animationTimeout = setTimeout(() => {
             takePhoto();
-        }, 3000);
+        }, 1500);
     }
 
 
@@ -227,29 +230,26 @@ document.addEventListener('DOMContentLoaded', function () {
         const capRect = captureArea.getBoundingClientRect();
         const videoRect = video.getBoundingClientRect();
 
-        // Görüntü oranını hesapla
+
         const scaleX = video.videoWidth / videoRect.width;
         const scaleY = video.videoHeight / videoRect.height;
 
-        // Kırpılacak alanı hesapla
+
         const sx = (capRect.left - videoRect.left) * scaleX;
         const sy = (capRect.top - videoRect.top) * scaleY;
         const sw = capRect.width * scaleX;
         const sh = capRect.height * scaleY;
 
-        // Geçici canvas oluştur
+
         const canvas = document.createElement('canvas');
         canvas.width = sw;
         canvas.height = sh;
         const ctx = canvas.getContext('2d');
 
-        // Videodan belirli bir bölümü canvas'a çiz
         ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
 
-        // İşlenmiş sonuçları göster
         showProcessedResults(canvas.toDataURL('image/png'));
 
-        // UI elementlerini sıfırla
         if (captureArea) {
             captureArea.classList.remove('glow-active');
             document.getElementById('capture-status').style.display = 'none';
@@ -261,10 +261,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (arOpen) return;
         arOpen = true;
 
-        // Container'ı body yerine container div'inin içine ekleyelim
         const container = document.querySelector('.container');
 
-        // Kamera container oluştur
         const cameraContainer = document.createElement('div');
         cameraContainer.id = 'camera-container';
         cameraContainer.style.cssText = `
@@ -278,7 +276,6 @@ document.addEventListener('DOMContentLoaded', function () {
         pointer-events: none;
     `;
 
-        // Video elementini oluştur
         const videoElement = document.createElement('video');
         videoElement.id = 'camera-view';
         videoElement.style.cssText = `
@@ -291,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function () {
         videoElement.setAttribute('playsinline', '');
 
         cameraContainer.appendChild(videoElement);
-        container.appendChild(cameraContainer); // body yerine container'a ekliyoruz
+        container.appendChild(cameraContainer);
 
         // Diğer elementlerin z-index değerlerini güncelle
         const bottomContainer = document.querySelector('.bottom-container');
@@ -411,17 +408,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.addEventListener('deviceorientation', function (event) {
-        if (onboardingActive) return; // Onboarding açıksa scan işlemi yapılmasın
+        if (onboardingActive) return;
         const pitch = getPitch(event);
         if (pitch >= 50) {
             openAR();
 
-            // Manuel çekim modunda otomatik yakalama yapma
+
             if (!manualCaptureMode) {
                 if (isDeviceStable(event)) {
                     if (!stableStartTime) stableStartTime = Date.now();
-                    // Sabit tutma süresini 1 saniyeye uzattık (önceden 500ms idi)
-                    if (Date.now() - stableStartTime > 1000) {
+
+                    if (Date.now() - stableStartTime > 500) {
                         startAnimation();
                     }
                 } else {
