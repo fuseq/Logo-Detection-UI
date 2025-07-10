@@ -237,7 +237,6 @@ document.addEventListener('DOMContentLoaded', function () {
         aScene.style.width = '100%';
         aScene.style.height = '60vh'; 
         aScene.style.zIndex = '1';
-        
         aScene.setAttribute('embedded', '');
         aScene.id = 'ar-scene';
         document.body.appendChild(aScene);
