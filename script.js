@@ -193,6 +193,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 3000);
     }
 
+
     function takePhoto() {
         if (photoTaken) return;
         photoTaken = true;
@@ -318,6 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Manuel çekim modu kontrolü
         if (manualCaptureMode) {
             manualCaptureButton.style.display = 'flex';
+            manualCaptureButton.onclick = takePhoto; // Click event'i ekle
             document.getElementById('capture-instruction').style.display = 'block';
             document.getElementById('capture-status').style.display = 'none';
         } else {

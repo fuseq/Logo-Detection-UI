@@ -93,18 +93,24 @@ button {
     cursor: pointer;
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
-    position: absolute;
+    position: fixed; /* absolute yerine fixed kullanıyoruz */
     bottom: calc(28vh);
-    /* Bottom container'ın üstünden 20px yukarıda */
     left: 50%;
-    transform: translateX(-50%);
-    z-index: 40;
+    transform: translateX(-50%) !important; 
+    z-index: 30;
+    margin: 0; /* Margin'leri sıfırlayalım */
+    padding: 0; /* Padding'leri sıfırlayalım */
 }
 
 .capture-button:hover {
     background-color: #7daef1;
     color: white;
-    transform: scale(1.05);
+    transform: translateX(-50%) !important; /* Hover durumunda da aynı transform'u koruyalım */
+}
+
+.capture-button:active {
+    transform: translateX(-50%) !important; /* Tıklama durumunda da aynı transform'u koruyalım */
+    background-color: #6b9dd8;
 }
 
 #camera-container {
