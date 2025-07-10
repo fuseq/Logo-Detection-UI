@@ -120,10 +120,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Örnek logo verileri - gerçek uygulamada bu API'den veya başka bir kaynaktan gelecektir
     const sampleLogos = [
-        { id: 1, url: 'https://picsum.photos/200/300', name: 'InMapper' },
-        { id: 2, url: 'https://picsum.photos/200/300', name: 'Logo 2' },
-        { id: 3, url: 'https://picsum.photos/200/300', name: 'Logo 3' },
-        { id: 4, url: 'https://picsum.photos/200/300', name: 'Logo 4' },
+        { id: 1, url: 'assets/logo1.png', name: 'Logo 1' },
+        { id: 2, url: 'assets/logo2.png', name: 'Logo 2' },
+        { id: 3, url: 'assets/logo3.png', name: 'Logo 3' },
+        { id: 4, url: 'assets/logo4.png', name: 'Logo 4' },
     ];
 
     function showProcessedResults(capturedImageURL) {
