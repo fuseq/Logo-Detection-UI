@@ -81,14 +81,14 @@ document.addEventListener('DOMContentLoaded', function () {
         onboardingActive = false;
     }
 
-    onboardingPrev.onclick = function() {
+    onboardingPrev.onclick = function () {
         if (onboardingStep > 0) {
             onboardingStep--;
             showOnboardingStep(onboardingStep);
         }
     };
 
-    onboardingNext.onclick = function() {
+    onboardingNext.onclick = function () {
         if (onboardingStep < onboardingSteps.length - 1) {
             onboardingStep++;
             showOnboardingStep(onboardingStep);
@@ -98,12 +98,12 @@ document.addEventListener('DOMContentLoaded', function () {
     onboardingClose.onclick = closeOnboarding;
 
     // Capture mode butonları için event listener'lar
-    automaticCaptureBtn.onclick = function() {
+    automaticCaptureBtn.onclick = function () {
         manualCaptureMode = false;
         closeOnboarding();
     };
 
-    manualCaptureBtn.onclick = function() {
+    manualCaptureBtn.onclick = function () {
         manualCaptureMode = true;
         closeOnboarding();
     };
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 logoElement.dataset.id = logo.id;
 
                 // Logo'ya tıklama olayı ekle
-                logoElement.addEventListener('click', function() {
+                logoElement.addEventListener('click', function () {
                     // Tıklanan logoyu ana logo olarak ayarla
                     document.getElementById('main-logo').src = this.src;
 
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Onay butonu olayı
-        document.getElementById('confirm-result-btn').onclick = function() {
+        document.getElementById('confirm-result-btn').onclick = function () {
             // Seçilen logoyla ilgili işlemler yapılabilir
             // Örneğin: seçilen logoyu bir değişkende sakla, sunucuya gönder vb.
 
@@ -196,46 +196,63 @@ document.addEventListener('DOMContentLoaded', function () {
     function takePhoto() {
         if (photoTaken) return;
         photoTaken = true;
+
         const video = document.querySelector('video');
         if (!video || video.readyState < 2) {
             alert('Kamera görüntüsü alınamıyor!');
             return;
         }
-        const cap = captureArea.getBoundingClientRect();
-        const vid = video.getBoundingClientRect();
-        const scaleX = video.videoWidth / vid.width;
-        const scaleY = video.videoHeight / vid.height;
-        const sx = (cap.left - vid.left) * scaleX;
-        const sy = (cap.top - vid.top) * scaleY;
-        const sw = cap.width * scaleX;
-        const sh = cap.height * scaleY;
+
+        const captureArea = document.getElementById('scanArea'); // Get captureArea here
+        const capRect = captureArea.getBoundingClientRect();
+        const videoRect = video.getBoundingClientRect();
+
+        // Calculate the scaling factors between the displayed video size and its intrinsic size
+        const scaleX = video.videoWidth / videoRect.width;
+        const scaleY = video.videoHeight / videoRect.height;
+
+        // Calculate the source x, y, width, and height for drawing from the video
+        // These need to be relative to the video's top-left corner in its intrinsic pixel space
+        const sx = (capRect.left - videoRect.left) * scaleX;
+        const sy = (capRect.top - videoRect.top) * scaleY;
+        const sw = capRect.width * scaleX;
+        const sh = capRect.height * scaleY;
+
+        // Create a temporary canvas to draw the cropped image
         const canvas = document.createElement('canvas');
         canvas.width = sw;
         canvas.height = sh;
         const ctx = canvas.getContext('2d');
+
+        // Draw the specific portion of the video onto the canvas
         ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
 
-        // Fotoğrafı gösterme yerine, işlenmiş sonuçları gösterecek yeni popup'ı çağıralım
+        // Show the processed results with the captured image
         showProcessedResults(canvas.toDataURL('image/png'));
 
+        // Reset UI elements after capture
         if (captureArea) {
             captureArea.classList.remove('glow-active');
             document.getElementById('capture-status').style.display = 'none';
             document.getElementById('capture-instruction').style.display = 'block';
         }
+
+        // Reset photoTaken state if you want to allow multiple captures without page refresh
+        // For this demo, we'll keep it true until AR is closed.
+        // photoTaken = false;
     }
 
     function openAR() {
         if (arOpen) return;
         arOpen = true;
-       
+
         const aScene = document.createElement('a-scene');
         aScene.setAttribute('vr-mode-ui', 'enabled: false');
         aScene.style.position = 'absolute';
         aScene.style.top = '0';
         aScene.style.left = '0';
         aScene.style.width = '100%';
-        aScene.style.height = '60vh'; 
+        aScene.style.height = '60vh';
         aScene.style.zIndex = '1';
         aScene.setAttribute('embedded', '');
         aScene.id = 'ar-scene';
@@ -277,12 +294,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Manuel çekim butonu için event listener
-    manualCaptureButton.addEventListener('click', function() {
+    manualCaptureButton.addEventListener('click', function () {
         takePhoto();
     });
 
     function isDeviceStable(event) {
-        const threshold = 1.3; 
+        const threshold = 1.3;
         const diffBeta = Math.abs(event.beta - lastOrientation.beta);
         const diffGamma = Math.abs(event.gamma - lastOrientation.gamma);
         const diffAlpha = Math.abs(event.alpha - lastOrientation.alpha);
@@ -291,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getPitch(event) {
-        return Math.abs(event.beta); 
+        return Math.abs(event.beta);
     }
 
     window.addEventListener('deviceorientation', function (event) {
@@ -322,5 +339,5 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             closeAR();
         }
-});
+    });
 });
