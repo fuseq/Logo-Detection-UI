@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showProcessedResults(capturedImageURL) {
         // Debug için alert ekleyelim
-        alert("Main logo yükleniyor: " + sampleLogos[0].url);
+
 
         // Ana logoyu ayarla
         const mainLogo = document.getElementById('main-logo');
@@ -138,21 +138,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Resim yüklenme hatası için
             mainLogo.onerror = function () {
-                alert("Main logo yüklenemedi. URL: " + this.src);
+      
             };
-
             // Resim yüklendiğinde
             mainLogo.onload = function () {
-                alert("Main logo başarıyla yüklendi");
             };
         } else {
-            alert("Main logo elementi bulunamadı!");
         }
 
         // Diğer logoları ekle
         const otherLogosContainer = document.getElementById('other-logos-container');
         if (!otherLogosContainer) {
-            alert("Other logos container bulunamadı!");
             return;
         }
         otherLogosContainer.innerHTML = '';
