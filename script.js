@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     scanArea.classList.remove('glow-active');
                 }
             }
-            
+
             document.getElementById('capture-status').style.display = 'none';
             document.getElementById('capture-instruction').style.display = 'block';
         };
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         animationTimeout = setTimeout(() => {
             takePhoto();
-        }, 1500);
+        }, 2000);
     }
 
 
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (isDeviceStable(event)) {
                     if (!stableStartTime) stableStartTime = Date.now();
 
-                    if (Date.now() - stableStartTime > 500) {
+                    if (Date.now() - stableStartTime > 1000) {
                         startAnimation();
                     }
                 } else {
