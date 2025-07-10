@@ -127,18 +127,37 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     function showProcessedResults(capturedImageURL) {
-        // Capture edilmiş görüntüyü ayarla
-        document.getElementById('captured-image').src = capturedImageURL;
+        // Debug için alert ekleyelim
 
-        // Ana logoyu ayarla (ilk logo varsayılan olarak seçilir)
-        document.getElementById('main-logo').src = sampleLogos[0].url;
+
+        // Ana logoyu ayarla
+        const mainLogo = document.getElementById('main-logo');
+        if (mainLogo) {
+            mainLogo.src = sampleLogos[0].url;
+            mainLogo.alt = sampleLogos[0].name;
+
+            // Resim yüklenme hatası için
+            mainLogo.onerror = function () {
+
+            };
+
+            // Resim yüklendiğinde
+            mainLogo.onload = function () {
+
+            };
+        } else {
+
+        }
 
         // Diğer logoları ekle
         const otherLogosContainer = document.getElementById('other-logos-container');
+        if (!otherLogosContainer) {
+
+            return;
+        }
         otherLogosContainer.innerHTML = '';
 
         sampleLogos.forEach((logo, index) => {
-            // Birincisi hariç diğer tüm logoları listele
             if (index > 0) {
                 const logoElement = document.createElement('img');
                 logoElement.src = logo.url;
@@ -148,10 +167,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Logo'ya tıklama olayı ekle
                 logoElement.addEventListener('click', function () {
-                    // Tıklanan logoyu ana logo olarak ayarla
-                    document.getElementById('main-logo').src = this.src;
+                    mainLogo.src = this.src;
+                    mainLogo.alt = this.alt;
 
-                    // Tıklanan logo vurgulanabilir (opsiyonel)
+
                     const allLogos = document.querySelectorAll('.other-logo');
                     allLogos.forEach(l => l.style.borderColor = '#ddd');
                     this.style.borderColor = '#7daef1';
@@ -160,6 +179,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 otherLogosContainer.appendChild(logoElement);
             }
         });
+
+        // Popup'ı göster
+        document.getElementById('results-popup').style.display = 'flex';
 
         // Onay butonu olayı
         document.getElementById('confirm-result-btn').onclick = function () {
@@ -172,9 +194,6 @@ document.addEventListener('DOMContentLoaded', function () {
             // AR modu kapat
             closeAR();
         };
-
-        // Popup'ı göster
-        document.getElementById('results-popup').style.display = 'flex';
     }
 
     // Sonrasındaki fonksiyonları güncelleyelim
