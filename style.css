@@ -27,13 +27,16 @@ button {
     padding: 10px 20px;
     font-size: 16px;
 }
+
 .step-buttons {
     display: flex;
     justify-content: center;
-    gap: 20px; /* Butonlar arası boşluk */
+    gap: 20px;
+    /* Butonlar arası boşluk */
     width: 100%;
     margin-top: 10px;
 }
+
 /* style.css */
 .bottom-container {
     position: absolute;
@@ -591,6 +594,8 @@ button {
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 400px;
+    transition: all 0.3s ease;
     gap: 20px;
 }
 
@@ -789,4 +794,26 @@ a,
     position: absolute;
     overflow: visible;
     z-index: 15;
+}
+
+.circular-loader {
+    border: 6px solid #f3f3f3;
+    /* Açık gri dış çember */
+    border-top: 6px solid #7daef1;
+    /* Mavi dönen çember */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-top: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

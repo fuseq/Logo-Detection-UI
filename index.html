@@ -121,9 +121,7 @@
             <!-- Aşama 2: Progress -->
             <div id="step-2" class="popup-step" style="display: none;">
                 <p>Processing image...</p>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progress-bar"></div>
-                </div>
+                <div class="circular-loader"></div>
             </div>
 
             <!-- Aşama 3: Sonuç -->
@@ -132,7 +130,10 @@
                     <img id="main-logo" class="main-logo" src="" alt="Main Logo">
                 </div>
                 <div class="other-logos-container" id="other-logos-container"></div>
-                <button id="confirm-result-btn" class="confirm-result-btn">Confirm</button>
+                <div class="step-buttons">
+                    <button id="confirm-result-btn" class="confirm-result-btn">Confirm</button>
+                </div>
+
             </div>
 
         </div>
