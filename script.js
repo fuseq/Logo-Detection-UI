@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let onboardingStep = 0;
     let manualCaptureMode = false; // Manuel çekim modu için flag
     let onboardingActive = false;
+    let resultsPopupOpen = false;
     const onboardingSteps = [
         {
             logo: '<svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#7daef1"><animate attributeName="r" values="20;24;20" dur="1.2s" repeatCount="indefinite"/></circle></svg>',
@@ -127,8 +128,12 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     function showProcessedResults(capturedImageURL) {
+        resultsPopupOpen = true;
+        closeAR();
+
         const popup = document.getElementById('results-popup');
         popup.style.display = 'flex';
+
 
         // Aşama 1: Resim önizleme
         document.getElementById('step-1').style.display = 'block';
@@ -140,6 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         document.getElementById('cancel-btn').onclick = () => {
             popup.style.display = 'none';
+            resultsPopupOpen = false;
         };
 
         document.getElementById('approve-btn').onclick = () => {
@@ -175,11 +181,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     container.appendChild(img);
                 });
 
-            }, 1000); // ← burası 1 saniye (1000ms)
+            }, 1000);
         };
 
         document.getElementById('confirm-result-btn').onclick = () => {
             popup.style.display = 'none';
+            resultsPopupOpen = false;
             animationStarted = false;
             photoTaken = false;
             stableStartTime = null;
