@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.addEventListener('deviceorientation', function (event) {
-        if (onboardingActive) return;
+        if (resultsPopupOpen || onboardingActive) return;
         const pitch = getPitch(event);
         if (pitch >= 50) {
             openAR();
