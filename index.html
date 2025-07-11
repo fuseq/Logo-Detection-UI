@@ -104,15 +104,37 @@
 
 
     <!-- Eski photo-popup'ı kaldıralım ve yerine yeni işlenmiş sonuçlar popup'ı ekleyelim -->
-    <div id="results-popup" class="results-popup" style="display:none;">
+    <div id="results-popup" class="results-popup" style="display: none;">
         <div class="results-content">
-            <div class="main-logo-container">
-                <img id="main-logo" src="" alt="Main Logo" class="main-logo">
+
+            <!-- Aşama 1: Resim Onayı -->
+            <div id="step-1" class="popup-step">
+                <div class="captured-image-container">
+                    <img id="captured-image" class="captured-image" src="" alt="Captured">
+                </div>
+                <div class="step-buttons">
+                    <button id="cancel-btn" class="confirm-result-btn">Cancel</button>
+                    <button id="approve-btn" class="confirm-result-btn">Approve</button>
+                </div>
             </div>
-            <div class="other-logos-container" id="other-logos-container">
-                <!-- Diğer logolar JavaScript ile eklenecek -->
+
+            <!-- Aşama 2: Progress -->
+            <div id="step-2" class="popup-step" style="display: none;">
+                <p>Processing image...</p>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
             </div>
-            <button id="confirm-result-btn" class="confirm-result-btn">Confirm</button>
+
+            <!-- Aşama 3: Sonuç -->
+            <div id="step-3" class="popup-step" style="display: none;">
+                <div class="main-logo-container">
+                    <img id="main-logo" class="main-logo" src="" alt="Main Logo">
+                </div>
+                <div class="other-logos-container" id="other-logos-container"></div>
+                <button id="confirm-result-btn" class="confirm-result-btn">Confirm</button>
+            </div>
+
         </div>
     </div>
 </body>

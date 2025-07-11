@@ -126,79 +126,86 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: 4, url: 'assets/logo4.png', name: 'Logo 4' },
     ];
 
-    function showProcessedResults(capturedImageURL) {
+   function showProcessedResults(capturedImageURL) {
+    const popup = document.getElementById('results-popup');
+    popup.style.display = 'flex';
 
-        // Ana logoyu ayarla
-        const mainLogo = document.getElementById('main-logo');
-        if (mainLogo) {
+    // Aşama 1: Resim önizleme
+    document.getElementById('step-1').style.display = 'block';
+    document.getElementById('step-2').style.display = 'none';
+    document.getElementById('step-3').style.display = 'none';
+
+    const capturedImage = document.getElementById('captured-image');
+    capturedImage.src = capturedImageURL;
+
+    document.getElementById('cancel-btn').onclick = () => {
+        popup.style.display = 'none';
+    };
+
+    document.getElementById('approve-btn').onclick = () => {
+        // Geçiş: Aşama 2 (Progress)
+        document.getElementById('step-1').style.display = 'none';
+        document.getElementById('step-2').style.display = 'block';
+
+        // Başlat progress bar animasyonu
+        const progressBar = document.getElementById('progress-bar');
+        progressBar.style.width = '0%';
+        setTimeout(() => {
+            progressBar.style.width = '100%';
+        }, 100); // küçük gecikme
+
+        // 2 saniye sonra sonuç ekranına geç
+        setTimeout(() => {
+            document.getElementById('step-2').style.display = 'none';
+            document.getElementById('step-3').style.display = 'block';
+
+            // Logoları yükle
+            const mainLogo = document.getElementById('main-logo');
             mainLogo.src = sampleLogos[0].url;
             mainLogo.alt = sampleLogos[0].name;
 
-            // Resim yüklenme hatası için
-            mainLogo.onerror = function () {
+            const container = document.getElementById('other-logos-container');
+            container.innerHTML = '';
+            sampleLogos.slice(1).forEach(logo => {
+                const img = document.createElement('img');
+                img.src = logo.url;
+                img.alt = logo.name;
+                img.className = 'other-logo';
+                img.onclick = () => {
+                    mainLogo.src = img.src;
+                    mainLogo.alt = img.alt;
 
-            };
+                    document.querySelectorAll('.other-logo').forEach(l => {
+                        l.style.borderColor = '#ddd';
+                    });
+                    img.style.borderColor = '#7daef1';
+                };
+                container.appendChild(img);
+            });
 
-            // Resim yüklendiğinde
-            mainLogo.onload = function () {
+        }, 2200); // işleme süresi
+    };
 
-            };
-        } else {
+    document.getElementById('confirm-result-btn').onclick = () => {
+        popup.style.display = 'none';
+        animationStarted = false;
+        photoTaken = false;
+        stableStartTime = null;
+        if (animationTimeout) clearTimeout(animationTimeout);
 
+        const scanArea = document.getElementById('scanArea');
+        if (scanArea) {
+            if (manualCaptureMode) {
+                scanArea.classList.add('glow-active');
+            } else {
+                scanArea.classList.remove('glow-active');
+            }
         }
 
-        // Diğer logoları ekle
-        const otherLogosContainer = document.getElementById('other-logos-container');
-        if (!otherLogosContainer) {
-
-            return;
-        }
-        otherLogosContainer.innerHTML = '';
-
-        sampleLogos.forEach((logo, index) => {
-            if (index > 0) {
-                const logoElement = document.createElement('img');
-                logoElement.src = logo.url;
-                logoElement.alt = logo.name;
-                logoElement.className = 'other-logo';
-                logoElement.dataset.id = logo.id;
-
-                logoElement.addEventListener('click', function () {
-                    mainLogo.src = this.src;
-                    mainLogo.alt = this.alt;
-
-
-                    const allLogos = document.querySelectorAll('.other-logo');
-                    allLogos.forEach(l => l.style.borderColor = '#ddd');
-                    this.style.borderColor = '#7daef1';
-                });
-
-                otherLogosContainer.appendChild(logoElement);
-            }
-        });
-
-        document.getElementById('results-popup').style.display = 'flex';
-        document.getElementById('confirm-result-btn').onclick = function () {
-            document.getElementById('results-popup').style.display = 'none';
-
-            animationStarted = false;
-            photoTaken = false;
-            stableStartTime = null;
-            if (animationTimeout) clearTimeout(animationTimeout);
-
-            const scanArea = document.getElementById('scanArea');
-            if (scanArea) {
-                if (manualCaptureMode) {
-                    scanArea.classList.add('glow-active');
-                } else {
-                    scanArea.classList.remove('glow-active');
-                }
-            }
-
-            document.getElementById('capture-status').style.display = 'none';
-            document.getElementById('capture-instruction').style.display = 'block';
-        };
-    }
+        document.getElementById('capture-status').style.display = 'none';
+        document.getElementById('capture-instruction').style.display = 'block';
+    };
+}
 
 
     function startAnimation() {

@@ -402,8 +402,8 @@ button {
     stroke: rgba(128, 128, 128, 0.4);
     stroke-width: 2;
     fill: none;
-    filter: drop-shadow(0 0 4px rgba(128, 128, 128, 0.4));
-    opacity: 0.6;
+    filter: drop-shadow(0 0 4px rgba(87, 87, 87, 0.4));
+    opacity: 0.8;
     stroke-linecap: round;
     stroke-linejoin: round;
     transition: stroke 0.3s ease-in-out, filter 0.3s ease-in-out, opacity 0.3s ease-in-out;
@@ -670,6 +670,21 @@ button {
 .confirm-result-btn:hover {
     background-color: #0056b3;
     transform: scale(1.05);
+}
+
+.progress-bar-container {
+    width: 100%;
+    background-color: #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 16px;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #7daef1;
+    transition: width 2s ease;
 }
 
 #camera-container {
