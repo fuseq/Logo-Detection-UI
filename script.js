@@ -126,86 +126,78 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: 4, url: 'assets/logo4.png', name: 'Logo 4' },
     ];
 
-   function showProcessedResults(capturedImageURL) {
-    const popup = document.getElementById('results-popup');
-    popup.style.display = 'flex';
+    function showProcessedResults(capturedImageURL) {
+        const popup = document.getElementById('results-popup');
+        popup.style.display = 'flex';
 
-    // Aşama 1: Resim önizleme
-    document.getElementById('step-1').style.display = 'block';
-    document.getElementById('step-2').style.display = 'none';
-    document.getElementById('step-3').style.display = 'none';
+        // Aşama 1: Resim önizleme
+        document.getElementById('step-1').style.display = 'block';
+        document.getElementById('step-2').style.display = 'none';
+        document.getElementById('step-3').style.display = 'none';
 
-    const capturedImage = document.getElementById('captured-image');
-    capturedImage.src = capturedImageURL;
+        const capturedImage = document.getElementById('captured-image');
+        capturedImage.src = capturedImageURL;
 
-    document.getElementById('cancel-btn').onclick = () => {
-        popup.style.display = 'none';
-    };
+        document.getElementById('cancel-btn').onclick = () => {
+            popup.style.display = 'none';
+        };
 
-    document.getElementById('approve-btn').onclick = () => {
-        // Geçiş: Aşama 2 (Progress)
-        document.getElementById('step-1').style.display = 'none';
-        document.getElementById('step-2').style.display = 'block';
+        document.getElementById('approve-btn').onclick = () => {
+            document.getElementById('step-1').style.display = 'none';
+            document.getElementById('step-2').style.display = 'flex';
 
-        // Başlat progress bar animasyonu
-        const progressBar = document.getElementById('progress-bar');
-        progressBar.style.width = '0%';
-        setTimeout(() => {
-            progressBar.style.width = '100%';
-        }, 100); // küçük gecikme
+            // 1 saniyelik bekleme (1000ms)
+            setTimeout(() => {
+                document.getElementById('step-2').style.display = 'none';
+                document.getElementById('step-3').style.display = 'flex';
 
-        // 2 saniye sonra sonuç ekranına geç
-        setTimeout(() => {
-            document.getElementById('step-2').style.display = 'none';
-            document.getElementById('step-3').style.display = 'block';
+                // Logoları yükle...
+                const mainLogo = document.getElementById('main-logo');
+                mainLogo.src = sampleLogos[0].url;
+                mainLogo.alt = sampleLogos[0].name;
 
-            // Logoları yükle
-            const mainLogo = document.getElementById('main-logo');
-            mainLogo.src = sampleLogos[0].url;
-            mainLogo.alt = sampleLogos[0].name;
+                const container = document.getElementById('other-logos-container');
+                container.innerHTML = '';
+                sampleLogos.slice(1).forEach(logo => {
+                    const img = document.createElement('img');
+                    img.src = logo.url;
+                    img.alt = logo.name;
+                    img.className = 'other-logo';
+                    img.onclick = () => {
+                        mainLogo.src = img.src;
+                        mainLogo.alt = img.alt;
 
-            const container = document.getElementById('other-logos-container');
-            container.innerHTML = '';
-            sampleLogos.slice(1).forEach(logo => {
-                const img = document.createElement('img');
-                img.src = logo.url;
-                img.alt = logo.name;
-                img.className = 'other-logo';
-                img.onclick = () => {
-                    mainLogo.src = img.src;
-                    mainLogo.alt = img.alt;
+                        document.querySelectorAll('.other-logo').forEach(l => {
+                            l.style.borderColor = '#ddd';
+                        });
+                        img.style.borderColor = '#7daef1';
+                    };
+                    container.appendChild(img);
+                });
 
-                    document.querySelectorAll('.other-logo').forEach(l => {
-                        l.style.borderColor = '#ddd';
-                    });
-                    img.style.borderColor = '#7daef1';
-                };
-                container.appendChild(img);
-            });
+            }, 1000); // ← burası 1 saniye (1000ms)
+        };
 
-        }, 2200); // işleme süresi
-    };
+        document.getElementById('confirm-result-btn').onclick = () => {
+            popup.style.display = 'none';
+            animationStarted = false;
+            photoTaken = false;
+            stableStartTime = null;
+            if (animationTimeout) clearTimeout(animationTimeout);
 
-    document.getElementById('confirm-result-btn').onclick = () => {
-        popup.style.display = 'none';
-        animationStarted = false;
-        photoTaken = false;
-        stableStartTime = null;
-        if (animationTimeout) clearTimeout(animationTimeout);
-
-        const scanArea = document.getElementById('scanArea');
-        if (scanArea) {
-            if (manualCaptureMode) {
-                scanArea.classList.add('glow-active');
-            } else {
-                scanArea.classList.remove('glow-active');
+            const scanArea = document.getElementById('scanArea');
+            if (scanArea) {
+                if (manualCaptureMode) {
+                    scanArea.classList.add('glow-active');
+                } else {
+                    scanArea.classList.remove('glow-active');
+                }
             }
-        }
 
-        document.getElementById('capture-status').style.display = 'none';
-        document.getElementById('capture-instruction').style.display = 'block';
-    };
-}
+            document.getElementById('capture-status').style.display = 'none';
+            document.getElementById('capture-instruction').style.display = 'block';
+        };
+    }
 
 
     function startAnimation() {

@@ -796,16 +796,22 @@ a,
     z-index: 15;
 }
 
+.popup-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    /* Tüm alanı kaplasın */
+}
+
 .circular-loader {
     border: 6px solid #f3f3f3;
-    /* Açık gri dış çember */
     border-top: 6px solid #7daef1;
-    /* Mavi dönen çember */
     border-radius: 50%;
     width: 60px;
     height: 60px;
     animation: spin 1s linear infinite;
-    margin-top: 10px;
 }
 
 @keyframes spin {
