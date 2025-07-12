@@ -132,15 +132,11 @@ document.addEventListener('DOMContentLoaded', function () {
         closeAR();
 
         const popup = document.getElementById('results-popup');
-        // Change this line to add the 'active' class
-        popup.classList.add('active'); // This will trigger the fade-in and slide-up animations
+        popup.style.display = 'flex';
 
-        // You can remove popup.style.display = 'flex'; now, as 'active' class handles visibility
-        // If for some reason you still need it, ensure it's set before adding 'active'
-        // popup.style.display = 'flex'; // Keep if you explicitly need flex before 'active' adds it
 
         // Aşama 1: Resim önizleme
-        document.getElementById('step-1').style.display = 'flex'; // Use 'flex' if it's a flex container
+        document.getElementById('step-1').style.display = 'block';
         document.getElementById('step-2').style.display = 'none';
         document.getElementById('step-3').style.display = 'none';
 
@@ -148,23 +144,18 @@ document.addEventListener('DOMContentLoaded', function () {
         capturedImage.src = capturedImageURL;
 
         document.getElementById('cancel-btn').onclick = () => {
-            // Change this line to remove the 'active' class
-            popup.classList.remove('active'); // This will trigger the fade-out and slide-down animations
-            // You might want to delay setting resultsPopupOpen to false slightly
-            // to allow the animation to complete, e.g., with a setTimeout
-            setTimeout(() => {
-                resultsPopupOpen = false;
-            }, 300); // Match this duration with your CSS transition duration
+            popup.style.display = 'none';
+            resultsPopupOpen = false;
         };
 
         document.getElementById('approve-btn').onclick = () => {
             document.getElementById('step-1').style.display = 'none';
-            document.getElementById('step-2').style.display = 'flex'; // Changed to 'flex' for the loader
+            document.getElementById('step-2').style.display = 'flex';
 
             // 1 saniyelik bekleme (1000ms)
             setTimeout(() => {
                 document.getElementById('step-2').style.display = 'none';
-                document.getElementById('step-3').style.display = 'flex'; // Changed to 'flex'
+                document.getElementById('step-3').style.display = 'flex';
 
                 // Logoları yükle...
                 const mainLogo = document.getElementById('main-logo');
@@ -194,39 +185,25 @@ document.addEventListener('DOMContentLoaded', function () {
         };
 
         document.getElementById('confirm-result-btn').onclick = () => {
-            // Change this line to remove the 'active' class
-            popup.classList.remove('active'); // This will trigger the fade-out and slide-down animations
-            // Delay resetting flags to allow animation to complete
-            setTimeout(() => {
-                resultsPopupOpen = false;
-                animationStarted = false;
-                photoTaken = false;
-                stableStartTime = null;
-                if (animationTimeout) clearTimeout(animationTimeout);
+            popup.style.display = 'none';
+            resultsPopupOpen = false;
+            animationStarted = false;
+            photoTaken = false;
+            stableStartTime = null;
+            if (animationTimeout) clearTimeout(animationTimeout);
 
-                const scanArea = document.getElementById('scanArea');
-                if (scanArea) {
-                    if (manualCaptureMode) {
-                        scanArea.classList.add('glow-active');
-                    } else {
-                        scanArea.classList.remove('glow-active');
-                    }
+            const scanArea = document.getElementById('scanArea');
+            if (scanArea) {
+                if (manualCaptureMode) {
+                    scanArea.classList.add('glow-active');
+                } else {
+                    scanArea.classList.remove('glow-active');
                 }
-
-                document.getElementById('capture-status').style.display = 'none';
-                document.getElementById('capture-instruction').style.display = 'block';
-            }, 300); // Match this duration with your CSS transition duration
-        };
-
-        // Add an event listener to close the bottom sheet when clicking the overlay itself
-        popup.addEventListener('click', function (event) {
-            if (event.target === popup) { // Check if the click was on the overlay, not the content
-                popup.classList.remove('active');
-                setTimeout(() => {
-                    resultsPopupOpen = false;
-                }, 300); // Match with CSS transition
             }
-        });
+
+            document.getElementById('capture-status').style.display = 'none';
+            document.getElementById('capture-instruction').style.display = 'block';
+        };
     }
 
 
