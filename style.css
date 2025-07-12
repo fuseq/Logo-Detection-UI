@@ -571,32 +571,68 @@ button {
     justify-content: center;
 }
 
-/* İşlenmiş Sonuçlar Popup Stili */
 .results-popup {
+    /* Keep these for overlay and positioning */
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.6);
+    /* Slightly less opaque overlay for bottom sheet feel */
     z-index: 9999;
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* Still center horizontally */
+    align-items: flex-end;
+    /* ALIGN TO THE BOTTOM */
+
+    /* Add transition for smooth appearance/disappearance */
+    opacity: 0;
+    /* Initially hidden */
+    visibility: hidden;
+    /* Initially hidden */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* When the bottom sheet is active, show it */
+.results-popup.active {
+    /* You'll add this class with JavaScript */
+    opacity: 1;
+    visibility: visible;
 }
 
 .results-content {
     background: white;
-    border-radius: 16px;
+    border-top-left-radius: 16px;
+    /* Rounded corners only on top */
+    border-top-right-radius: 16px;
+    /* Rounded corners only on top */
+    border-bottom-left-radius: 0;
+    /* No rounding on bottom */
+    border-bottom-right-radius: 0;
+    /* No rounding on bottom */
     padding: 24px;
-    width: 90%;
-    max-width: 500px;
+    width: 100%;
+    /* Take full width at the bottom */
+    max-width: none;
+    /* No max-width for full screen width */
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 250px;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease;
+    /* Transition for the slide-up effect */
     gap: 20px;
+
+    /* Start off-screen at the bottom */
+    transform: translateY(100%);
+}
+
+/* When the bottom sheet is active, slide it into view */
+.results-popup.active .results-content {
+    transform: translateY(0);
+    /* Slide up to its natural position */
 }
 
 .main-logo-container {
