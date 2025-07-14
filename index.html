@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.2/css/all.min.css"
         integrity="sha384-/rXc/GQVaYpyDdyxK+ecHPVYJSN9bmVFBvjA/9eOB+pb3F2w2N6fc5qB9Ew5yIns" crossorigin="anonymous">
+    <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
 
@@ -138,6 +139,116 @@
 
         </div>
     </div>
+
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="closeBottomSheet()"></div>
+
+    <div id="bottomSheet"
+        class="bottom-sheet fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-lg p-4 space-y-4 transition-transform transform z-50 hidden-sheet">
+
+        <div id="step1" class="flex flex-col items-center space-y-8 pt-4">
+                <img src="https://picsum.photos/id/1015/600/300"        
+                class="w-full max-w-md rounded-xl aspect-2-1 object-cover" />
+                <button onclick="goToStep(2)" class="w-48 bg-blue-500 text-white py-2 rounded-lg">Approve</button>
+        </div>
+
+        <div id="step2" class="hidden flex flex-col items-center justify-center h-full space-y-4">
+            <div class="circular-loader"></div>
+            <p class="text-lg font-medium">Processing...</p>
+        </div>
+
+        <div id="step3" class="hidden flex flex-col items-center h-full pt-1 pb-1">
+
+            <div class="w-[304px] rounded-xl overflow-hidden image-container main">
+                <div class="w-full aspect-[2/1]">
+                    <img id="mainImage" src="https://picsum.photos/id/1020/600/300"
+                        class="w-full h-full object-cover" />
+                </div>
+            </div>
+
+            <div class="flex justify-center w-[304px] gap-3 mt-6">
+                <div class="w-24 h-24 rounded-lg overflow-hidden image-container">
+                    <img onclick="changeImage(this)" src="https://picsum.photos/id/1020/100/100"
+                        class="w-full h-full object-cover cursor-pointer" />
+                </div>
+                <div class="w-24 h-24 rounded-lg overflow-hidden image-container">
+                    <img onclick="changeImage(this)" src="https://picsum.photos/id/1011/100/100"
+                        class="w-full h-full object-cover cursor-pointer" />
+                </div>
+                <div class="w-24 h-24 rounded-lg overflow-hidden image-container">
+                    <img onclick="changeImage(this)" src="https://picsum.photos/id/1012/100/100"
+                        class="w-full h-full object-cover cursor-pointer" />
+                </div>
+            </div>
+
+            <button onclick="closeBottomSheet()"
+                class="w-48 bg-green-600 text-white py-2 rounded-lg mt-8">Approve</button>
+        </div>
+
 </body>
+<script>
+    let selectedThumbnail = null;
+
+    function goToStep(step) {
+        const sheet = document.getElementById("bottomSheet");
+        const overlay = document.getElementById("overlay");
+
+        sheet.classList.remove("hidden-sheet");
+        overlay.classList.remove("hidden");
+
+        document.getElementById("step1").classList.add("hidden");
+        document.getElementById("step2").classList.add("hidden");
+        document.getElementById("step3").classList.add("hidden");
+
+        if (step === 2) {
+            document.getElementById("step2").classList.remove("hidden");
+            setTimeout(() => {
+                goToStep(3);
+            }, 2000);
+        } else {
+            document.getElementById("step" + step).classList.remove("hidden");
+            if (step === 3) {
+                const mainImage = document.getElementById("mainImage");
+                // BURAYI DEĞİŞTİRDİK: Büyük resme küçük resimlerden farklı bir başlangıç atıyoruz
+                mainImage.src = "https://picsum.photos/id/1015/600/300"; // Örneğin, 1015 ID'li resmi kullanın
+
+                // Ayrıca, hiçbir küçük resimde seçili sınıfının olmadığından emin ol
+                if (selectedThumbnail) {
+                    selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
+                    selectedThumbnail = null;
+                }
+            }
+        }
+    }
+
+    function changeImage(imgElement) {
+        const mainImage = document.getElementById("mainImage");
+        const src = imgElement.src;
+        const idMatch = src.match(/\/id\/(\d+)\//);
+        const id = idMatch ? idMatch[1] : "1020";
+
+        mainImage.src = `https://picsum.photos/id/${id}/600/300`;
+
+        // Önceki seçili küçük resmin seçimini kaldır
+        if (selectedThumbnail) {
+            selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
+        }
+
+        // Mevcut küçük resmi seçili yap
+        imgElement.parentElement.classList.add("thumbnail-selected");
+        selectedThumbnail = imgElement;
+    }
+
+    function closeBottomSheet() {
+        const sheet = document.getElementById("bottomSheet");
+        const overlay = document.getElementById("overlay");
+
+        sheet.classList.add("hidden-sheet");
+        overlay.classList.add("hidden");
+    }
+
+    // window.onload = () => {
+    //     goToStep(1); // THIS LINE IS COMMENTED OUT
+    // }
+</script>
 
 </html>

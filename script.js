@@ -127,66 +127,90 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: 4, url: 'assets/logo4.png', name: 'Logo 4' },
     ];
 
-    function showProcessedResults(capturedImageURL) {
-        resultsPopupOpen = true;
-        closeAR();
+ function showProcessedResults(capturedImageURL) {
+    // resultsPopupOpen = true; // No longer needed
+    closeAR(); // Keep existing AR close logic
 
-        const popup = document.getElementById('results-popup');
-        popup.style.display = 'flex';
+    // Directly open the bottom sheet to step 1
+    goToStep(1); // Ensure bottom sheet is visible and starts at step 1
 
+    // Step 1: Image preview
+    // The goToStep(1) call already sets step1 to visible and others hidden.
+    // So, no need for manual style.display = 'block' etc. here.
 
-        // Aşama 1: Resim önizleme
-        document.getElementById('step-1').style.display = 'block';
-        document.getElementById('step-2').style.display = 'none';
-        document.getElementById('step-3').style.display = 'none';
+    const capturedImage = document.getElementById('captured-image'); // This is from your initial popup.
+                                                                  // If 'captured-image' is now part of step1 in bottom sheet, it's fine.
+                                                                  // If not, you might need to find the correct ID in your step1 div.
+    capturedImage.src = capturedImageURL;
 
-        const capturedImage = document.getElementById('captured-image');
-        capturedImage.src = capturedImageURL;
+    // Renamed for clarity and consistency with bottom sheet buttons
+    const bottomSheetCancelBtn = document.getElementById('cancel-btn'); // Ensure this ID exists on your step1 cancel button
+    const bottomSheetApproveBtn = document.getElementById('approve-btn'); // Ensure this ID exists on your step1 approve button
+    const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn'); // Ensure this ID exists on your step3 confirm button
 
-        document.getElementById('cancel-btn').onclick = () => {
-            popup.style.display = 'none';
-            resultsPopupOpen = false;
+    if (bottomSheetCancelBtn) {
+        bottomSheetCancelBtn.onclick = () => {
+            closeBottomSheet(); // Close the bottom sheet
+            // resultsPopupOpen = false; // No longer needed
         };
+    }
 
-        document.getElementById('approve-btn').onclick = () => {
-            document.getElementById('step-1').style.display = 'none';
-            document.getElementById('step-2').style.display = 'flex';
+    if (bottomSheetApproveBtn) {
+        bottomSheetApproveBtn.onclick = () => {
+            goToStep(2); // Move to processing step (Step 2)
 
-            // 1 saniyelik bekleme (1000ms)
+            // 1-second delay (1000ms) for processing
             setTimeout(() => {
-                document.getElementById('step-2').style.display = 'none';
-                document.getElementById('step-3').style.display = 'flex';
+                goToStep(3); // Move to results step (Step 3)
 
-                // Logoları yükle...
-                const mainLogo = document.getElementById('main-logo');
-                mainLogo.src = sampleLogos[0].url;
-                mainLogo.alt = sampleLogos[0].name;
+                // Load logos/thumbnails
+                const mainLogo = document.getElementById('mainImage'); // Use mainImage ID from your bottom sheet
+                const thumbnailContainer = document.querySelector('#step3 .flex.justify-center'); // Target the container for thumbnails
 
-                const container = document.getElementById('other-logos-container');
-                container.innerHTML = '';
-                sampleLogos.slice(1).forEach(logo => {
+                // Clear previous thumbnails (if any) to prevent duplicates
+                // Keep the first default image in the HTML if it's static, otherwise clear all
+                thumbnailContainer.innerHTML = ''; // Clear existing thumbnails
+
+                // Ensure selectedThumbnail is reset when entering step 3
+                if (selectedThumbnail) {
+                    selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
+                    selectedThumbnail = null;
+                }
+
+                // Append new thumbnails
+                sampleLogos.forEach((logo, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container'; // Reuse your image-container class
+
                     const img = document.createElement('img');
                     img.src = logo.url;
                     img.alt = logo.name;
-                    img.className = 'other-logo';
+                    img.className = 'w-full h-full object-cover cursor-pointer';
                     img.onclick = () => {
-                        mainLogo.src = img.src;
-                        mainLogo.alt = img.alt;
-
-                        document.querySelectorAll('.other-logo').forEach(l => {
-                            l.style.borderColor = '#ddd';
-                        });
-                        img.style.borderColor = '#7daef1';
+                        // This uses your existing changeImage function, which handles selection and main image update
+                        changeImage(img);
                     };
-                    container.appendChild(img);
+                    div.appendChild(img);
+                    thumbnailContainer.appendChild(div);
+
+                    // Set the initial main image from the first logo in sampleLogos
+                    if (index === 0) {
+                        mainLogo.src = logo.url;
+                        mainLogo.alt = logo.name;
+                        // No thumbnail selected by default
+                    }
                 });
 
             }, 1000);
         };
+    }
 
-        document.getElementById('confirm-result-btn').onclick = () => {
-            popup.style.display = 'none';
-            resultsPopupOpen = false;
+    if (bottomSheetConfirmResultBtn) {
+        bottomSheetConfirmResultBtn.onclick = () => {
+            closeBottomSheet(); // Close the bottom sheet
+            // resultsPopupOpen = false; // No longer needed
+
+            // Keep existing AR state reset logic
             animationStarted = false;
             photoTaken = false;
             stableStartTime = null;
@@ -200,11 +224,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     scanArea.classList.remove('glow-active');
                 }
             }
-
             document.getElementById('capture-status').style.display = 'none';
             document.getElementById('capture-instruction').style.display = 'block';
         };
     }
+}
 
 
     function startAnimation() {
