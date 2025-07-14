@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let onboardingStep = 0;
     let manualCaptureMode = false; // Manuel çekim modu için flag
     let onboardingActive = false;
-    let resultsPopupOpen = false;
     const onboardingSteps = [
         {
             logo: '<svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#7daef1"><animate attributeName="r" values="20;24;20" dur="1.2s" repeatCount="indefinite"/></circle></svg>',
@@ -127,108 +126,108 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: 4, url: 'assets/logo4.png', name: 'Logo 4' },
     ];
 
- function showProcessedResults(capturedImageURL) {
-    // resultsPopupOpen = true; // No longer needed
-    closeAR(); // Keep existing AR close logic
+    function showProcessedResults(capturedImageURL) {
+        // resultsPopupOpen = true; // No longer needed
+        closeAR(); // Keep existing AR close logic
 
-    // Directly open the bottom sheet to step 1
-    goToStep(1); // Ensure bottom sheet is visible and starts at step 1
+        // Directly open the bottom sheet to step 1
+        goToStep(1); // Ensure bottom sheet is visible and starts at step 1
 
-    // Step 1: Image preview
-    // The goToStep(1) call already sets step1 to visible and others hidden.
-    // So, no need for manual style.display = 'block' etc. here.
+        // Step 1: Image preview
+        // The goToStep(1) call already sets step1 to visible and others hidden.
+        // So, no need for manual style.display = 'block' etc. here.
 
-    const capturedImage = document.getElementById('captured-image'); // This is from your initial popup.
-                                                                  // If 'captured-image' is now part of step1 in bottom sheet, it's fine.
-                                                                  // If not, you might need to find the correct ID in your step1 div.
-    capturedImage.src = capturedImageURL;
+        const capturedImage = document.getElementById('captured-image'); // This is from your initial popup.
+        // If 'captured-image' is now part of step1 in bottom sheet, it's fine.
+        // If not, you might need to find the correct ID in your step1 div.
+        capturedImage.src = capturedImageURL;
 
-    // Renamed for clarity and consistency with bottom sheet buttons
-    const bottomSheetCancelBtn = document.getElementById('cancel-btn'); // Ensure this ID exists on your step1 cancel button
-    const bottomSheetApproveBtn = document.getElementById('approve-btn'); // Ensure this ID exists on your step1 approve button
-    const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn'); // Ensure this ID exists on your step3 confirm button
+        // Renamed for clarity and consistency with bottom sheet buttons
+        const bottomSheetCancelBtn = document.getElementById('cancel-btn'); // Ensure this ID exists on your step1 cancel button
+        const bottomSheetApproveBtn = document.getElementById('approve-btn'); // Ensure this ID exists on your step1 approve button
+        const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn'); // Ensure this ID exists on your step3 confirm button
 
-    if (bottomSheetCancelBtn) {
-        bottomSheetCancelBtn.onclick = () => {
-            closeBottomSheet(); // Close the bottom sheet
-            // resultsPopupOpen = false; // No longer needed
-        };
-    }
+        if (bottomSheetCancelBtn) {
+            bottomSheetCancelBtn.onclick = () => {
+                closeBottomSheet(); // Close the bottom sheet
+                // resultsPopupOpen = false; // No longer needed
+            };
+        }
 
-    if (bottomSheetApproveBtn) {
-        bottomSheetApproveBtn.onclick = () => {
-            goToStep(2); // Move to processing step (Step 2)
+        if (bottomSheetApproveBtn) {
+            bottomSheetApproveBtn.onclick = () => {
+                goToStep(2); // Move to processing step (Step 2)
 
-            // 1-second delay (1000ms) for processing
-            setTimeout(() => {
-                goToStep(3); // Move to results step (Step 3)
+                // 1-second delay (1000ms) for processing
+                setTimeout(() => {
+                    goToStep(3); // Move to results step (Step 3)
 
-                // Load logos/thumbnails
-                const mainLogo = document.getElementById('mainImage'); // Use mainImage ID from your bottom sheet
-                const thumbnailContainer = document.querySelector('#step3 .flex.justify-center'); // Target the container for thumbnails
+                    // Load logos/thumbnails
+                    const mainLogo = document.getElementById('mainImage'); // Use mainImage ID from your bottom sheet
+                    const thumbnailContainer = document.querySelector('#step3 .flex.justify-center'); // Target the container for thumbnails
 
-                // Clear previous thumbnails (if any) to prevent duplicates
-                // Keep the first default image in the HTML if it's static, otherwise clear all
-                thumbnailContainer.innerHTML = ''; // Clear existing thumbnails
+                    // Clear previous thumbnails (if any) to prevent duplicates
+                    // Keep the first default image in the HTML if it's static, otherwise clear all
+                    thumbnailContainer.innerHTML = ''; // Clear existing thumbnails
 
-                // Ensure selectedThumbnail is reset when entering step 3
-                if (selectedThumbnail) {
-                    selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
-                    selectedThumbnail = null;
-                }
-
-                // Append new thumbnails
-                sampleLogos.forEach((logo, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container'; // Reuse your image-container class
-
-                    const img = document.createElement('img');
-                    img.src = logo.url;
-                    img.alt = logo.name;
-                    img.className = 'w-full h-full object-cover cursor-pointer';
-                    img.onclick = () => {
-                        // This uses your existing changeImage function, which handles selection and main image update
-                        changeImage(img);
-                    };
-                    div.appendChild(img);
-                    thumbnailContainer.appendChild(div);
-
-                    // Set the initial main image from the first logo in sampleLogos
-                    if (index === 0) {
-                        mainLogo.src = logo.url;
-                        mainLogo.alt = logo.name;
-                        // No thumbnail selected by default
+                    // Ensure selectedThumbnail is reset when entering step 3
+                    if (selectedThumbnail) {
+                        selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
+                        selectedThumbnail = null;
                     }
-                });
 
-            }, 1000);
-        };
-    }
+                    // Append new thumbnails
+                    sampleLogos.forEach((logo, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container'; // Reuse your image-container class
 
-    if (bottomSheetConfirmResultBtn) {
-        bottomSheetConfirmResultBtn.onclick = () => {
-            closeBottomSheet(); // Close the bottom sheet
-            // resultsPopupOpen = false; // No longer needed
+                        const img = document.createElement('img');
+                        img.src = logo.url;
+                        img.alt = logo.name;
+                        img.className = 'w-full h-full object-cover cursor-pointer';
+                        img.onclick = () => {
+                            // This uses your existing changeImage function, which handles selection and main image update
+                            changeImage(img);
+                        };
+                        div.appendChild(img);
+                        thumbnailContainer.appendChild(div);
 
-            // Keep existing AR state reset logic
-            animationStarted = false;
-            photoTaken = false;
-            stableStartTime = null;
-            if (animationTimeout) clearTimeout(animationTimeout);
+                        // Set the initial main image from the first logo in sampleLogos
+                        if (index === 0) {
+                            mainLogo.src = logo.url;
+                            mainLogo.alt = logo.name;
+                            // No thumbnail selected by default
+                        }
+                    });
 
-            const scanArea = document.getElementById('scanArea');
-            if (scanArea) {
-                if (manualCaptureMode) {
-                    scanArea.classList.add('glow-active');
-                } else {
-                    scanArea.classList.remove('glow-active');
+                }, 1000);
+            };
+        }
+
+        if (bottomSheetConfirmResultBtn) {
+            bottomSheetConfirmResultBtn.onclick = () => {
+                closeBottomSheet(); // Close the bottom sheet
+                // resultsPopupOpen = false; // No longer needed
+
+                // Keep existing AR state reset logic
+                animationStarted = false;
+                photoTaken = false;
+                stableStartTime = null;
+                if (animationTimeout) clearTimeout(animationTimeout);
+
+                const scanArea = document.getElementById('scanArea');
+                if (scanArea) {
+                    if (manualCaptureMode) {
+                        scanArea.classList.add('glow-active');
+                    } else {
+                        scanArea.classList.remove('glow-active');
+                    }
                 }
-            }
-            document.getElementById('capture-status').style.display = 'none';
-            document.getElementById('capture-instruction').style.display = 'block';
-        };
+                document.getElementById('capture-status').style.display = 'none';
+                document.getElementById('capture-instruction').style.display = 'block';
+            };
+        }
     }
-}
 
 
     function startAnimation() {
@@ -404,6 +403,27 @@ document.addEventListener('DOMContentLoaded', function () {
         bottomContainer.style.height = '100%';
         bottomContainer.style.zIndex = '';
 
+        // Yeni eklenecek kısım: Harita ve bilgi bölümlerini orijinal z-index'lerine ve konumlarına getir
+        const mapSection = document.querySelector('.map-section');
+        if (mapSection) {
+            mapSection.style.zIndex = ''; // Default z-index
+            // Eğer konumlandırma veya yükseklik değiştiyse, burada resetleyin
+            // Örneğin: mapSection.style.height = 'X%';
+            // mapSection.style.position = '';
+        }
+
+        const infoSection = document.querySelector('.info-section');
+        if (infoSection) {
+            infoSection.style.zIndex = ''; // Default z-index
+            // Benzer şekilde konumlandırma veya yükseklik resetlemesi
+        }
+
+        // AR açıldığında z-index'i değişen tüm butonları da resetlemek iyi bir fikir
+        document.querySelectorAll('button, .circular-icon-button, .image-button').forEach(button => {
+            button.style.zIndex = ''; // Default z-index'e geri döner
+        });
+
+
         if (captureArea) {
             if (!manualCaptureMode) {
                 captureArea.classList.remove('glow-active');
@@ -438,7 +458,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.addEventListener('deviceorientation', function (event) {
-        if (resultsPopupOpen || onboardingActive) return;
+        const bottomSheet = document.getElementById("bottomSheet");
+        if (!bottomSheet.classList.contains('hidden-sheet') || onboardingActive) {
+            return; // If bottom sheet or onboarding is active, stop processing device orientation
+        }
         const pitch = getPitch(event);
         if (pitch >= 50) {
             openAR();
