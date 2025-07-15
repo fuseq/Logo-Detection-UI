@@ -19,32 +19,24 @@
 
 <body style='margin: 0; overflow: hidden;'>
 
-
+  
     <div id="notification-bar" class="notification-bar" style="display: none;">
         <span>Raise your phone to scan</span>
     </div>
 
-    <div id="onboardingBottomSheet"
-        class="bottom-sheet fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-lg p-4 space-y-4 transition-transform transform z-50">
-        <div class="flex flex-col items-center space-y-6 pt-4 pb-8">
-            <div id="onboarding-logo" class="w-16 h-16 flex items-center justify-center"></div>
-            <div class="text-center space-y-2">
-                <h3 id="onboarding-title" class="text-xl font-semibold"></h3>
-                <p id="onboarding-desc" class="text-gray-600"></p>
-            </div>
-            <div class="flex flex-col w-full space-y-4">
-                <div class="flex justify-center gap-4">
-                    <button id="onboarding-prev" class="px-6 py-2 rounded-lg border border-gray-300 text-gray-700"
-                        style="display:none;">Back</button>
-                    <button id="onboarding-next" class="px-6 py-2 rounded-lg bg-blue-500 text-white">Next</button>
-                    <button id="onboarding-close" class="px-6 py-2 rounded-lg bg-blue-500 text-white"
-                        style="display:none;">Close</button>
-                </div>
-                <div id="capture-mode-buttons" class="flex flex-col gap-3" style="display:none;">
-                    <button id="automatic-capture-btn" class="w-full py-3 rounded-lg bg-blue-500 text-white">Automatic
-                        Capture</button>
-                    <button id="manual-capture-btn"
-                        class="w-full py-3 rounded-lg border border-blue-500 text-blue-500">Manual Capture</button>
+
+    <div id="onboarding-popup" class="onboarding-popup" style="display: none;">
+        <div class="onboarding-content">
+            <div class="onboarding-logo" id="onboarding-logo"></div>
+            <div class="onboarding-title" id="onboarding-title"></div>
+            <div class="onboarding-desc" id="onboarding-desc"></div>
+            <div class="onboarding-controls">
+                <button id="onboarding-prev" style="display:none;">Back</button>
+                <button id="onboarding-next">Next</button>
+                <button id="onboarding-close" style="display:none;">Close</button>
+                <div id="capture-mode-buttons" style="display:none;">
+                    <button id="automatic-capture-btn" class="capture-mode-btn">Automatic Capture</button>
+                    <button id="manual-capture-btn" class="capture-mode-btn">Manual Capture</button>
                 </div>
             </div>
         </div>
@@ -68,7 +60,7 @@
             <svg class="corner-bottom-right" width="30" height="30">
                 <path d="M 30 0 L 30 20 L 10 20"></path>
             </svg>
-
+ 
             <div id="capture-instruction" class="capture-instruction">Place the object in frame</div>
             <div id="capture-status" class="capture-status" style="display: none;">Hold steady... capturing</div>
         </div>
@@ -94,7 +86,7 @@
                 <div class="destination-details">
                     <div class="destination-name"></div>
                     <div class="time-info">
-                        <i class="fa-solid fa-person-running"></i>
+                        <i class="fa-solid fa-person-running"></i> 
                     </div>
                 </div>
             </div>
@@ -109,6 +101,41 @@
         </div>
     </div>
 
+
+
+    <div id="results-popup" class="results-popup" style="display: none;">
+        <div class="results-content">
+
+            <div id="step-1" class="popup-step">
+                <div class="captured-image-container">
+                    <img id="captured-image" class="captured-image" src="" alt="Captured">
+                </div>
+                <div class="step-buttons">
+                    <button id="cancel-btn" class="confirm-result-btn">Cancel</button>
+                    <button id="approve-btn" class="confirm-result-btn">Approve</button>
+                </div>
+            </div>
+
+       
+            <div id="step-2" class="popup-step" style="display: none;">
+                <p>Processing image...</p>
+                <div class="circular-loader"></div>
+            </div>
+
+            
+            <div id="step-3" class="popup-step" style="display: none;">
+                <div class="main-logo-container">
+                    <img id="main-logo" class="main-logo" src="" alt="Main Logo">
+                </div>
+                <div class="other-logos-container" id="other-logos-container"></div>
+                <div class="step-buttons">
+                    <button id="confirm-result-btn" class="confirm-result-btn">Confirm</button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 
     <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="closeBottomSheet()"></div>
 
@@ -178,10 +205,10 @@
             document.getElementById("step" + step).classList.remove("hidden");
             if (step === 3) {
                 const mainImage = document.getElementById("mainImage");
-
+               
                 mainImage.src = "https://picsum.photos/id/1015/600/300";
 
-
+              
                 if (selectedThumbnail) {
                     selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
                     selectedThumbnail = null;

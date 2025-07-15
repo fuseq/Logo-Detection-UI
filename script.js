@@ -7,10 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let lastOrientation = { beta: 0, gamma: 0, alpha: 0 };
     let lastMotion = { x: 0, y: 0, z: 0 };
     let onboardingStep = 0;
-    let manualCaptureMode = false;
+    let manualCaptureMode = false; 
     let onboardingActive = false;
-    let onboardingShownDueToPitch = false;
-
     const onboardingSteps = [
         {
             logo: '<svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#7daef1"><animate attributeName="r" values="20;24;20" dur="1.2s" repeatCount="indefinite"/></circle></svg>',
@@ -30,8 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     const notificationBar = document.getElementById('notification-bar');
-    const overlay = document.getElementById('overlay'); // Var olan overlay div'i
-    const onboardingBottomSheet = document.getElementById('onboardingBottomSheet');
+    const onboardingPopup = document.getElementById('onboarding-popup');
     const onboardingLogo = document.getElementById('onboarding-logo');
     const onboardingTitle = document.getElementById('onboarding-title');
     const onboardingDesc = document.getElementById('onboarding-desc');
@@ -47,57 +44,39 @@ document.addEventListener('DOMContentLoaded', function () {
     const infoSection = document.querySelector('.info-section');
     const container = document.querySelector('.container');
     const manualCaptureButton = document.getElementById('manual-capture-button');
+    let onboardingShown = false;
 
-    if (notificationBar) {
-        notificationBar.style.display = 'block';
-        setTimeout(() => {
-            notificationBar.style.display = 'none';
-        }, 3000);
-    }
+    notificationBar.style.display = 'block';
+    setTimeout(() => {
+        notificationBar.style.display = 'none';
+    }, 3000);
 
     function showOnboardingStep(step) {
         onboardingLogo.innerHTML = onboardingSteps[step].logo;
         onboardingTitle.textContent = onboardingSteps[step].title;
         onboardingDesc.textContent = onboardingSteps[step].desc;
+        onboardingPrev.style.display = step === 0 ? 'none' : 'inline-block';
 
-        // "Back" butonu sadece ilk ve son aşamada gizli olmalı
-        onboardingPrev.style.display = (step === 0 || step === onboardingSteps.length - 1) ? 'none' : 'inline-block';
-
-        if (step === onboardingSteps.length - 1) { // Son aşama
-            onboardingNext.style.display = 'none'; // "Next" gizli
-            onboardingClose.style.display = 'none'; // "Close" gizli
-            captureModeButtons.style.display = 'flex'; // Capture butonları gösteriliyor
-        } else { // Diğer aşamalar
-            onboardingNext.style.display = 'inline-block'; // "Next" gösteriliyor
-            onboardingClose.style.display = 'none'; // "Close" gizli
-            captureModeButtons.style.display = 'none'; // Capture butonları gizli
+        if (step === onboardingSteps.length - 1) {
+            onboardingNext.style.display = 'none';
+            onboardingClose.style.display = 'inline-block';
+            captureModeButtons.style.display = 'flex';
+        } else {
+            onboardingNext.style.display = 'inline-block';
+            onboardingClose.style.display = 'none';
+            captureModeButtons.style.display = 'none';
         }
     }
 
     function openOnboarding() {
-        if (onboardingActive) return; // Zaten açıksa tekrar açma
         onboardingStep = 0;
-        
-        // Overlay'i ve bottom sheet'i görünür yap
-        overlay.classList.remove('hidden'); // overlay'deki 'hidden' sınıfını kaldırıyoruz
-        overlay.classList.add('opacity-50'); // Tailwind'in opacity sınıfını ekliyoruz
-        onboardingBottomSheet.classList.remove('hidden-sheet');
-        onboardingBottomSheet.classList.add('open');
-        
-        onboardingActive = true;
+        onboardingPopup.style.display = 'flex';
         showOnboardingStep(onboardingStep);
     }
 
     function closeOnboarding() {
-        onboardingBottomSheet.classList.remove('open');
-        overlay.classList.remove('opacity-50'); // Overlay'in opacity'sini kaldır
-
-        setTimeout(() => {
-            onboardingBottomSheet.classList.add('hidden-sheet');
-            overlay.classList.add('hidden'); // Overlay'i tamamen gizle
-            onboardingActive = false;
-            onboardingShownDueToPitch = true;
-        }, 300); // Tailwind transition süresiyle eşleşmeli
+        onboardingPopup.style.display = 'none';
+        onboardingActive = false;
     }
 
     onboardingPrev.onclick = function () {
@@ -116,88 +95,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
     onboardingClose.onclick = closeOnboarding;
 
+
     automaticCaptureBtn.onclick = function () {
         manualCaptureMode = false;
-        closeOnboarding(); // Onboarding'i kapat
-        openAR(); // AR'ı başlat (kamera açılacak, harita daralacak)
+        closeOnboarding();
     };
 
     manualCaptureBtn.onclick = function () {
         manualCaptureMode = true;
-        closeOnboarding(); // Onboarding'i kapat
-        openAR(); // AR'ı başlat (kamera açılacak, harita daralacak)
+        closeOnboarding();
     };
 
-    function isDeviceStable(event) {
-        const threshold = 1.3;
-        const diffBeta = Math.abs(event.beta - lastOrientation.beta);
-        const diffGamma = Math.abs(event.gamma - lastOrientation.gamma);
-        const diffAlpha = Math.abs(event.alpha - lastOrientation.alpha);
-        lastOrientation = { beta: event.beta, gamma: event.gamma, alpha: event.alpha };
-        return (diffBeta < threshold && diffGamma < threshold && diffAlpha < threshold);
-    }
-
-    function getPitch(event) {
-        return Math.abs(event.beta);
-    }
-
     window.addEventListener('deviceorientation', function (event) {
-        if (onboardingActive || onboardingShownDueToPitch || arOpen) {
-            if (arOpen && !manualCaptureMode) {
-                if (isDeviceStable(event)) {
-                    if (!stableStartTime) stableStartTime = Date.now();
-                    if (Date.now() - stableStartTime > 1000) {
-                        startAnimation();
-                    }
-                } else {
-                    stableStartTime = null;
-                    if (captureArea) {
-                        captureArea.classList.remove('glow-active');
-                        document.getElementById('capture-status').style.display = 'none';
-                        document.getElementById('capture-instruction').style.display = 'block';
-                    }
-                    animationStarted = false;
-                    if (animationTimeout) clearTimeout(animationTimeout);
-                }
-            }
-            return;
-        }
-
         const pitch = getPitch(event);
-
-        if (pitch >= 50) {
+        if (pitch >= 50 && !onboardingShown) {
             openOnboarding();
+            onboardingShown = true;
+            onboardingActive = true;
         }
     });
 
-    // Bu fonksiyonların uygulamanızın diğer yerlerinde tanımlı olduğundan emin olun.
-    // Eğer yoksa, ilgili mantığı buraya eklemeniz gerekecektir.
-    function goToStep(stepNumber) {
-        console.log("Adıma Git:", stepNumber);
-        // Örn: document.querySelectorAll('.app-step').forEach(s => s.classList.add('hidden'));
-        // document.getElementById('step' + stepNumber).classList.remove('hidden');
-    }
-
-    function closeBottomSheet() {
-        console.log("Ana Bottom Sheet Kapatıldı");
-        // Eğer ayrı bir "ana" bottom sheet varsa onu kapatma mantığı.
-    }
-
-    let selectedThumbnail = null; // Bu değişkenin global veya uygun bir kapsamda tanımlanması önemli
-
-    function changeImage(imgElement) {
-        console.log("Görüntü Değiştirildi:", imgElement.src);
-        const mainLogo = document.getElementById('mainImage');
-        if (mainLogo) {
-            mainLogo.src = imgElement.src;
-            mainLogo.alt = imgElement.alt;
-        }
-        if (selectedThumbnail) {
-            selectedThumbnail.parentElement.classList.remove('thumbnail-selected');
-        }
-        selectedThumbnail = imgElement; // selectedThumbnail'ı güncelleyin
-        imgElement.parentElement.classList.add('thumbnail-selected');
-    }
 
     const sampleLogos = [
         { id: 1, url: 'assets/logo1.png', name: 'Logo 1' },
@@ -207,40 +124,48 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     function showProcessedResults(capturedImageURL) {
-        closeAR();
+      
+        closeAR(); 
 
-        const capturedImage = document.getElementById('captured-image');
-        if (capturedImage) {
-            capturedImage.src = capturedImageURL;
-            // 'captured-image-container' div'inin display'ini değiştirmek isteyebilirsiniz
-            const capturedImageContainer = document.getElementById('captured-image-container');
-            if (capturedImageContainer) {
-                capturedImageContainer.style.display = 'block';
-            }
-        }
+        
+        goToStep(1); 
 
-        const bottomSheetCancelBtn = document.getElementById('cancel-btn');
-        const bottomSheetApproveBtn = document.getElementById('approve-btn');
-        const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn');
+
+        const capturedImage = document.getElementById('captured-image'); 
+
+        capturedImage.src = capturedImageURL;
+
+        const bottomSheetCancelBtn = document.getElementById('cancel-btn'); 
+        const bottomSheetApproveBtn = document.getElementById('approve-btn'); 
+        const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn'); 
 
         if (bottomSheetCancelBtn) {
             bottomSheetCancelBtn.onclick = () => {
-                console.log("İşlem İptal Edildi");
-                // Gerekirse AR'ı yeniden başlat veya başka bir duruma geç
+                closeBottomSheet(); 
+           
             };
         }
 
         if (bottomSheetApproveBtn) {
             bottomSheetApproveBtn.onclick = () => {
-                console.log("İşlem Onaylandı");
-                setTimeout(() => {
-                    const mainLogo = document.getElementById('mainImage');
-                    const thumbnailContainer = document.querySelector('#step3 .flex.justify-center');
+                goToStep(2); 
 
-                    if (thumbnailContainer) {
-                        thumbnailContainer.innerHTML = '';
+
+                setTimeout(() => {
+                    goToStep(3); 
+
+                    const mainLogo = document.getElementById('mainImage'); 
+                    const thumbnailContainer = document.querySelector('#step3 .flex.justify-center'); 
+
+
+                    thumbnailContainer.innerHTML = ''; 
+
+                    if (selectedThumbnail) {
+                        selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
+                        selectedThumbnail = null;
                     }
 
+ 
                     sampleLogos.forEach((logo, index) => {
                         const div = document.createElement('div');
                         div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container';
@@ -250,40 +175,43 @@ document.addEventListener('DOMContentLoaded', function () {
                         img.alt = logo.name;
                         img.className = 'w-full h-full object-cover cursor-pointer';
                         img.onclick = () => {
+
                             changeImage(img);
                         };
                         div.appendChild(img);
-                        if (thumbnailContainer) {
-                            thumbnailContainer.appendChild(div);
-                        }
+                        thumbnailContainer.appendChild(div);
 
-                        if (index === 0 && mainLogo) {
+
+                        if (index === 0) {
                             mainLogo.src = logo.url;
                             mainLogo.alt = logo.name;
+
                         }
                     });
+
                 }, 1000);
             };
         }
 
         if (bottomSheetConfirmResultBtn) {
             bottomSheetConfirmResultBtn.onclick = () => {
-                console.log("Sonuç Onaylandı");
+                closeBottomSheet(); 
 
                 animationStarted = false;
                 photoTaken = false;
                 stableStartTime = null;
                 if (animationTimeout) clearTimeout(animationTimeout);
 
-                if (captureArea) {
+                const scanArea = document.getElementById('scanArea');
+                if (scanArea) {
                     if (manualCaptureMode) {
-                        captureArea.classList.add('glow-active');
+                        scanArea.classList.add('glow-active');
                     } else {
-                        captureArea.classList.remove('glow-active');
+                        scanArea.classList.remove('glow-active');
                     }
                 }
-                if (document.getElementById('capture-status')) document.getElementById('capture-status').style.display = 'none';
-                if (document.getElementById('capture-instruction')) document.getElementById('capture-instruction').style.display = 'block';
+                document.getElementById('capture-status').style.display = 'none';
+                document.getElementById('capture-instruction').style.display = 'block';
             };
         }
     }
@@ -318,13 +246,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const capRect = captureArea.getBoundingClientRect();
         const videoRect = video.getBoundingClientRect();
 
+
         const scaleX = video.videoWidth / videoRect.width;
         const scaleY = video.videoHeight / videoRect.height;
+
 
         const sx = (capRect.left - videoRect.left) * scaleX;
         const sy = (capRect.top - videoRect.top) * scaleY;
         const sw = capRect.width * scaleX;
         const sh = capRect.height * scaleY;
+
 
         const canvas = document.createElement('canvas');
         canvas.width = sw;
@@ -336,11 +267,9 @@ document.addEventListener('DOMContentLoaded', function () {
         showProcessedResults(canvas.toDataURL('image/png'));
 
         if (captureArea) {
-            if (!manualCaptureMode) {
-                captureArea.classList.remove('glow-active');
-            }
-            if (document.getElementById('capture-status')) document.getElementById('capture-status').style.display = 'none';
-            if (document.getElementById('capture-instruction')) document.getElementById('capture-instruction').style.display = 'block';
+            captureArea.classList.remove('glow-active');
+            document.getElementById('capture-status').style.display = 'none';
+            document.getElementById('capture-instruction').style.display = 'block';
         }
     }
 
@@ -348,33 +277,50 @@ document.addEventListener('DOMContentLoaded', function () {
         if (arOpen) return;
         arOpen = true;
 
-        const cameraContainer = document.getElementById('camera-container');
-        if (!cameraContainer) {
-            console.error("camera-container bulunamadı!");
-            return; // Eleman yoksa işlemi durdur
-        }
+        const container = document.querySelector('.container');
 
-        // Kamerayı göstermek için z-index ve display ayarları
-        cameraContainer.style.display = 'block'; // Kamera div'ini görünür yapın
-        cameraContainer.style.zIndex = '5'; // Kameranın z-index'ini ayarlayın
+        const cameraContainer = document.createElement('div');
+        cameraContainer.id = 'camera-container';
+        cameraContainer.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60vh;
+        z-index: 5;
+        background: transparent;
+        pointer-events: none;
+    `;
 
-        const videoElement = document.getElementById('camera-view');
-        if (!videoElement) {
-            console.error("camera-view bulunamadı!");
-            return;
-        }
+        const videoElement = document.createElement('video');
+        videoElement.id = 'camera-view';
+        videoElement.style.cssText = `
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+    `;
+        videoElement.setAttribute('autoplay', '');
+        videoElement.setAttribute('playsinline', '');
 
-        // Diğer UI elemanlarının z-index'lerini güncelle
-        if (bottomContainer) {
-            bottomContainer.style.height = '40%'; // Haritayı daralt
-            bottomContainer.style.zIndex = '20';
-        }
-        if (mapSection) mapSection.style.zIndex = '1'; // Haritayı en alta al
+        cameraContainer.appendChild(videoElement);
+        container.appendChild(cameraContainer);
+
+ 
+        const bottomContainer = document.querySelector('.bottom-container');
+        bottomContainer.style.zIndex = '20';
+
+        const infoSection = document.querySelector('.info-section');
         if (infoSection) infoSection.style.zIndex = '25';
+
+        const buttonSection = document.querySelector('.button-section');
+        if (buttonSection) buttonSection.style.zIndex = '25';
+
 
         document.querySelectorAll('button, .circular-icon-button, .image-button').forEach(button => {
             button.style.zIndex = '30';
         });
+
 
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({
@@ -388,7 +334,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(function (error) {
                     console.error("Kamera erişim hatası:", error);
-                    // Environment kamera yoksa varsayılanı dene
                     navigator.mediaDevices.getUserMedia({ video: true })
                         .then(function (stream) {
                             videoElement.srcObject = stream;
@@ -400,18 +345,23 @@ document.addEventListener('DOMContentLoaded', function () {
                         });
                 });
         }
-        
-        if (manualCaptureMode) {
-            if (manualCaptureButton) manualCaptureButton.style.display = 'flex';
-            if (manualCaptureButton) manualCaptureButton.onclick = takePhoto;
-            if (document.getElementById('capture-instruction')) document.getElementById('capture-instruction').style.display = 'block';
-            if (document.getElementById('capture-status')) document.getElementById('capture-status').style.display = 'none';
 
+        bottomContainer.style.height = '40%';
+
+        if (manualCaptureMode) {
+            manualCaptureButton.style.display = 'flex';
+            manualCaptureButton.onclick = takePhoto;
+            document.getElementById('capture-instruction').style.display = 'block';
+            document.getElementById('capture-status').style.display = 'none';
+
+            const scanArea = document.getElementById('scanArea');
             if (scanArea) {
                 scanArea.classList.add('glow-active');
             }
         } else {
-            if (manualCaptureButton) manualCaptureButton.style.display = 'none';
+            manualCaptureButton.style.display = 'none';
+ 
+            const scanArea = document.getElementById('scanArea');
             if (scanArea) {
                 scanArea.classList.remove('glow-active');
             }
@@ -422,29 +372,45 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!arOpen) return;
         arOpen = false;
 
+
         if (window.localStream) {
             window.localStream.getTracks().forEach(track => track.stop());
         }
 
+
         const cameraContainer = document.getElementById('camera-container');
         if (cameraContainer) {
-            cameraContainer.style.display = 'none'; // Kamerayı gizle
-            // cameraContainer.parentElement.removeChild(cameraContainer); // Elementi DOM'dan kaldırmak yerine gizlemek daha iyi olabilir.
+            cameraContainer.parentElement.removeChild(cameraContainer);
         }
 
-        if (bottomContainer) {
-            bottomContainer.style.height = '100%'; // Haritayı eski boyutuna getir
-            bottomContainer.style.zIndex = ''; // Z-index'i varsayılana dön
-        }
-        if (mapSection) mapSection.style.zIndex = '';
-        if (infoSection) infoSection.style.zIndex = '';
 
+        const bottomContainer = document.querySelector('.bottom-container');
+        bottomContainer.style.height = '100%';
+        bottomContainer.style.zIndex = '';
+
+     
+        const mapSection = document.querySelector('.map-section');
+        if (mapSection) {
+            mapSection.style.zIndex = ''; 
+
+        }
+
+        const infoSection = document.querySelector('.info-section');
+        if (infoSection) {
+            infoSection.style.zIndex = '';
+
+        }
+
+      
         document.querySelectorAll('button, .circular-icon-button, .image-button').forEach(button => {
-            button.style.zIndex = '';
+            button.style.zIndex = ''; 
         });
 
+
         if (captureArea) {
-            captureArea.classList.remove('glow-active');
+            if (!manualCaptureMode) {
+                captureArea.classList.remove('glow-active');
+            }
         }
 
         animationStarted = false;
@@ -452,9 +418,57 @@ document.addEventListener('DOMContentLoaded', function () {
         stableStartTime = null;
         if (animationTimeout) clearTimeout(animationTimeout);
 
-        if (manualCaptureButton) manualCaptureButton.style.display = 'none';
 
-        if (document.getElementById('capture-status')) document.getElementById('capture-status').style.display = 'none';
-        if (document.getElementById('capture-instruction')) document.getElementById('capture-instruction').style.display = 'block';
+        manualCaptureButton.style.display = 'none';
+
+ 
+        document.getElementById('capture-status').style.display = 'none';
+        document.getElementById('capture-instruction').style.display = 'block';
     }
+
+    function isDeviceStable(event) {
+        const threshold = 1.3;
+        const diffBeta = Math.abs(event.beta - lastOrientation.beta);
+        const diffGamma = Math.abs(event.gamma - lastOrientation.gamma);
+        const diffAlpha = Math.abs(event.alpha - lastOrientation.alpha);
+        lastOrientation = { beta: event.beta, gamma: event.gamma, alpha: event.alpha };
+        return (diffBeta < threshold && diffGamma < threshold && diffAlpha < threshold);
+    }
+
+    function getPitch(event) {
+        return Math.abs(event.beta);
+    }
+
+    window.addEventListener('deviceorientation', function (event) {
+        const bottomSheet = document.getElementById("bottomSheet");
+        if (!bottomSheet.classList.contains('hidden-sheet') || onboardingActive) {
+            return; 
+        }
+        const pitch = getPitch(event);
+        if (pitch >= 50) {
+            openAR();
+
+
+            if (!manualCaptureMode) {
+                if (isDeviceStable(event)) {
+                    if (!stableStartTime) stableStartTime = Date.now();
+
+                    if (Date.now() - stableStartTime > 1000) {
+                        startAnimation();
+                    }
+                } else {
+                    stableStartTime = null;
+                    if (captureArea) {
+                        captureArea.classList.remove('glow-active');
+                        document.getElementById('capture-status').style.display = 'none';
+                        document.getElementById('capture-instruction').style.display = 'block';
+                    }
+                    animationStarted = false;
+                    if (animationTimeout) clearTimeout(animationTimeout);
+                }
+            }
+        } else {
+            closeAR();
+        }
+    });
 });
