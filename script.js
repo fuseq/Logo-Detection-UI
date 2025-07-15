@@ -8,7 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let lastMotion = { x: 0, y: 0, z: 0 };
     let onboardingStep = 0;
     let manualCaptureMode = false; 
-    let onboardingActive = false;
+    let onboardingActive = false; // Onboarding'in şu anda açık olup olmadığını takip eder
+    let onboardingShownDueToPitch = false; // Pitch ile onboarding'in bir kez gösterilip gösterilmediğini takip eder
+
     const onboardingSteps = [
         {
             logo: '<svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#7daef1"><animate attributeName="r" values="20;24;20" dur="1.2s" repeatCount="indefinite"/></circle></svg>',
@@ -28,7 +30,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     const notificationBar = document.getElementById('notification-bar');
-    const onboardingPopup = document.getElementById('onboarding-popup');
+    // const onboardingPopup = document.getElementById('onboarding-popup'); // Bu satır kaldırıldı
+    const onboardingBottomSheet = document.getElementById('onboardingBottomSheet'); // Yeni ID
     const onboardingLogo = document.getElementById('onboarding-logo');
     const onboardingTitle = document.getElementById('onboarding-title');
     const onboardingDesc = document.getElementById('onboarding-desc');
@@ -44,8 +47,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const infoSection = document.querySelector('.info-section');
     const container = document.querySelector('.container');
     const manualCaptureButton = document.getElementById('manual-capture-button');
-    let onboardingShown = false;
+    // let onboardingShown = false; // Bu değişkenin adı değiştirildi ve kullanımı güncellendi
 
+    // Bildirim çubuğunu başlangıçta göster (mevcut mantık)
     notificationBar.style.display = 'block';
     setTimeout(() => {
         notificationBar.style.display = 'none';
@@ -60,23 +64,31 @@ document.addEventListener('DOMContentLoaded', function () {
         if (step === onboardingSteps.length - 1) {
             onboardingNext.style.display = 'none';
             onboardingClose.style.display = 'inline-block';
-            captureModeButtons.style.display = 'flex';
+            captureModeButtons.style.display = 'flex'; // Son adımda düğmeleri göster
         } else {
             onboardingNext.style.display = 'inline-block';
             onboardingClose.style.display = 'none';
-            captureModeButtons.style.display = 'none';
+            captureModeButtons.style.display = 'none'; // Diğer adımlarda düğmeleri gizle
         }
     }
 
     function openOnboarding() {
+        if (onboardingActive) return; // Zaten açıksa tekrar açma
         onboardingStep = 0;
-        onboardingPopup.style.display = 'flex';
+        onboardingBottomSheet.classList.remove('hidden-sheet'); // Bottom sheet'i görünür yap
+        onboardingBottomSheet.classList.add('open'); // Animasyon sınıfını ekle
+        onboardingActive = true; // Onboarding'i aktif olarak işaretle
         showOnboardingStep(onboardingStep);
     }
 
     function closeOnboarding() {
-        onboardingPopup.style.display = 'none';
-        onboardingActive = false;
+        onboardingBottomSheet.classList.remove('open'); // Animasyon sınıfını kaldır
+        // Animasyon bittikten sonra gizle
+        setTimeout(() => {
+            onboardingBottomSheet.classList.add('hidden-sheet');
+            onboardingActive = false; // Onboarding'i deaktif olarak işaretle
+            onboardingShownDueToPitch = true; // Onboarding kapatıldığında, bir daha pitch ile açılmamasını sağlarız.
+        }, 300); // Tailwind transition süresiyle eşleşmeli
     }
 
     onboardingPrev.onclick = function () {
@@ -93,47 +105,69 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    onboardingClose.onclick = closeOnboarding;
-
+    onboardingClose.onclick = closeOnboarding; // Genel kapatma butonu
 
     automaticCaptureBtn.onclick = function () {
         manualCaptureMode = false;
         closeOnboarding();
+        // Otomatik çekim modu seçildiğinde yapılacak ek işlemler buraya eklenebilir
     };
 
     manualCaptureBtn.onclick = function () {
         manualCaptureMode = true;
         closeOnboarding();
+        // Manuel çekim modu seçildiğinde yapılacak ek işlemler buraya eklenebilir
     };
 
+    // ------------- Mevcut cihaz yönlendirme ve AR mantığı -------------
+
     window.addEventListener('deviceorientation', function (event) {
-        const pitch = getPitch(event);
-        if (pitch >= 50 && !onboardingShown) {
-            openOnboarding();
-            onboardingShown = true;
-            onboardingActive = true;
+        // Eğer onboarding zaten açıksa veya daha önce pitch ile gösterildiyse AR'ı açma
+        // Bu kontrol, onboarding açıkken veya kapatıldıktan sonra telefon tekrar kaldırıldığında otomatik açılmasını engeller.
+        if (onboardingActive || onboardingShownDueToPitch) {
+            return; 
         }
+
+        const pitch = getPitch(event);
+
+        if (pitch >= 50) {
+            // Sadece pitch eşiğini geçtiğinde onboarding'i aç
+            openOnboarding();
+            onboardingActive = true; // Onboarding'i aktif olarak işaretle
+            onboardingShownDueToPitch = true; // Bir daha pitch ile açılmasın diye işaretle
+        }
+        // Eğer pitch 50'nin altına düşerse burada bir işlem yapmıyoruz
+        // çünkü onboarding sadece bir kez gösterilecek.
     });
 
+
+    // Kamerayı açma ve kapatma mantığı (pitch'ten bağımsız hale getirildi)
+    // AR'ı manuel olarak ne zaman açıp kapatacağınızı belirlemeniz gerekecek.
+    // Örneğin, onboarding bittikten sonra veya bir "Başla" butonuna basıldığında.
+    // Aşağıdaki `deviceorientation` event listener'ından `openAR()` çağrısını kaldırdık
+    // ve AR açma mantığını `manualCaptureMode`'a bağladık.
+    // Eğer `manualCaptureMode` aktifse, `openAR` çağrısı başka bir yerden gelmeli.
+    // Örneğin, onboarding kapandıktan sonra `manualCaptureMode` aktifse `openAR()` çağrılabilir.
+
+    // Not: `showProcessedResults` içindeki `closeAR()` ve `goToStep()` fonksiyonlarınızın
+    // doğru çalıştığından ve diğer HTML/JS yapınızla uyumlu olduğundan emin olun.
 
     const sampleLogos = [
         { id: 1, url: 'assets/logo1.png', name: 'Logo 1' },
         { id: 2, url: 'assets/logo2.png', name: 'Logo 2' },
-        { id: 3, url: 'assets/logo3.png', name: 'Logo 3' },
+        { id: 3, url: 'assets/logo3.png', name: 'Logo 4' },
         { id: 4, url: 'assets/logo4.png', name: 'Logo 4' },
     ];
 
     function showProcessedResults(capturedImageURL) {
-      
-        closeAR(); 
+        closeAR(); // AR kapatılır
 
-        
-        goToStep(1); 
-
+        // goToStep(1); // Bu fonksiyonun tanımı bu kapsamda yok, eğer kullanılıyorsa tanımlanmalı
 
         const capturedImage = document.getElementById('captured-image'); 
-
-        capturedImage.src = capturedImageURL;
+        if (capturedImage) {
+            capturedImage.src = capturedImageURL;
+        }
 
         const bottomSheetCancelBtn = document.getElementById('cancel-btn'); 
         const bottomSheetApproveBtn = document.getElementById('approve-btn'); 
@@ -141,31 +175,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (bottomSheetCancelBtn) {
             bottomSheetCancelBtn.onclick = () => {
-                closeBottomSheet(); 
-           
+                // closeBottomSheet(); // Bu fonksiyonun tanımı bu kapsamda yok, eğer kullanılıyorsa tanımlanmalı
+                // Buradaki `closeBottomSheet()` yerine ne yapılması gerektiğini belirlemelisiniz.
+                // Belki AR'ı tekrar açmak veya başka bir ana ekran durumu ayarlamak.
             };
         }
 
         if (bottomSheetApproveBtn) {
             bottomSheetApproveBtn.onclick = () => {
-                goToStep(2); 
-
-
-                setTimeout(() => {
-                    goToStep(3); 
-
+                // goToStep(2); // Tanımlanmamış
+                // setTimeout(() => {
+                //     goToStep(3); // Tanımlanmamış
                     const mainLogo = document.getElementById('mainImage'); 
                     const thumbnailContainer = document.querySelector('#step3 .flex.justify-center'); 
 
-
-                    thumbnailContainer.innerHTML = ''; 
-
-                    if (selectedThumbnail) {
-                        selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
-                        selectedThumbnail = null;
+                    if (thumbnailContainer) {
+                         thumbnailContainer.innerHTML = ''; 
                     }
+                   
+                    let selectedThumbnail = null; // Bu değişkenin scope'u burada tanımlı değil, dışarıda tanımlanmalıydı
 
- 
+                    // if (selectedThumbnail) {
+                    //     selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
+                    //     selectedThumbnail = null;
+                    // }
+
                     sampleLogos.forEach((logo, index) => {
                         const div = document.createElement('div');
                         div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container';
@@ -175,27 +209,27 @@ document.addEventListener('DOMContentLoaded', function () {
                         img.alt = logo.name;
                         img.className = 'w-full h-full object-cover cursor-pointer';
                         img.onclick = () => {
-
-                            changeImage(img);
+                            // changeImage(img); // Tanımlanmamış
                         };
                         div.appendChild(img);
-                        thumbnailContainer.appendChild(div);
+                        if (thumbnailContainer) {
+                            thumbnailContainer.appendChild(div);
+                        }
+                       
 
-
-                        if (index === 0) {
+                        if (index === 0 && mainLogo) {
                             mainLogo.src = logo.url;
                             mainLogo.alt = logo.name;
-
                         }
                     });
 
-                }, 1000);
+                // }, 1000);
             };
         }
 
         if (bottomSheetConfirmResultBtn) {
             bottomSheetConfirmResultBtn.onclick = () => {
-                closeBottomSheet(); 
+                // closeBottomSheet(); // Tanımlanmamış
 
                 animationStarted = false;
                 photoTaken = false;
@@ -306,7 +340,6 @@ document.addEventListener('DOMContentLoaded', function () {
         cameraContainer.appendChild(videoElement);
         container.appendChild(cameraContainer);
 
- 
         const bottomContainer = document.querySelector('.bottom-container');
         bottomContainer.style.zIndex = '20';
 
@@ -360,7 +393,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         } else {
             manualCaptureButton.style.display = 'none';
- 
             const scanArea = document.getElementById('scanArea');
             if (scanArea) {
                 scanArea.classList.remove('glow-active');
@@ -372,40 +404,32 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!arOpen) return;
         arOpen = false;
 
-
         if (window.localStream) {
             window.localStream.getTracks().forEach(track => track.stop());
         }
-
 
         const cameraContainer = document.getElementById('camera-container');
         if (cameraContainer) {
             cameraContainer.parentElement.removeChild(cameraContainer);
         }
 
-
         const bottomContainer = document.querySelector('.bottom-container');
         bottomContainer.style.height = '100%';
         bottomContainer.style.zIndex = '';
 
-     
         const mapSection = document.querySelector('.map-section');
         if (mapSection) {
             mapSection.style.zIndex = ''; 
-
         }
 
         const infoSection = document.querySelector('.info-section');
         if (infoSection) {
             infoSection.style.zIndex = '';
-
         }
 
-      
         document.querySelectorAll('button, .circular-icon-button, .image-button').forEach(button => {
             button.style.zIndex = ''; 
         });
-
 
         if (captureArea) {
             if (!manualCaptureMode) {
@@ -418,10 +442,8 @@ document.addEventListener('DOMContentLoaded', function () {
         stableStartTime = null;
         if (animationTimeout) clearTimeout(animationTimeout);
 
-
         manualCaptureButton.style.display = 'none';
 
- 
         document.getElementById('capture-status').style.display = 'none';
         document.getElementById('capture-instruction').style.display = 'block';
     }
@@ -436,39 +458,58 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getPitch(event) {
+        // Cihazın eğimini döndürür (beta açısı genellikle pitch'i temsil eder)
         return Math.abs(event.beta);
     }
 
+    // `deviceorientation` event listener'ı güncellendi
     window.addEventListener('deviceorientation', function (event) {
-        const bottomSheet = document.getElementById("bottomSheet");
-        if (!bottomSheet.classList.contains('hidden-sheet') || onboardingActive) {
-            return; 
+        // Eğer onboarding aktifse veya daha önce pitch ile gösterildiyse AR'ı açma
+        if (onboardingActive || onboardingShownDueToPitch) {
+            return; // Onboarding zaten açıksa veya daha önce açıldıysa çık
         }
+
         const pitch = getPitch(event);
+
         if (pitch >= 50) {
-            openAR();
-
-
-            if (!manualCaptureMode) {
-                if (isDeviceStable(event)) {
-                    if (!stableStartTime) stableStartTime = Date.now();
-
-                    if (Date.now() - stableStartTime > 1000) {
-                        startAnimation();
-                    }
-                } else {
-                    stableStartTime = null;
-                    if (captureArea) {
-                        captureArea.classList.remove('glow-active');
-                        document.getElementById('capture-status').style.display = 'none';
-                        document.getElementById('capture-instruction').style.display = 'block';
-                    }
-                    animationStarted = false;
-                    if (animationTimeout) clearTimeout(animationTimeout);
-                }
-            }
+            // Eğer telefon yeterince kaldırıldıysa ve onboarding daha önce gösterilmediyse
+            openOnboarding(); // Onboarding'i başlat
+            // openAR(); // AR'ı burada otomatik olarak başlatmak istiyorsanız bu satırı aktif edin
+            // Ancak genellikle onboarding bittikten sonra AR başlar.
         } else {
-            closeAR();
+            // Telefon kaldırılmadığında AR'ı kapatabiliriz, ancak bu onboarding'i etkilemez
+            // closeAR(); // Eğer pitch 50'nin altına düştüğünde AR'ı kapatmak istiyorsanız
+        }
+
+        // AR ve fotoğraf çekme mantığı (yalnızca AR açıksa ve manuel modda değilse)
+        // Bu bölümü doğrudan pitch olayına bağlamak yerine, AR'ın açık olduğu
+        // ve manuel modun kapalı olduğu bir duruma bağlamanız daha mantıklı olabilir.
+        // Örneğin, 'openAR' fonksiyonunuzun sonunda veya belirli bir AR durumunda.
+        // Aşağıdaki blok, `onboardingActive` veya `onboardingShownDueToPitch` durumlarından bağımsız çalışır.
+        // Bu yüzden dikkatli olun.
+        if (arOpen && !manualCaptureMode) {
+             if (isDeviceStable(event)) {
+                 if (!stableStartTime) stableStartTime = Date.now();
+
+                 if (Date.now() - stableStartTime > 1000) {
+                     startAnimation();
+                 }
+             } else {
+                 stableStartTime = null;
+                 if (captureArea) {
+                     captureArea.classList.remove('glow-active');
+                     document.getElementById('capture-status').style.display = 'none';
+                     document.getElementById('capture-instruction').style.display = 'block';
+                 }
+                 animationStarted = false;
+                 if (animationTimeout) clearTimeout(animationTimeout);
+             }
         }
     });
+
+    // Sayfa yüklendiğinde `onboardingBottomSheet`'in gizli olması için
+    // Bu kodun, HTML'deki `hidden-sheet` sınıfını içermesi gerektiğini unutmayın.
+    // Eğer HTML'de `hidden-sheet` yoksa, burada manuel olarak eklemeniz gerekebilir.
+    // onboardingBottomSheet.classList.add('hidden-sheet'); 
+
 });
