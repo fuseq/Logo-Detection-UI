@@ -69,20 +69,20 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function openOnboarding() {
-        onboardingStep = 0;
-        onboardingPopup.style.display = 'flex';
+        const bottomSheet = document.getElementById('onboarding-bottom-sheet');
+        bottomSheet.style.display = 'flex';
         setTimeout(() => {
-            onboardingPopup.classList.add('active');
+            bottomSheet.classList.add('active');
         }, 10); // Small delay to ensure display: flex is applied before animation
         showOnboardingStep(onboardingStep);
     }
 
     function closeOnboarding() {
-        onboardingPopup.style.display = 'none';
-        onboardingPopup.classList.remove('active');
-                    setTimeout(() => {
-                onboardingPopup.style.display = 'none';
-            }, 300); // Match the transition duration
+        const bottomSheet = document.getElementById('onboarding-bottom-sheet');
+        bottomSheet.classList.remove('active');
+        setTimeout(() => {
+            bottomSheet.style.display = 'none';
+        }, 300); // Match the transition duration
         onboardingActive = false;
     }
 

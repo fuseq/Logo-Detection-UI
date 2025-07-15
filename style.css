@@ -482,7 +482,7 @@ button {
 }
 
 /* Onboarding Bottom Sheet */
-.onboarding-popup {
+.onboarding-bottom-sheet {
     position: fixed;
     bottom: 0;
     left: 0;
