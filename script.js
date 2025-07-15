@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let lastOrientation = { beta: 0, gamma: 0, alpha: 0 };
     let lastMotion = { x: 0, y: 0, z: 0 };
     let onboardingStep = 0;
-    let manualCaptureMode = false;
-    let onboardingActive = false; // Onboarding bottom sheet'in açık olup olmadığını belirtir
+    let manualCaptureMode = false; 
+    let onboardingActive = false;
     const onboardingSteps = [
         {
             logo: '<svg width="48" height="48" viewBox="0 0 48 48"><circle cx="24" cy="24" r="20" fill="#7daef1"><animate attributeName="r" values="20;24;20" dur="1.2s" repeatCount="indefinite"/></circle></svg>',
@@ -44,16 +44,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const infoSection = document.querySelector('.info-section');
     const container = document.querySelector('.container');
     const manualCaptureButton = document.getElementById('manual-capture-button');
-    let onboardingShown = false; // Onboarding bir kez gösterildi mi?
+    let onboardingShown = false;
 
-    // Eğer notificationBar başlangıçta gizliyse, bu kısım gereksiz olabilir.
-    // Varsayılan olarak CSS ile gizlenip JS ile gösterilmesi daha iyi.
-    if (notificationBar) {
-        notificationBar.style.display = 'block';
-        setTimeout(() => {
-            notificationBar.style.display = 'none';
-        }, 3000);
-    }
+    notificationBar.style.display = 'block';
+    setTimeout(() => {
+        notificationBar.style.display = 'none';
+    }, 3000);
 
     function showOnboardingStep(step) {
         onboardingLogo.innerHTML = onboardingSteps[step].logo;
@@ -72,35 +68,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // --- Bottom Sheet Açma İşlevi ---
     function openOnboarding() {
-        if (onboardingActive) return; // Zaten açıksa tekrar açma
-        onboardingStep = 0; // Her açılışta ilk adıma dön
-        showOnboardingStep(onboardingStep); // İçeriği ilk adıma göre güncelle
-
-        onboardingPopup.style.display = 'flex'; // Popup div'ini görünür yap (CSS transition için)
-        // Kısa bir gecikme ile 'active' sınıfını ekle ki CSS transition tetiklensin
-        setTimeout(() => {
-            onboardingPopup.classList.add('active');
-            onboardingActive = true; // Bottom sheet'in aktif olduğunu işaretle
-        }, 10);
+        onboardingStep = 0;
+        onboardingPopup.style.display = 'flex';
+        showOnboardingStep(onboardingStep);
     }
 
-    // --- Bottom Sheet Kapatma İşlevi ---
     function closeOnboarding() {
-        if (!onboardingActive) return; // Zaten kapalıysa işlem yapma
-
-        onboardingPopup.classList.remove('active'); // CSS transition'ı başlatmak için 'active' sınıfını kaldır
-        // Transition tamamlandığında display: none yapmak için event listener ekle
-        onboardingPopup.addEventListener('transitionend', function handler() {
-            onboardingPopup.style.display = 'none'; // Elementi tamamen gizle
-            onboardingPopup.removeEventListener('transitionend', handler); // Dinleyiciyi kaldır
-        }, { once: true }); // Olay dinleyicisini sadece bir kez çalıştır
-
-        onboardingActive = false; // Bottom sheet'in artık aktif olmadığını işaretle
+        onboardingPopup.style.display = 'none';
+        onboardingActive = false;
     }
 
-    // Onboarding buton olayları
     onboardingPrev.onclick = function () {
         if (onboardingStep > 0) {
             onboardingStep--;
@@ -115,44 +93,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    onboardingClose.onclick = closeOnboarding; // Kapat butonuna tıklandığında closeOnboarding çağrılır
+    onboardingClose.onclick = closeOnboarding;
 
 
-    // Yakalama modu butonları
     automaticCaptureBtn.onclick = function () {
         manualCaptureMode = false;
-        closeOnboarding(); // Bottom sheet'i kapat
+        closeOnboarding();
     };
 
     manualCaptureBtn.onclick = function () {
         manualCaptureMode = true;
-        closeOnboarding(); // Bottom sheet'i kapat
+        closeOnboarding();
     };
 
-    // --- Arka plana tıklayarak kapatma (isteğe bağlı) ---
-    onboardingPopup.addEventListener('click', (event) => {
-        if (event.target === onboardingPopup) { // Sadece arka plan overlay'ine tıklanırsa
-            closeOnboarding();
-        }
-    });
-
-    // Cihazın eğimine göre onboarding'i açma mantığı
     window.addEventListener('deviceorientation', function (event) {
-        // onboardingActive kontrolü ekledik: Eğer bottom sheet zaten açıksa veya
-        // onboardingShown true ise (yani daha önce gösterildiyse), tekrar açma.
-        // Bu, bottom sheet açıldığında veya bir kez açılıp kapandıktan sonra
-        // tekrar açılmasını engeller.
-        if (onboardingActive || onboardingShown) {
-            return;
-        }
-
         const pitch = getPitch(event);
-        if (pitch >= 50) { // Belirli bir eğim açısına ulaşıldığında
+        if (pitch >= 50 && !onboardingShown) {
             openOnboarding();
-            onboardingShown = true; // Onboarding'in gösterildiğini işaretle
-            // onboardingActive zaten openOnboarding içinde true yapılıyor
+            onboardingShown = true;
+            onboardingActive = true;
         }
     });
+
 
     const sampleLogos = [
         { id: 1, url: 'assets/logo1.png', name: 'Logo 1' },
@@ -162,107 +124,94 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     function showProcessedResults(capturedImageURL) {
-        closeAR(); // AR kamerasını kapat
+      
+        closeAR(); 
 
-        // Burada bir bottomSheet elementine goToStep(1) veya benzeri bir işlem yapılıyordu.
-        // Eğer ayrı bir "bottomSheet" elementiniz varsa, onu burada kontrol etmelisiniz.
-        // Örneğin: document.getElementById('anotherBottomSheet').classList.remove('hidden-sheet');
-        // Veya ilgili adım div'lerini görünür yapın.
-        // Bu fonksiyon, onboarding bottom sheet'i ile ilgili değil, işleme sonuçlarını gösteren
-        // başka bir bottom sheet veya bölgeyi yönetiyor gibi görünüyor.
-        // Şu anki kodunuzda "bottomSheet" id'li bir element yok, bu yüzden bu kısmı varsayımsal bırakıyorum.
-        // goToStep(1); // Eğer bu, başka bir bottom sheet'in adımlarını yönetiyorsa, burayı düzeltmelisiniz.
+        
+        goToStep(1); 
 
-        const capturedImage = document.getElementById('captured-image');
-        if (capturedImage) {
-            capturedImage.src = capturedImageURL;
-        }
 
-        const bottomSheetCancelBtn = document.getElementById('cancel-btn');
-        const bottomSheetApproveBtn = document.getElementById('approve-btn');
-        const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn');
+        const capturedImage = document.getElementById('captured-image'); 
+
+        capturedImage.src = capturedImageURL;
+
+        const bottomSheetCancelBtn = document.getElementById('cancel-btn'); 
+        const bottomSheetApproveBtn = document.getElementById('approve-btn'); 
+        const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn'); 
 
         if (bottomSheetCancelBtn) {
             bottomSheetCancelBtn.onclick = () => {
-                // closeBottomSheet(); // Eğer varsa bu fonksiyonu çağırın
-                // Ek olarak, bu butona basıldığında AR'yi yeniden başlatmanız gerekebilir:
-                // openAR();
+                closeBottomSheet(); 
+           
             };
         }
 
         if (bottomSheetApproveBtn) {
             bottomSheetApproveBtn.onclick = () => {
-                // goToStep(2); // Eğer varsa bu fonksiyonu çağırın
+                goToStep(2); 
+
 
                 setTimeout(() => {
-                    // goToStep(3); // Eğer varsa bu fonksiyonu çağırın
+                    goToStep(3); 
 
-                    const mainLogo = document.getElementById('mainImage');
-                    const thumbnailContainer = document.querySelector('#step3 .flex.justify-center');
+                    const mainLogo = document.getElementById('mainImage'); 
+                    const thumbnailContainer = document.querySelector('#step3 .flex.justify-center'); 
 
-                    if (thumbnailContainer) {
-                        thumbnailContainer.innerHTML = ''; // İçeriği temizle
 
-                        let selectedThumbnail = null; // Bu değişkenin kapsamını dikkatlice yönetin
+                    thumbnailContainer.innerHTML = ''; 
 
-                        sampleLogos.forEach((logo, index) => {
-                            const div = document.createElement('div');
-                            div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container';
-
-                            const img = document.createElement('img');
-                            img.src = logo.url;
-                            img.alt = logo.name;
-                            img.className = 'w-full h-full object-cover cursor-pointer';
-                            img.onclick = () => {
-                                // changeImage(img); // Bu fonksiyonun tanımı eksik
-                                if (selectedThumbnail) {
-                                    selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
-                                }
-                                img.parentElement.classList.add("thumbnail-selected");
-                                selectedThumbnail = img;
-                                if (mainLogo) {
-                                    mainLogo.src = img.src; // Ana logoyu seçilen thumbnail ile güncelle
-                                    mainLogo.alt = img.alt;
-                                }
-                            };
-                            div.appendChild(img);
-                            thumbnailContainer.appendChild(div);
-
-                            if (index === 0) {
-                                if (mainLogo) {
-                                    mainLogo.src = logo.url;
-                                    mainLogo.alt = logo.name;
-                                }
-                                // İlk thumbnail'ı varsayılan olarak seçili yap
-                                img.parentElement.classList.add("thumbnail-selected");
-                                selectedThumbnail = img;
-                            }
-                        });
+                    if (selectedThumbnail) {
+                        selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
+                        selectedThumbnail = null;
                     }
+
+ 
+                    sampleLogos.forEach((logo, index) => {
+                        const div = document.createElement('div');
+                        div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container';
+
+                        const img = document.createElement('img');
+                        img.src = logo.url;
+                        img.alt = logo.name;
+                        img.className = 'w-full h-full object-cover cursor-pointer';
+                        img.onclick = () => {
+
+                            changeImage(img);
+                        };
+                        div.appendChild(img);
+                        thumbnailContainer.appendChild(div);
+
+
+                        if (index === 0) {
+                            mainLogo.src = logo.url;
+                            mainLogo.alt = logo.name;
+
+                        }
+                    });
+
                 }, 1000);
             };
         }
 
         if (bottomSheetConfirmResultBtn) {
             bottomSheetConfirmResultBtn.onclick = () => {
-                // closeBottomSheet(); // Eğer varsa bu fonksiyonu çağırın
+                closeBottomSheet(); 
 
                 animationStarted = false;
                 photoTaken = false;
                 stableStartTime = null;
                 if (animationTimeout) clearTimeout(animationTimeout);
 
-                if (captureArea) {
+                const scanArea = document.getElementById('scanArea');
+                if (scanArea) {
                     if (manualCaptureMode) {
-                        captureArea.classList.add('glow-active'); // Manual modda tekrar parlamayı aç
+                        scanArea.classList.add('glow-active');
                     } else {
-                        captureArea.classList.remove('glow-active'); // Otomatik modda kapat
+                        scanArea.classList.remove('glow-active');
                     }
                 }
                 document.getElementById('capture-status').style.display = 'none';
                 document.getElementById('capture-instruction').style.display = 'block';
-                // İşlem bitince AR'yi tekrar başlatın (genellikle bu beklenir)
-                openAR();
             };
         }
     }
@@ -333,31 +282,31 @@ document.addEventListener('DOMContentLoaded', function () {
         const cameraContainer = document.createElement('div');
         cameraContainer.id = 'camera-container';
         cameraContainer.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 60vh;
-            z-index: 5;
-            background: transparent;
-            pointer-events: none;
-        `;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60vh;
+        z-index: 5;
+        background: transparent;
+        pointer-events: none;
+    `;
 
         const videoElement = document.createElement('video');
         videoElement.id = 'camera-view';
         videoElement.style.cssText = `
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            pointer-events: none;
-        `;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+    `;
         videoElement.setAttribute('autoplay', '');
         videoElement.setAttribute('playsinline', '');
 
         cameraContainer.appendChild(videoElement);
         container.appendChild(cameraContainer);
 
-
+ 
         const bottomContainer = document.querySelector('.bottom-container');
         bottomContainer.style.zIndex = '20';
 
@@ -411,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         } else {
             manualCaptureButton.style.display = 'none';
-
+ 
             const scanArea = document.getElementById('scanArea');
             if (scanArea) {
                 scanArea.classList.remove('glow-active');
@@ -439,10 +388,10 @@ document.addEventListener('DOMContentLoaded', function () {
         bottomContainer.style.height = '100%';
         bottomContainer.style.zIndex = '';
 
-
+     
         const mapSection = document.querySelector('.map-section');
         if (mapSection) {
-            mapSection.style.zIndex = '';
+            mapSection.style.zIndex = ''; 
 
         }
 
@@ -452,9 +401,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
-
+      
         document.querySelectorAll('button, .circular-icon-button, .image-button').forEach(button => {
-            button.style.zIndex = '';
+            button.style.zIndex = ''; 
         });
 
 
@@ -472,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         manualCaptureButton.style.display = 'none';
 
-
+ 
         document.getElementById('capture-status').style.display = 'none';
         document.getElementById('capture-instruction').style.display = 'block';
     }
@@ -490,33 +439,17 @@ document.addEventListener('DOMContentLoaded', function () {
         return Math.abs(event.beta);
     }
 
-    // `deviceorientation` dinleyicisindeki değişiklikler
     window.addEventListener('deviceorientation', function (event) {
-        // `bottomSheet` id'li bir elementiniz olmadığı için bu kontrolü kaldırdım
-        // Eğer ayrı bir "bottomSheet" mekanizmanız varsa, onun `hidden-sheet` sınıfını kontrol edebilirsiniz.
-        // Örneğin: const anotherBottomSheet = document.getElementById('anotherBottomSheet');
-        // if (anotherBottomSheet && !anotherBottomSheet.classList.contains('hidden-sheet') || onboardingActive) {
-        //     return;
-        // }
-
-        // Eğer onboarding bottom sheet aktifse veya daha önce gösterildiyse, tekrar açma
-        if (onboardingActive || onboardingShown) {
-            return;
+        const bottomSheet = document.getElementById("bottomSheet");
+        if (!bottomSheet.classList.contains('hidden-sheet') || onboardingActive) {
+            return; 
         }
-
         const pitch = getPitch(event);
         if (pitch >= 50) {
-            openAR(); // AR kamerasını aç
-
-            // Onboarding gösterilmemişse ve pitch uygunsa onboarding'i aç
-            if (!onboardingShown) {
-                openOnboarding();
-                onboardingShown = true; // Sadece bir kez gösterildiğini işaretle
-                // onboardingActive zaten openOnboarding içinde true yapılır
-            }
+            openAR();
 
 
-            if (!manualCaptureMode && !onboardingActive) { // Onboarding aktif değilse otomatik yakalama
+            if (!manualCaptureMode) {
                 if (isDeviceStable(event)) {
                     if (!stableStartTime) stableStartTime = Date.now();
 
@@ -538,5 +471,4 @@ document.addEventListener('DOMContentLoaded', function () {
             closeAR();
         }
     });
-
 });
