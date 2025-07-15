@@ -481,32 +481,47 @@ button {
     }
 }
 
-/* Onboarding Popup */
+/* Onboarding Bottom Sheet */
 .onboarding-popup {
     position: fixed;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     background: rgba(0, 0, 0, 0.55);
     display: flex;
-    align-items: center;
+    align-items: flex-end;
+    /* Align content to the bottom */
     justify-content: center;
     z-index: 10000;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .onboarding-content {
     background: #fff;
-    border-radius: 18px;
-    padding: 32px 24px 24px 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-    min-width: 320px;
-    max-width: 90vw;
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18);
+    width: 100%;
+    max-width: 600px;
+    /* Limit max width for larger screens */
+    max-height: 80vh;
+    /* Limit height to avoid covering entire screen */
     text-align: center;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
+    transform: translateY(100%);
+    /* Start off-screen */
+    transition: transform 0.3s ease-in-out;
+}
+
+/* When bottom sheet is visible */
+.onboarding-bottom-sheet.active .onboarding-content {
+    transform: translateY(0);
+    /* Slide up to visible position */
 }
 
 .onboarding-logo {
@@ -516,7 +531,6 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Animasyon için alan */
 }
 
 .onboarding-title {
@@ -536,6 +550,7 @@ button {
     gap: 12px;
     justify-content: center;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .onboarding-controls button {
@@ -547,7 +562,6 @@ button {
     font-size: 15px;
     cursor: pointer;
     transition: background 0.2s;
-    position: relative;
 }
 
 .onboarding-controls button:hover {

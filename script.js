@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let lastOrientation = { beta: 0, gamma: 0, alpha: 0 };
     let lastMotion = { x: 0, y: 0, z: 0 };
     let onboardingStep = 0;
-    let manualCaptureMode = false; 
+    let manualCaptureMode = false;
     let onboardingActive = false;
     const onboardingSteps = [
         {
@@ -71,11 +71,18 @@ document.addEventListener('DOMContentLoaded', function () {
     function openOnboarding() {
         onboardingStep = 0;
         onboardingPopup.style.display = 'flex';
+        setTimeout(() => {
+            onboardingPopup.classList.add('active');
+        }, 10); // Small delay to ensure display: flex is applied before animation
         showOnboardingStep(onboardingStep);
     }
 
     function closeOnboarding() {
         onboardingPopup.style.display = 'none';
+        onboardingPopup.classList.remove('active');
+                    setTimeout(() => {
+                onboardingPopup.style.display = 'none';
+            }, 300); // Match the transition duration
         onboardingActive = false;
     }
 
@@ -124,48 +131,48 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     function showProcessedResults(capturedImageURL) {
-      
-        closeAR(); 
 
-        
-        goToStep(1); 
+        closeAR();
 
 
-        const capturedImage = document.getElementById('captured-image'); 
+        goToStep(1);
+
+
+        const capturedImage = document.getElementById('captured-image');
 
         capturedImage.src = capturedImageURL;
 
-        const bottomSheetCancelBtn = document.getElementById('cancel-btn'); 
-        const bottomSheetApproveBtn = document.getElementById('approve-btn'); 
-        const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn'); 
+        const bottomSheetCancelBtn = document.getElementById('cancel-btn');
+        const bottomSheetApproveBtn = document.getElementById('approve-btn');
+        const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn');
 
         if (bottomSheetCancelBtn) {
             bottomSheetCancelBtn.onclick = () => {
-                closeBottomSheet(); 
-           
+                closeBottomSheet();
+
             };
         }
 
         if (bottomSheetApproveBtn) {
             bottomSheetApproveBtn.onclick = () => {
-                goToStep(2); 
+                goToStep(2);
 
 
                 setTimeout(() => {
-                    goToStep(3); 
+                    goToStep(3);
 
-                    const mainLogo = document.getElementById('mainImage'); 
-                    const thumbnailContainer = document.querySelector('#step3 .flex.justify-center'); 
+                    const mainLogo = document.getElementById('mainImage');
+                    const thumbnailContainer = document.querySelector('#step3 .flex.justify-center');
 
 
-                    thumbnailContainer.innerHTML = ''; 
+                    thumbnailContainer.innerHTML = '';
 
                     if (selectedThumbnail) {
                         selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
                         selectedThumbnail = null;
                     }
 
- 
+
                     sampleLogos.forEach((logo, index) => {
                         const div = document.createElement('div');
                         div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container';
@@ -195,7 +202,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (bottomSheetConfirmResultBtn) {
             bottomSheetConfirmResultBtn.onclick = () => {
-                closeBottomSheet(); 
+                closeBottomSheet();
 
                 animationStarted = false;
                 photoTaken = false;
@@ -306,7 +313,7 @@ document.addEventListener('DOMContentLoaded', function () {
         cameraContainer.appendChild(videoElement);
         container.appendChild(cameraContainer);
 
- 
+
         const bottomContainer = document.querySelector('.bottom-container');
         bottomContainer.style.zIndex = '20';
 
@@ -360,7 +367,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         } else {
             manualCaptureButton.style.display = 'none';
- 
+
             const scanArea = document.getElementById('scanArea');
             if (scanArea) {
                 scanArea.classList.remove('glow-active');
@@ -388,10 +395,10 @@ document.addEventListener('DOMContentLoaded', function () {
         bottomContainer.style.height = '100%';
         bottomContainer.style.zIndex = '';
 
-     
+
         const mapSection = document.querySelector('.map-section');
         if (mapSection) {
-            mapSection.style.zIndex = ''; 
+            mapSection.style.zIndex = '';
 
         }
 
@@ -401,9 +408,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
-      
+
         document.querySelectorAll('button, .circular-icon-button, .image-button').forEach(button => {
-            button.style.zIndex = ''; 
+            button.style.zIndex = '';
         });
 
 
@@ -421,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         manualCaptureButton.style.display = 'none';
 
- 
+
         document.getElementById('capture-status').style.display = 'none';
         document.getElementById('capture-instruction').style.display = 'block';
     }
@@ -442,7 +449,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('deviceorientation', function (event) {
         const bottomSheet = document.getElementById("bottomSheet");
         if (!bottomSheet.classList.contains('hidden-sheet') || onboardingActive) {
-            return; 
+            return;
         }
         const pitch = getPitch(event);
         if (pitch >= 50) {
