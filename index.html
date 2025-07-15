@@ -19,13 +19,13 @@
 
 <body style='margin: 0; overflow: hidden;'>
 
-
+  
     <div id="notification-bar" class="notification-bar" style="display: none;">
         <span>Raise your phone to scan</span>
     </div>
 
 
-    <div id="onboarding-popup" class="onboarding-popup">
+    <div id="onboarding-popup" class="onboarding-popup" style="display: none;">
         <div class="onboarding-content">
             <div class="onboarding-logo" id="onboarding-logo"></div>
             <div class="onboarding-title" id="onboarding-title"></div>
@@ -60,7 +60,7 @@
             <svg class="corner-bottom-right" width="30" height="30">
                 <path d="M 30 0 L 30 20 L 10 20"></path>
             </svg>
-
+ 
             <div id="capture-instruction" class="capture-instruction">Place the object in frame</div>
             <div id="capture-status" class="capture-status" style="display: none;">Hold steady... capturing</div>
         </div>
@@ -86,7 +86,7 @@
                 <div class="destination-details">
                     <div class="destination-name"></div>
                     <div class="time-info">
-                        <i class="fa-solid fa-person-running"></i>
+                        <i class="fa-solid fa-person-running"></i> 
                     </div>
                 </div>
             </div>
@@ -116,13 +116,13 @@
                 </div>
             </div>
 
-
+       
             <div id="step-2" class="popup-step" style="display: none;">
                 <p>Processing image...</p>
                 <div class="circular-loader"></div>
             </div>
 
-
+            
             <div id="step-3" class="popup-step" style="display: none;">
                 <div class="main-logo-container">
                     <img id="main-logo" class="main-logo" src="" alt="Main Logo">
@@ -205,10 +205,10 @@
             document.getElementById("step" + step).classList.remove("hidden");
             if (step === 3) {
                 const mainImage = document.getElementById("mainImage");
-
+               
                 mainImage.src = "https://picsum.photos/id/1015/600/300";
 
-
+              
                 if (selectedThumbnail) {
                     selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
                     selectedThumbnail = null;
@@ -244,6 +244,5 @@
     }
 
 </script>
-
 
 </html>
