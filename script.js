@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let lastOrientation = { beta: 0, gamma: 0, alpha: 0 };
     let lastMotion = { x: 0, y: 0, z: 0 };
     let onboardingStep = 0;
-    let manualCaptureMode = false; // Manuel çekim modu için flag
+    let manualCaptureMode = false; 
     let onboardingActive = false;
     const onboardingSteps = [
         {
@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const manualCaptureButton = document.getElementById('manual-capture-button');
     let onboardingShown = false;
 
-    // Bildirim barını göster
     notificationBar.style.display = 'block';
     setTimeout(() => {
         notificationBar.style.display = 'none';
@@ -58,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function () {
         onboardingDesc.textContent = onboardingSteps[step].desc;
         onboardingPrev.style.display = step === 0 ? 'none' : 'inline-block';
 
-        // Son adımda next butonu gizle, close ve capture mode butonlarını göster
         if (step === onboardingSteps.length - 1) {
             onboardingNext.style.display = 'none';
             onboardingClose.style.display = 'inline-block';
@@ -97,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     onboardingClose.onclick = closeOnboarding;
 
-    // Capture mode butonları için event listener'lar
+
     automaticCaptureBtn.onclick = function () {
         manualCaptureMode = false;
         closeOnboarding();
@@ -108,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function () {
         closeOnboarding();
     };
 
-    // Telefon yukarı kaldırıldığında onboarding başlat
     window.addEventListener('deviceorientation', function (event) {
         const pitch = getPitch(event);
         if (pitch >= 50 && !onboardingShown) {
@@ -118,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Örnek logo verileri - gerçek uygulamada bu API'den veya başka bir kaynaktan gelecektir
+
     const sampleLogos = [
         { id: 1, url: 'assets/logo1.png', name: 'Logo 1' },
         { id: 2, url: 'assets/logo2.png', name: 'Logo 2' },
@@ -127,76 +124,68 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     function showProcessedResults(capturedImageURL) {
-        // resultsPopupOpen = true; // No longer needed
-        closeAR(); // Keep existing AR close logic
+      
+        closeAR(); 
 
-        // Directly open the bottom sheet to step 1
-        goToStep(1); // Ensure bottom sheet is visible and starts at step 1
+        
+        goToStep(1); 
 
-        // Step 1: Image preview
-        // The goToStep(1) call already sets step1 to visible and others hidden.
-        // So, no need for manual style.display = 'block' etc. here.
 
-        const capturedImage = document.getElementById('captured-image'); // This is from your initial popup.
-        // If 'captured-image' is now part of step1 in bottom sheet, it's fine.
-        // If not, you might need to find the correct ID in your step1 div.
+        const capturedImage = document.getElementById('captured-image'); 
+
         capturedImage.src = capturedImageURL;
 
-        // Renamed for clarity and consistency with bottom sheet buttons
-        const bottomSheetCancelBtn = document.getElementById('cancel-btn'); // Ensure this ID exists on your step1 cancel button
-        const bottomSheetApproveBtn = document.getElementById('approve-btn'); // Ensure this ID exists on your step1 approve button
-        const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn'); // Ensure this ID exists on your step3 confirm button
+        const bottomSheetCancelBtn = document.getElementById('cancel-btn'); 
+        const bottomSheetApproveBtn = document.getElementById('approve-btn'); 
+        const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn'); 
 
         if (bottomSheetCancelBtn) {
             bottomSheetCancelBtn.onclick = () => {
-                closeBottomSheet(); // Close the bottom sheet
-                // resultsPopupOpen = false; // No longer needed
+                closeBottomSheet(); 
+           
             };
         }
 
         if (bottomSheetApproveBtn) {
             bottomSheetApproveBtn.onclick = () => {
-                goToStep(2); // Move to processing step (Step 2)
+                goToStep(2); 
 
-                // 1-second delay (1000ms) for processing
+
                 setTimeout(() => {
-                    goToStep(3); // Move to results step (Step 3)
+                    goToStep(3); 
 
-                    // Load logos/thumbnails
-                    const mainLogo = document.getElementById('mainImage'); // Use mainImage ID from your bottom sheet
-                    const thumbnailContainer = document.querySelector('#step3 .flex.justify-center'); // Target the container for thumbnails
+                    const mainLogo = document.getElementById('mainImage'); 
+                    const thumbnailContainer = document.querySelector('#step3 .flex.justify-center'); 
 
-                    // Clear previous thumbnails (if any) to prevent duplicates
-                    // Keep the first default image in the HTML if it's static, otherwise clear all
-                    thumbnailContainer.innerHTML = ''; // Clear existing thumbnails
 
-                    // Ensure selectedThumbnail is reset when entering step 3
+                    thumbnailContainer.innerHTML = ''; 
+
                     if (selectedThumbnail) {
                         selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
                         selectedThumbnail = null;
                     }
 
-                    // Append new thumbnails
+ 
                     sampleLogos.forEach((logo, index) => {
                         const div = document.createElement('div');
-                        div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container'; // Reuse your image-container class
+                        div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container';
 
                         const img = document.createElement('img');
                         img.src = logo.url;
                         img.alt = logo.name;
                         img.className = 'w-full h-full object-cover cursor-pointer';
                         img.onclick = () => {
-                            // This uses your existing changeImage function, which handles selection and main image update
+
                             changeImage(img);
                         };
                         div.appendChild(img);
                         thumbnailContainer.appendChild(div);
 
-                        // Set the initial main image from the first logo in sampleLogos
+
                         if (index === 0) {
                             mainLogo.src = logo.url;
                             mainLogo.alt = logo.name;
-                            // No thumbnail selected by default
+
                         }
                     });
 
@@ -206,10 +195,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (bottomSheetConfirmResultBtn) {
             bottomSheetConfirmResultBtn.onclick = () => {
-                closeBottomSheet(); // Close the bottom sheet
-                // resultsPopupOpen = false; // No longer needed
+                closeBottomSheet(); 
 
-                // Keep existing AR state reset logic
                 animationStarted = false;
                 photoTaken = false;
                 stableStartTime = null;
@@ -319,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function () {
         cameraContainer.appendChild(videoElement);
         container.appendChild(cameraContainer);
 
-        // Diğer elementlerin z-index değerlerini güncelle
+ 
         const bottomContainer = document.querySelector('.bottom-container');
         bottomContainer.style.zIndex = '20';
 
@@ -329,12 +316,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const buttonSection = document.querySelector('.button-section');
         if (buttonSection) buttonSection.style.zIndex = '25';
 
-        // Tüm butonların z-index'ini yükselt
+
         document.querySelectorAll('button, .circular-icon-button, .image-button').forEach(button => {
             button.style.zIndex = '30';
         });
 
-        // Kamera başlatma kodları...
+
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({
                 video: {
@@ -361,21 +348,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         bottomContainer.style.height = '40%';
 
-        // Manuel çekim modu kontrolü
         if (manualCaptureMode) {
             manualCaptureButton.style.display = 'flex';
             manualCaptureButton.onclick = takePhoto;
             document.getElementById('capture-instruction').style.display = 'block';
             document.getElementById('capture-status').style.display = 'none';
 
-            // Manuel modda scan area'yı direkt aktif hale getir
             const scanArea = document.getElementById('scanArea');
             if (scanArea) {
                 scanArea.classList.add('glow-active');
             }
         } else {
             manualCaptureButton.style.display = 'none';
-            // Otomatik modda başlangıçta glow-active class'ını kaldır
+ 
             const scanArea = document.getElementById('scanArea');
             if (scanArea) {
                 scanArea.classList.remove('glow-active');
@@ -387,40 +372,38 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!arOpen) return;
         arOpen = false;
 
-        // Kamera stream'ini kapat
+
         if (window.localStream) {
             window.localStream.getTracks().forEach(track => track.stop());
         }
 
-        // Kamera container'ını kaldır
+
         const cameraContainer = document.getElementById('camera-container');
         if (cameraContainer) {
             cameraContainer.parentElement.removeChild(cameraContainer);
         }
 
-        // Stilleri reset et
+
         const bottomContainer = document.querySelector('.bottom-container');
         bottomContainer.style.height = '100%';
         bottomContainer.style.zIndex = '';
 
-        // Yeni eklenecek kısım: Harita ve bilgi bölümlerini orijinal z-index'lerine ve konumlarına getir
+     
         const mapSection = document.querySelector('.map-section');
         if (mapSection) {
-            mapSection.style.zIndex = ''; // Default z-index
-            // Eğer konumlandırma veya yükseklik değiştiyse, burada resetleyin
-            // Örneğin: mapSection.style.height = 'X%';
-            // mapSection.style.position = '';
+            mapSection.style.zIndex = ''; 
+
         }
 
         const infoSection = document.querySelector('.info-section');
         if (infoSection) {
-            infoSection.style.zIndex = ''; // Default z-index
-            // Benzer şekilde konumlandırma veya yükseklik resetlemesi
+            infoSection.style.zIndex = '';
+
         }
 
-        // AR açıldığında z-index'i değişen tüm butonları da resetlemek iyi bir fikir
+      
         document.querySelectorAll('button, .circular-icon-button, .image-button').forEach(button => {
-            button.style.zIndex = ''; // Default z-index'e geri döner
+            button.style.zIndex = ''; 
         });
 
 
@@ -430,16 +413,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // Capture ile ilgili değişkenleri sıfırla
         animationStarted = false;
         photoTaken = false;
         stableStartTime = null;
         if (animationTimeout) clearTimeout(animationTimeout);
 
-        // Manuel çekim butonunu gizle
+
         manualCaptureButton.style.display = 'none';
 
-        // Mesajları sıfırla
+ 
         document.getElementById('capture-status').style.display = 'none';
         document.getElementById('capture-instruction').style.display = 'block';
     }
@@ -460,7 +442,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('deviceorientation', function (event) {
         const bottomSheet = document.getElementById("bottomSheet");
         if (!bottomSheet.classList.contains('hidden-sheet') || onboardingActive) {
-            return; // If bottom sheet or onboarding is active, stop processing device orientation
+            return; 
         }
         const pitch = getPitch(event);
         if (pitch >= 50) {

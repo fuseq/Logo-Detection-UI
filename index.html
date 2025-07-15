@@ -19,13 +19,13 @@
 
 <body style='margin: 0; overflow: hidden;'>
 
-    <!-- Notification Bar -->
+
     <div id="notification-bar" class="notification-bar" style="display: none;">
         <span>Raise your phone to scan</span>
     </div>
 
-    <!-- Onboarding Popup -->
-    <div id="onboarding-popup" class="onboarding-popup" style="display: none;">
+
+    <div id="onboarding-popup" class="onboarding-popup">
         <div class="onboarding-content">
             <div class="onboarding-logo" id="onboarding-logo"></div>
             <div class="onboarding-title" id="onboarding-title"></div>
@@ -44,23 +44,23 @@
 
     <div class="container">
         <div id="scanArea" class="scan-area">
-            <!-- Sol üst köşe -->
+
             <svg class="corner-top-left" width="30" height="30">
                 <path d="M 0 30 L 0 10 L 20 10"></path>
             </svg>
-            <!-- Sağ üst köşe -->
+
             <svg class="corner-top-right" width="30" height="30">
                 <path d="M 30 30 L 30 10 L 10 10"></path>
             </svg>
-            <!-- Sol alt köşe -->
+
             <svg class="corner-bottom-left" width="30" height="30">
                 <path d="M 0 0 L 0 20 L 20 20"></path>
             </svg>
-            <!-- Sağ alt köşe -->
+
             <svg class="corner-bottom-right" width="30" height="30">
                 <path d="M 30 0 L 30 20 L 10 20"></path>
             </svg>
-            <!-- Capture mesajları -->
+
             <div id="capture-instruction" class="capture-instruction">Place the object in frame</div>
             <div id="capture-status" class="capture-status" style="display: none;">Hold steady... capturing</div>
         </div>
@@ -73,7 +73,6 @@
                 class="map-iframe"></iframe>
         </div>
         <div class="button-section">
-            <!-- Manuel capture için buton ekleniyor -->
             <button id="manual-capture-button" class="capture-button" style="display: none;">
                 <i class="fa-solid fa-camera"></i>
             </button>
@@ -85,9 +84,9 @@
                     <img src="https://i.ibb.co/PjjtDkp/inmapper-1.png" alt="Icon" />
                 </a>
                 <div class="destination-details">
-                    <div class="destination-name">Destination Name</div>
+                    <div class="destination-name"></div>
                     <div class="time-info">
-                        <i class="fa-solid fa-person-running"></i> 5 minutes
+                        <i class="fa-solid fa-person-running"></i>
                     </div>
                 </div>
             </div>
@@ -104,11 +103,9 @@
 
 
 
-    <!-- Eski photo-popup'ı kaldıralım ve yerine yeni işlenmiş sonuçlar popup'ı ekleyelim -->
     <div id="results-popup" class="results-popup" style="display: none;">
         <div class="results-content">
 
-            <!-- Aşama 1: Resim Onayı -->
             <div id="step-1" class="popup-step">
                 <div class="captured-image-container">
                     <img id="captured-image" class="captured-image" src="" alt="Captured">
@@ -119,13 +116,13 @@
                 </div>
             </div>
 
-            <!-- Aşama 2: Progress -->
+
             <div id="step-2" class="popup-step" style="display: none;">
                 <p>Processing image...</p>
                 <div class="circular-loader"></div>
             </div>
 
-            <!-- Aşama 3: Sonuç -->
+
             <div id="step-3" class="popup-step" style="display: none;">
                 <div class="main-logo-container">
                     <img id="main-logo" class="main-logo" src="" alt="Main Logo">
@@ -208,10 +205,10 @@
             document.getElementById("step" + step).classList.remove("hidden");
             if (step === 3) {
                 const mainImage = document.getElementById("mainImage");
-                // BURAYI DEĞİŞTİRDİK: Büyük resme küçük resimlerden farklı bir başlangıç atıyoruz
-                mainImage.src = "https://picsum.photos/id/1015/600/300"; // Örneğin, 1015 ID'li resmi kullanın
 
-                // Ayrıca, hiçbir küçük resimde seçili sınıfının olmadığından emin ol
+                mainImage.src = "https://picsum.photos/id/1015/600/300";
+
+
                 if (selectedThumbnail) {
                     selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
                     selectedThumbnail = null;
@@ -228,12 +225,12 @@
 
         mainImage.src = `https://picsum.photos/id/${id}/600/300`;
 
-        // Önceki seçili küçük resmin seçimini kaldır
+
         if (selectedThumbnail) {
             selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
         }
 
-        // Mevcut küçük resmi seçili yap
+
         imgElement.parentElement.classList.add("thumbnail-selected");
         selectedThumbnail = imgElement;
     }
@@ -246,9 +243,7 @@
         overlay.classList.add("hidden");
     }
 
-    // window.onload = () => {
-    //     goToStep(1); // THIS LINE IS COMMENTED OUT
-    // }
 </script>
+
 
 </html>
