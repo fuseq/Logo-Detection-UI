@@ -253,16 +253,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const capRect = captureArea.getBoundingClientRect();
         const videoRect = video.getBoundingClientRect();
 
-
         const scaleX = video.videoWidth / videoRect.width;
         const scaleY = video.videoHeight / videoRect.height;
-
 
         const sx = (capRect.left - videoRect.left) * scaleX;
         const sy = (capRect.top - videoRect.top) * scaleY;
         const sw = capRect.width * scaleX;
         const sh = capRect.height * scaleY;
-
 
         const canvas = document.createElement('canvas');
         canvas.width = sw;
@@ -271,7 +268,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
 
-        showProcessedResults(canvas.toDataURL('image/png'));
+        const dataUrl = canvas.toDataURL('image/png');
+        showProcessedResults(dataUrl);
+
+        const imgStep1 = document.getElementById('capturedImage');
+        if (imgStep1) imgStep1.src = dataUrl;   // Step 1’deki resmi güncelle
 
         if (captureArea) {
             captureArea.classList.remove('glow-active');

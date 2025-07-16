@@ -110,9 +110,13 @@
         class="bottom-sheet fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-lg p-4 space-y-4 transition-transform transform z-50 hidden-sheet">
 
         <div id="step1" class="flex flex-col items-center space-y-8 pt-4">
-                <img src="https://picsum.photos/id/1015/600/300"        
-                class="w-full max-w-md rounded-xl aspect-2-1 object-cover" />
-                <button onclick="goToStep(2)" class="w-48 bg-blue-500 text-white py-2 rounded-lg">Approve</button>
+            <img id="capturedImage" 
+            src="https://picsum.photos/id/1015/600/300"
+            class="w-full max-w-md rounded-xl aspect-2-1 object-cover"
+            />
+            <button onclick="goToStep(2)" class="w-48 bg-blue-500 text-white py-2 rounded-lg">
+                Approve
+            </button>
         </div>
 
         <div id="step2" class="hidden flex flex-col items-center justify-center h-full space-y-4">
