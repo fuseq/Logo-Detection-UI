@@ -137,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         goToStep(1);
 
-
         const capturedImage = document.getElementById('captured-image');
 
         capturedImage.src = capturedImageURL;
