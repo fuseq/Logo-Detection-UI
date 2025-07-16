@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const container = document.querySelector('.container');
     const manualCaptureButton = document.getElementById('manual-capture-button');
     let onboardingShown = false;
+    let selectedThumbnail = null;
 
     notificationBar.style.display = 'block';
     setTimeout(() => {
@@ -130,15 +131,93 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: 4, url: 'assets/logo4.png', name: 'Logo 4' },
     ];
 
+    function goToStep(step) {
+        const sheet = document.getElementById("bottomSheet");
+        const overlay = document.getElementById("overlay");
+
+        sheet.classList.remove("hidden-sheet");
+        overlay.classList.remove("hidden");
+
+        document.getElementById("step1").classList.add("hidden");
+        document.getElementById("step2").classList.add("hidden");
+        document.getElementById("step3").classList.add("hidden");
+
+        if (step === 2) {
+            document.getElementById("step2").classList.remove("hidden");
+            setTimeout(() => {
+                goToStep(3);
+            }, 2000);
+        } else {
+            document.getElementById("step" + step).classList.remove("hidden");
+            if (step === 3) {
+                const mainImage = document.getElementById("mainImage");
+                const thumbnailContainer = document.querySelector('#step3 .flex.justify-center');
+
+
+                if (selectedThumbnail) {
+                    selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
+                    selectedThumbnail = null;
+                }
+
+
+                thumbnailContainer.innerHTML = '';
+
+
+                if (sampleLogos.length > 0) {
+                    mainImage.src = sampleLogos[0].url;
+                    mainImage.alt = sampleLogos[0].name;
+                }
+
+
+                for (let i = 1; i < sampleLogos.length; i++) {
+                    const logo = sampleLogos[i];
+                    const div = document.createElement('div');
+                    div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container';
+
+                    const img = document.createElement('img');
+                    img.src = logo.url;
+                    img.alt = logo.name;
+                    img.className = 'w-full h-full object-cover cursor-pointer';
+                    img.onclick = () => {
+                        changeImage(img);
+                    };
+                    div.appendChild(img);
+                    thumbnailContainer.appendChild(div);
+                }
+            }
+        }
+    }
+
+    function changeImage(imgElement) {
+        const mainImage = document.getElementById("mainImage");
+
+
+        mainImage.src = imgElement.src;
+        mainImage.alt = imgElement.alt;
+
+
+        if (selectedThumbnail) {
+            selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
+        }
+
+
+        imgElement.parentElement.classList.add("thumbnail-selected");
+        selectedThumbnail = imgElement;
+    }
+
+    function closeBottomSheet() {
+        const sheet = document.getElementById("bottomSheet");
+        const overlay = document.getElementById("overlay");
+
+        sheet.classList.add("hidden-sheet");
+        overlay.classList.add("hidden");
+    }
+
     function showProcessedResults(capturedImageURL) {
-
         closeAR();
-
-
         goToStep(1);
 
         const capturedImage = document.getElementById('captured-image');
-
         capturedImage.src = capturedImageURL;
 
         const bottomSheetCancelBtn = document.getElementById('cancel-btn');
@@ -148,7 +227,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (bottomSheetCancelBtn) {
             bottomSheetCancelBtn.onclick = () => {
                 closeBottomSheet();
-
             };
         }
 
@@ -156,23 +234,32 @@ document.addEventListener('DOMContentLoaded', function () {
             bottomSheetApproveBtn.onclick = () => {
                 goToStep(2);
 
-
                 setTimeout(() => {
                     goToStep(3);
 
                     const mainLogo = document.getElementById('mainImage');
                     const thumbnailContainer = document.querySelector('#step3 .flex.justify-center');
 
-
-                    thumbnailContainer.innerHTML = '';
-
+                    // Önceki seçili thumbnail'ı sıfırla
                     if (selectedThumbnail) {
                         selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
                         selectedThumbnail = null;
                     }
 
+                    // Thumbnail container'ı temizle
+                    thumbnailContainer.innerHTML = '';
 
-                    sampleLogos.forEach((logo, index) => {
+                    // sampleLogos dizisi hala 4 eleman içerecek
+                    // İlk logoyu ana resme ata
+                    if (sampleLogos.length > 0) {
+                        mainLogo.src = sampleLogos[0].url;
+                        mainLogo.alt = sampleLogos[0].name;
+                    }
+
+                    // Geri kalan 3 logoyu (index 1'den itibaren) thumbnail olarak ekle
+                    // Eğer sampleLogos 4 elemandan azsa, sorun olmaz, döngü o kadar döner.
+                    for (let i = 1; i < sampleLogos.length; i++) {
+                        const logo = sampleLogos[i];
                         const div = document.createElement('div');
                         div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container';
 
@@ -181,19 +268,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         img.alt = logo.name;
                         img.className = 'w-full h-full object-cover cursor-pointer';
                         img.onclick = () => {
-
                             changeImage(img);
                         };
                         div.appendChild(img);
                         thumbnailContainer.appendChild(div);
-
-
-                        if (index === 0) {
-                            mainLogo.src = logo.url;
-                            mainLogo.alt = logo.name;
-
-                        }
-                    });
+                    }
 
                 }, 1000);
             };
