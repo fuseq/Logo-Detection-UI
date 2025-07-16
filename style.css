@@ -845,6 +845,14 @@ a,
 
 .bottom-sheet.hidden-sheet {
     transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none; 
+    visibility: hidden; 
+}
+
+
+.hidden {
+    display: none !important;
 }
 
 .circular-loader {
