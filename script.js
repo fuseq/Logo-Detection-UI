@@ -56,16 +56,17 @@ document.addEventListener('DOMContentLoaded', function () {
         onboardingLogo.innerHTML = onboardingSteps[step].logo;
         onboardingTitle.textContent = onboardingSteps[step].title;
         onboardingDesc.textContent = onboardingSteps[step].desc;
-        onboardingPrev.style.display = step === 0 ? 'none' : 'inline-block';
+
+        onboardingPrev.style.display = (step === 0 || step === onboardingSteps.length - 1) ? 'none' : 'inline-block';
 
         if (step === onboardingSteps.length - 1) {
             onboardingNext.style.display = 'none';
-            onboardingClose.style.display = 'inline-block';
+            onboardingClose.style.display = 'none'; 
             captureModeButtons.style.display = 'flex';
         } else {
             onboardingNext.style.display = 'inline-block';
             onboardingClose.style.display = 'none';
-            captureModeButtons.style.display = 'none';
+            captureModeButtons.style.display = 'none'; 
         }
     }
 
@@ -74,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
         bottomSheet.style.display = 'flex';
         setTimeout(() => {
             bottomSheet.classList.add('active');
-        }, 10); // Small delay to ensure display: flex is applied before animation
+        }, 10); 
         showOnboardingStep(onboardingStep);
     }
 

@@ -481,7 +481,6 @@ button {
     }
 }
 
-/* Onboarding Bottom Sheet */
 .onboarding-bottom-sheet {
     position: fixed;
     bottom: 0;
@@ -491,10 +490,15 @@ button {
     background: rgba(0, 0, 0, 0.55);
     display: flex;
     align-items: flex-end;
-    /* Align content to the bottom */
     justify-content: center;
     z-index: 10000;
+    opacity: 0;
     transition: opacity 0.3s ease-in-out;
+}
+
+
+.onboarding-bottom-sheet.active {
+    opacity: 1;
 }
 
 .onboarding-content {
@@ -505,23 +509,21 @@ button {
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.18);
     width: 100%;
     max-width: 600px;
-    /* Limit max width for larger screens */
-    max-height: 80vh;
-    /* Limit height to avoid covering entire screen */
+    height: 50vh;
+    max-height: 50vh;
     text-align: center;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     transform: translateY(100%);
-    /* Start off-screen */
     transition: transform 0.3s ease-in-out;
+    overflow-y: auto;
 }
 
-/* When bottom sheet is visible */
+
 .onboarding-bottom-sheet.active .onboarding-content {
     transform: translateY(0);
-    /* Slide up to visible position */
 }
 
 .onboarding-logo {
@@ -846,8 +848,8 @@ a,
 .bottom-sheet.hidden-sheet {
     transform: translateY(100%);
     opacity: 0;
-    pointer-events: none; 
-    visibility: hidden; 
+    pointer-events: none;
+    visibility: hidden;
 }
 
 
