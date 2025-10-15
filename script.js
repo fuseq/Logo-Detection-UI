@@ -445,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.append('image', imageFile); // 🔥 Değiştirildi
 
         try {
-            const response = await fetch('http://inmapper.isohtel.com.tr/detect-logo', {
+            const response = await fetch('https://inmapper.isohtel.com.tr/detect-logo', {
                 method: 'POST',
                 body: formData
             });
