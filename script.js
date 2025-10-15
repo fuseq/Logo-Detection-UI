@@ -153,82 +153,84 @@ document.addEventListener('DOMContentLoaded', function () {
      * Yakalanan görüntüyü işler, API'ye gönderir ve sonucu gösterir.
      * @param {string} capturedImageURL - Canvas'tan alınan base64 formatındaki resim URL'si.
      */
-    function showProcessedResults(capturedImageURL) {
-        closeAR();
-        goToStep(1); // Onay ekranını göster
+    // Lütfen mevcut showProcessedResults fonksiyonunuzu bununla değiştirin.
+function showProcessedResults(capturedImageURL) {
+    closeAR();
+    goToStep(1); // Onay ekranını göster
 
-        const capturedImage = document.getElementById('captured-image');
-        capturedImage.src = capturedImageURL;
+    const capturedImage = document.getElementById('captured-image');
+    capturedImage.src = capturedImageURL;
 
-        const bottomSheetCancelBtn = document.getElementById('cancel-btn');
-        const bottomSheetApproveBtn = document.getElementById('approve-btn');
-        const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn');
+    const bottomSheetCancelBtn = document.getElementById('cancel-btn');
+    const bottomSheetApproveBtn = document.getElementById('approve-btn');
+    const bottomSheetConfirmResultBtn = document.getElementById('confirm-result-btn');
 
-        if (bottomSheetCancelBtn) {
-            bottomSheetCancelBtn.onclick = () => {
-                closeBottomSheet();
-            };
-        }
+    if (bottomSheetCancelBtn) {
+        bottomSheetCancelBtn.onclick = () => {
+            closeBottomSheet();
+        };
+    }
 
-        if (bottomSheetApproveBtn) {
-            // "Onayla" butonuna tıklandığında yapılacak işlemleri asenkron hale getiriyoruz.
-            bottomSheetApproveBtn.onclick = async () => {
-                goToStep(2); // "İşleniyor..." ekranını göster
+    if (bottomSheetApproveBtn) {
+        bottomSheetApproveBtn.onclick = async () => {
+            goToStep(2); // "İşleniyor..." ekranını göster
 
-                try {
-                    // Base64 URL'i bir File nesnesine dönüştür
-                    const response = await fetch(capturedImageURL);
-                    const blob = await response.blob();
-                    const imageFile = new File([blob], "logo-capture.png", { type: "image/png" });
+            try {
+                const response = await fetch(capturedImageURL);
+                const blob = await response.blob();
+                const imageFile = new File([blob], "logo-capture.png", { type: "image/png" });
 
-                    // Logoyu tespit etmek için API'yi çağır
-                    const resultData = await detectLogo(imageFile);
+                const resultData = await detectLogo(imageFile);
 
-                    // API'den başarılı sonuç dönerse 3. adıma geç
+                if (resultData && resultData.best_match) {
                     goToStep(3);
-
                     const mainLogo = document.getElementById('mainImage');
                     const thumbnailContainer = document.querySelector('#step3 .flex.justify-center');
-
-                    // Thumbnail alanını temizle
                     thumbnailContainer.innerHTML = '';
 
-                    // API'den gelen 'best_match' sonucuna göre logo yolunu oluştur
-                    // Dosya uzantısının .png olduğu varsayılmıştır.
                     const logoName = resultData.best_match;
                     mainLogo.src = `assets/logos/${logoName}.png`;
                     mainLogo.alt = logoName;
-
-                } catch (error) {
-                    console.error('Logo tespiti sırasında bir hata oluştu:', error);
-                    alert('Logo tanınamadı. Lütfen tekrar deneyin.');
-                    closeBottomSheet();
+                } else {
+                    throw new Error("API yanıtında 'best_match' alanı bulunamadı. Gelen veri: " + JSON.stringify(resultData));
                 }
-            };
-        }
 
-        if (bottomSheetConfirmResultBtn) {
-            bottomSheetConfirmResultBtn.onclick = () => {
-                closeBottomSheet();
+            } catch (error) {
+                // Hatanın detayını konsola yazdırmaya devam et (iyi bir alışkanlıktır).
+                console.error('Logo tespiti sırasında bir hata oluştu:', error);
 
-                animationStarted = false;
-                photoTaken = false;
-                stableStartTime = null;
-                if (animationTimeout) clearTimeout(animationTimeout);
+                // *** YENİ KISIM: Hata mesajını alert olarak göster ***
+                const errorMessage = `Bir hata oluştu:\n\nTip: ${error.name}\nMesaj: ${error.message}`;
+                alert(errorMessage);
 
-                const scanArea = document.getElementById('scanArea');
-                if (scanArea) {
-                    if (manualCaptureMode) {
-                        scanArea.classList.add('glow-active');
-                    } else {
-                        scanArea.classList.remove('glow-active');
-                    }
-                }
-                document.getElementById('capture-status').style.display = 'none';
-                document.getElementById('capture-instruction').style.display = 'block';
-            };
-        }
+                // Hata sonrası kullanıcıyı tekrar onay ekranına yönlendirerek
+                // takılıp kalmasını engelle.
+                goToStep(1);
+            }
+        };
     }
+
+    if (bottomSheetConfirmResultBtn) {
+        bottomSheetConfirmResultBtn.onclick = () => {
+            closeBottomSheet();
+            // ... (geri kalan kod aynı)
+            animationStarted = false;
+            photoTaken = false;
+            stableStartTime = null;
+            if (animationTimeout) clearTimeout(animationTimeout);
+            const scanArea = document.getElementById('scanArea');
+            if (scanArea) {
+                if (manualCaptureMode) {
+                    scanArea.classList.add('glow-active');
+                } else {
+                    scanArea.classList.remove('glow-active');
+                }
+            }
+            document.getElementById('capture-status').style.display = 'none';
+            document.getElementById('capture-instruction').style.display = 'block';
+        };
+    }
+}
 
 
     function startAnimation() {
