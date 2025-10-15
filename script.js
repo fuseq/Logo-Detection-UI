@@ -61,12 +61,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (step === onboardingSteps.length - 1) {
             onboardingNext.style.display = 'none';
-            onboardingClose.style.display = 'none'; 
+            onboardingClose.style.display = 'none';
             captureModeButtons.style.display = 'flex';
         } else {
             onboardingNext.style.display = 'inline-block';
             onboardingClose.style.display = 'none';
-            captureModeButtons.style.display = 'none'; 
+            captureModeButtons.style.display = 'none';
         }
     }
 
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
         bottomSheet.style.display = 'flex';
         setTimeout(() => {
             bottomSheet.classList.add('active');
-        }, 10); 
+        }, 10);
         showOnboardingStep(onboardingStep);
     }
 
@@ -124,13 +124,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
-    const sampleLogos = [
-        { id: 1, url: 'assets/logo1.png', name: 'Logo 1' },
-        { id: 2, url: 'assets/logo2.png', name: 'Logo 2' },
-        { id: 3, url: 'assets/logo3.png', name: 'Logo 3' },
-        { id: 4, url: 'assets/logo4.png', name: 'Logo 4' },
-    ];
+    // Mock data 'sampleLogos' kaldırıldı.
+    // const sampleLogos = [ ... ];
 
     function goToStep(step) {
         const sheet = document.getElementById("bottomSheet");
@@ -143,67 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("step2").classList.add("hidden");
         document.getElementById("step3").classList.add("hidden");
 
-        if (step === 2) {
-            document.getElementById("step2").classList.remove("hidden");
-            setTimeout(() => {
-                goToStep(3);
-            }, 2000);
-        } else {
-            document.getElementById("step" + step).classList.remove("hidden");
-            if (step === 3) {
-                const mainImage = document.getElementById("mainImage");
-                const thumbnailContainer = document.querySelector('#step3 .flex.justify-center');
-
-
-                if (selectedThumbnail) {
-                    selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
-                    selectedThumbnail = null;
-                }
-
-
-                thumbnailContainer.innerHTML = '';
-
-
-                if (sampleLogos.length > 0) {
-                    mainImage.src = sampleLogos[0].url;
-                    mainImage.alt = sampleLogos[0].name;
-                }
-
-
-                for (let i = 1; i < sampleLogos.length; i++) {
-                    const logo = sampleLogos[i];
-                    const div = document.createElement('div');
-                    div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container';
-
-                    const img = document.createElement('img');
-                    img.src = logo.url;
-                    img.alt = logo.name;
-                    img.className = 'w-full h-full object-cover cursor-pointer';
-                    img.onclick = () => {
-                        changeImage(img);
-                    };
-                    div.appendChild(img);
-                    thumbnailContainer.appendChild(div);
-                }
-            }
-        }
-    }
-
-    function changeImage(imgElement) {
-        const mainImage = document.getElementById("mainImage");
-
-
-        mainImage.src = imgElement.src;
-        mainImage.alt = imgElement.alt;
-
-
-        if (selectedThumbnail) {
-            selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
-        }
-
-
-        imgElement.parentElement.classList.add("thumbnail-selected");
-        selectedThumbnail = imgElement;
+        document.getElementById("step" + step).classList.remove("hidden");
     }
 
     function closeBottomSheet() {
@@ -214,9 +149,13 @@ document.addEventListener('DOMContentLoaded', function () {
         overlay.classList.add("hidden");
     }
 
+    /**
+     * Yakalanan görüntüyü işler, API'ye gönderir ve sonucu gösterir.
+     * @param {string} capturedImageURL - Canvas'tan alınan base64 formatındaki resim URL'si.
+     */
     function showProcessedResults(capturedImageURL) {
         closeAR();
-        goToStep(1);
+        goToStep(1); // Onay ekranını göster
 
         const capturedImage = document.getElementById('captured-image');
         capturedImage.src = capturedImageURL;
@@ -232,50 +171,39 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (bottomSheetApproveBtn) {
-            bottomSheetApproveBtn.onclick = () => {
-                goToStep(2);
+            // "Onayla" butonuna tıklandığında yapılacak işlemleri asenkron hale getiriyoruz.
+            bottomSheetApproveBtn.onclick = async () => {
+                goToStep(2); // "İşleniyor..." ekranını göster
 
-                setTimeout(() => {
+                try {
+                    // Base64 URL'i bir File nesnesine dönüştür
+                    const response = await fetch(capturedImageURL);
+                    const blob = await response.blob();
+                    const imageFile = new File([blob], "logo-capture.png", { type: "image/png" });
+
+                    // Logoyu tespit etmek için API'yi çağır
+                    const resultData = await detectLogo(imageFile);
+
+                    // API'den başarılı sonuç dönerse 3. adıma geç
                     goToStep(3);
 
                     const mainLogo = document.getElementById('mainImage');
                     const thumbnailContainer = document.querySelector('#step3 .flex.justify-center');
 
-                    // Önceki seçili thumbnail'ı sıfırla
-                    if (selectedThumbnail) {
-                        selectedThumbnail.parentElement.classList.remove("thumbnail-selected");
-                        selectedThumbnail = null;
-                    }
-
-                    // Thumbnail container'ı temizle
+                    // Thumbnail alanını temizle
                     thumbnailContainer.innerHTML = '';
 
-                    // sampleLogos dizisi hala 4 eleman içerecek
-                    // İlk logoyu ana resme ata
-                    if (sampleLogos.length > 0) {
-                        mainLogo.src = sampleLogos[0].url;
-                        mainLogo.alt = sampleLogos[0].name;
-                    }
+                    // API'den gelen 'best_match' sonucuna göre logo yolunu oluştur
+                    // Dosya uzantısının .png olduğu varsayılmıştır.
+                    const logoName = resultData.best_match;
+                    mainLogo.src = `assets/logos/${logoName}.png`;
+                    mainLogo.alt = logoName;
 
-                    // Geri kalan 3 logoyu (index 1'den itibaren) thumbnail olarak ekle
-                    // Eğer sampleLogos 4 elemandan azsa, sorun olmaz, döngü o kadar döner.
-                    for (let i = 1; i < sampleLogos.length; i++) {
-                        const logo = sampleLogos[i];
-                        const div = document.createElement('div');
-                        div.className = 'w-24 h-24 rounded-lg overflow-hidden image-container';
-
-                        const img = document.createElement('img');
-                        img.src = logo.url;
-                        img.alt = logo.name;
-                        img.className = 'w-full h-full object-cover cursor-pointer';
-                        img.onclick = () => {
-                            changeImage(img);
-                        };
-                        div.appendChild(img);
-                        thumbnailContainer.appendChild(div);
-                    }
-
-                }, 1000);
+                } catch (error) {
+                    console.error('Logo tespiti sırasında bir hata oluştu:', error);
+                    alert('Logo tanınamadı. Lütfen tekrar deneyin.');
+                    closeBottomSheet();
+                }
             };
         }
 
@@ -332,16 +260,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const capRect = captureArea.getBoundingClientRect();
         const videoRect = video.getBoundingClientRect();
 
-
         const scaleX = video.videoWidth / videoRect.width;
         const scaleY = video.videoHeight / videoRect.height;
-
 
         const sx = (capRect.left - videoRect.left) * scaleX;
         const sy = (capRect.top - videoRect.top) * scaleY;
         const sw = capRect.width * scaleX;
         const sh = capRect.height * scaleY;
-
 
         const canvas = document.createElement('canvas');
         canvas.width = sw;
@@ -350,6 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         ctx.drawImage(video, sx, sy, sw, sh, 0, 0, sw, sh);
 
+        // Yakalanan görüntüyü işlemek için yeni fonksiyona gönder
         showProcessedResults(canvas.toDataURL('image/png'));
 
         if (captureArea) {
@@ -392,7 +318,6 @@ document.addEventListener('DOMContentLoaded', function () {
         cameraContainer.appendChild(videoElement);
         container.appendChild(cameraContainer);
 
-
         const bottomContainer = document.querySelector('.bottom-container');
         bottomContainer.style.zIndex = '20';
 
@@ -402,11 +327,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const buttonSection = document.querySelector('.button-section');
         if (buttonSection) buttonSection.style.zIndex = '25';
 
-
         document.querySelectorAll('button, .circular-icon-button, .image-button').forEach(button => {
             button.style.zIndex = '30';
         });
-
 
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({
@@ -458,40 +381,32 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!arOpen) return;
         arOpen = false;
 
-
         if (window.localStream) {
             window.localStream.getTracks().forEach(track => track.stop());
         }
-
 
         const cameraContainer = document.getElementById('camera-container');
         if (cameraContainer) {
             cameraContainer.parentElement.removeChild(cameraContainer);
         }
 
-
         const bottomContainer = document.querySelector('.bottom-container');
         bottomContainer.style.height = '100%';
         bottomContainer.style.zIndex = '';
 
-
         const mapSection = document.querySelector('.map-section');
         if (mapSection) {
             mapSection.style.zIndex = '';
-
         }
 
         const infoSection = document.querySelector('.info-section');
         if (infoSection) {
             infoSection.style.zIndex = '';
-
         }
-
 
         document.querySelectorAll('button, .circular-icon-button, .image-button').forEach(button => {
             button.style.zIndex = '';
         });
-
 
         if (captureArea) {
             if (!manualCaptureMode) {
@@ -504,9 +419,7 @@ document.addEventListener('DOMContentLoaded', function () {
         stableStartTime = null;
         if (animationTimeout) clearTimeout(animationTimeout);
 
-
         manualCaptureButton.style.display = 'none';
-
 
         document.getElementById('capture-status').style.display = 'none';
         document.getElementById('capture-instruction').style.display = 'block';
@@ -525,6 +438,28 @@ document.addEventListener('DOMContentLoaded', function () {
         return Math.abs(event.beta);
     }
 
+    async function detectLogo(imageFile) {
+        const formData = new FormData();
+        formData.append('file', imageFile);
+
+        try {
+            const response = await fetch('http://inmapper.isohtel.com.tr/detect-logo', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error detecting logo:', error);
+            throw error;
+        }
+    }
+
     window.addEventListener('deviceorientation', function (event) {
         const bottomSheet = document.getElementById("bottomSheet");
         if (!bottomSheet.classList.contains('hidden-sheet') || onboardingActive) {
@@ -533,7 +468,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const pitch = getPitch(event);
         if (pitch >= 50) {
             openAR();
-
 
             if (!manualCaptureMode) {
                 if (isDeviceStable(event)) {

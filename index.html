@@ -19,11 +19,9 @@
 
 <body style='margin: 0; overflow: hidden;'>
 
-
     <div id="notification-bar" class="notification-bar" style="display: none;">
         <span>Raise your phone to scan</span>
     </div>
-
 
     <div id="onboarding-bottom-sheet" class="onboarding-bottom-sheet" style="display: none;">
         <div class="onboarding-content">
@@ -42,33 +40,26 @@
         </div>
     </div>
 
-
     <div class="container">
         <div id="scanArea" class="scan-area">
-
             <svg class="corner-top-left" width="30" height="30">
                 <path d="M 0 30 L 0 10 L 20 10"></path>
             </svg>
-
             <svg class="corner-top-right" width="30" height="30">
                 <path d="M 30 30 L 30 10 L 10 10"></path>
             </svg>
-
             <svg class="corner-bottom-left" width="30" height="30">
                 <path d="M 0 0 L 0 20 L 20 20"></path>
             </svg>
-
             <svg class="corner-bottom-right" width="30" height="30">
                 <path d="M 30 0 L 30 20 L 10 20"></path>
             </svg>
-
             <div id="capture-instruction" class="capture-instruction">Place the object in frame</div>
             <div id="capture-status" class="capture-status" style="display: none;">Hold steady... capturing</div>
         </div>
     </div>
 
     <div class="bottom-container">
-
         <div class="map-section">
             <iframe src="https://cbaines.github.io/leaflet-indoor/examples/" frameborder="0"
                 class="map-iframe"></iframe>
@@ -78,7 +69,6 @@
                 <i class="fa-solid fa-camera"></i>
             </button>
         </div>
-
         <div class="info-section">
             <div class="destination">
                 <a class="image-button">
@@ -102,13 +92,13 @@
         </div>
     </div>
 
-
-
-    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden" onclick="closeBottomSheet()"></div>
+    <!-- Bottom Sheet ve Overlay -->
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden"></div>
 
     <div id="bottomSheet"
         class="bottom-sheet fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-lg p-4 space-y-4 transition-transform transform z-50 hidden-sheet">
 
+        <!-- Adım 1: Yakalanan Resmi Onayla -->
         <div id="step1" class="flex flex-col items-center space-y-8 pt-4">
             <img id="captured-image" src="" class="w-full max-w-md rounded-xl aspect-2-1 object-cover"
                 alt="Captured Image" />
@@ -118,38 +108,30 @@
             </div>
         </div>
 
+        <!-- Adım 2: İşleniyor Ekranı -->
         <div id="step2" class="hidden flex flex-col items-center justify-center h-full space-y-4">
             <div class="circular-loader"></div>
             <p class="text-lg font-medium">Processing...</p>
         </div>
 
+        <!-- Adım 3: Sonuç Ekranı -->
         <div id="step3" class="hidden flex flex-col items-center h-full pt-1 pb-1">
 
+            <!-- Ana Logo Gösterim Alanı -->
             <div class="w-[304px] rounded-xl overflow-hidden image-container main">
                 <div class="w-full aspect-[2/1]">
-                    <img id="mainImage" src="https://picsum.photos/id/1020/600/300"
+                    <img id="mainImage" src=""
                         class="w-full h-full object-contain" />
                 </div>
             </div>
 
-            <div class="flex justify-center w-[304px] gap-3 mt-6">
-                <div class="w-24 h-24 rounded-lg overflow-hidden image-container">
-                    <img onclick="changeImage(this)" src="https://picsum.photos/id/1020/100/100"
-                        class="w-full h-full object-contain cursor-pointer" />
-                </div>
-                <div class="w-24 h-24 rounded-lg overflow-hidden image-container">
-                    <img onclick="changeImage(this)" src="https://picsum.photos/id/1011/100/100"
-                        class="w-full h-full object-contain cursor-pointer" />
-                </div>
-                <div class="w-24 h-24 rounded-lg overflow-hidden image-container">
-                    <img onclick="changeImage(this)" src="https://picsum.photos/id/1012/100/100"
-                        class="w-full h-full object-contain cursor-pointer" />
-                </div>
-            </div>
-
-            <button id="confirm-result-btn" onclick="closeBottomSheet()"
+            <!-- Thumbnail'lar kaldırıldı. -->
+            
+            <!-- Onay Butonu -->
+            <button id="confirm-result-btn"
                 class="w-48 bg-green-600 text-white py-2 rounded-lg mt-8">Approve</button>
         </div>
+    </div>
 
 </body>
 
